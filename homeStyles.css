@@ -1,9 +1,18 @@
-html 
-{
-  background-color: rgb(189,201,255);
+html {
+  background-color: rgb(10,10,10);
+  padding: 10px 10px 10px 10px;
 }
 
 body 
 {
-	 background-color: rgb(255,255,255);
+	background-color: rgb(255,255,255);
+	margin: 50px 50px 50px 50px;
+	padding: 10px 10px 10px 10px; 
+}
+header {
+	text-align: center;
+}
+
+footer {
+	/** display: block; **/
 }
