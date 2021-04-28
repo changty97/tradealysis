@@ -1,6 +1,20 @@
+/** 
+Team Codevid
+	Sandra Tran, 
+	Kevin Vong, 
+	Alex Leung, 
+	Jozh Gonzales, 
+	Jonathan Huerta, 
+	Tyler Chang, 
+	Harry Liang
+**/
+
 html {
   /** Background **/
-  background-color: rgb(7, 28, 0);
+	background-color: rgb(7, 28, 0);
+	font-weight: normal;
+	font-family: "Times New Roman", Times, serif;
+	font-size: 15px;
 }
 header {
 	/** Center Header **/
@@ -43,7 +57,7 @@ html body {
 }
 /** With All Team Members Names, and More **/
 .Team {
-	background-color: rgba(255, 97, 171, 0.5);
+	background-color: rgba(255, 97, 171, 0.3);
 	border: 2px solid black;
 }
 h4 {
@@ -55,12 +69,18 @@ h4 {
 	font-family: "Times New Roman", Times, serif;
 	font-size: 20px;
 }
+h5 {
+	font-weight: bold;
+	font-family: "Times New Roman", Times, serif;
+	font-size: 18px;
+}
+/** paragraph **/
 p {
 	font-family: "Times New Roman", Times, serif;
 	font-size: 18px;
 }
 
-/** Image **/
+/** Sac State Image **/
 .sacstate {
 	border-radius: 25px;
 	border: 2px solid black;
@@ -75,6 +95,7 @@ video {
 	width: 550px; height: 350px;
 	float: center;
 }
+/**
 .goalsAndPropSoln {
 	display: block;
 
@@ -83,19 +104,23 @@ video {
 	display: inline-block;
 	width: 55%;
 	float: left;
+	font-weight: normal;
+	font-family: "Times New Roman", Times, serif;
+	font-size: 15px;
 }
 .PropSoln {
 	display: inline-block;
 	width: 45%;
 	float: right;
 }
+
 .highlights {
 	display: block;
 	width: 100%;
 	margin: 5px; auto;
 	float: left;
 }
-
+**/
 footer p {
 	background-color: rgb(245, 188, 91);
 	border: 1px solid black;
