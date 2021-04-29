@@ -37,6 +37,8 @@ header nav ul li {
 header nav ul li a {
 	display: block;
 	width: 100%;
+	max-width: 100%;
+    height: auto;
 	color: white;
 	border: 1px solid black;
 	background-color: rgb(10, 10, 150);
@@ -54,6 +56,10 @@ body {
 }
 html body {
 	padding: 10px 10px 10px 10px;
+}
+.banner1{
+	max-width: 100%;
+    height: auto;
 }
 /** With All Team Members Names, and More **/
 .Team {
@@ -84,6 +90,7 @@ p {
 .sacstate {
 	border-radius: 25px;
 	border: 2px solid black;
+	max-width: 100%;
 }
 video {
 /** Video **/
@@ -91,36 +98,8 @@ video {
 	display: inline-block;
 	margin: 5px; auto;
 	text-align: center;
-	
 	width: 550px; height: 350px;
-	float: center;
 }
-/**
-.goalsAndPropSoln {
-	display: block;
-
-}
-.goals {
-	display: inline-block;
-	width: 55%;
-	float: left;
-	font-weight: normal;
-	font-family: "Times New Roman", Times, serif;
-	font-size: 15px;
-}
-.PropSoln {
-	display: inline-block;
-	width: 45%;
-	float: right;
-}
-
-.highlights {
-	display: block;
-	width: 100%;
-	margin: 5px; auto;
-	float: left;
-}
-**/
 footer p {
 	background-color: rgb(245, 188, 91);
 	border: 1px solid black;
