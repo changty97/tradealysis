@@ -21,7 +21,6 @@
 	align-items: center;
 } 
 
-
 .headerButtonsList li{
 	list-style-type: none;               /** Remove bullet from ul **/
 	border: 1px solid black;             /** set solid black border for buttons **/
@@ -38,32 +37,11 @@
 	color: white; 
 }
 
-.userAndSettingButtonsList {
-    display: flex;
-	flex-direction: row;                /** Horizontal items user, settings **/
-	font-size: 1.5em;                   /** Set font size **/
-	margin-left: 40%;                   /** Set margin over 40% **/
-	justify-content: flex-start;        /** next item to left is this **/
-	align-items: center;                /** Vertically center **/
-} 
-
-
-.userAndSettingButtonsList li{
-	list-style-type: none;                  /** remove bullets **/
-	color: white;                           /** set color of item **/
-	border: 1px solid black;                /** Set border **/
-	background-color: rgb(100,100,100);     /** set background color of item **/
-	padding: 5px 60px 5px 60px;             /** set padding of item **/
-	margin-right : 1%;                      /** Set right margin of item 1% **/
-} 
+.userAndSettingButtons {
+	margin-left: auto; 
+	margin-right: 0;
+}
 
 .noWrap { 
 	white-space: nowrap;                    /** items will not wrap to newline **/
-}
-
-.userAndSettingButtonsList li.settingsHover:hover { 
-	background-color: rgb(120,120,120);     /** button color change if hover over **/
-}
-.userAndSettingButtonsList li a {           /** color of link **/
-	color: white; 
 }
