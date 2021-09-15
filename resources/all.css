@@ -1,0 +1,43 @@
+/** html, html body element in html **************************/
+html { 
+	background-color: rgb(170,170,170);                /** Set background of html **/
+	font: normal 10px Verdana, Arial, sans-serif;      /** Set font default **/
+}
+html body { 
+	margin: 0% 5% 5% 0%;                               /** Set body default margin **/
+}
+
+/** FOOTER element in html ********************************/
+footer {
+	font: normal 15px Verdana, Arial, sans-serif;      /** Footer default margin **/
+	display: flex;
+	justify-content: center;                           /** horiz center footer **/
+	align-items: center;                               /** vertically center footer **/
+	background-color: rgb(170,170,170);                /** background color of footer **/
+	padding: 0px 10px 10px 0px;                        /** padding of footer **/
+}
+
+footer div ul {
+	list-style-type: none;                             /** ul bullets removed **/
+	display: flex;
+	flex-direction: row;                               /** flex horiz **/
+	justify-content: center;                           /** Center ul in footer **/
+	align-items: center;                               /** Vertical align ul **/
+	flex-wrap: wrap;                                   /** Wrap possible (flex) **/
+	background-color: rgb(200,200,200);                /** set bg color of ul **/        
+	padding: 10px 13px 10px 13px;                      /** sett ul padding **/
+	border-style: solid;                               /** ul border **/                                   
+	border-color: black;                               /** set border color **/
+}
+
+footer div ul li { 
+	margin-left: 10px;                                 /** set l margin 10px to left **/
+}
+
+footer div ul li a {
+	color: black;                                      /** set folor of footer (links) **/                    
+}
+
+footer div ul li:hover { 
+	background-color: rgb(180,180,180);                /** Set bg color of ul li when hovering over **/
+}

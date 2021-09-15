@@ -1,0 +1,69 @@
+/**
+	Team Codevid
+		Created/Modified By: (Add your name below)
+			-Jonathan Huerta
+**/
+
+.theHeader {
+	display: flex;
+	flex-direction: row;           /** Flex Horiz **/
+	justify-content: flex-start;   /** Logo on left **/
+	align-items: center;           /** Vertically centered **/
+	margin-left: 5%;               /** Move margin over 5% **/
+	flex-wrap: wrap;               /** Wrap header items **/
+}
+
+.headerButtonsList {
+    display: flex;               
+	flex-direction: row;          /** Flex Horiz **/
+	font-size: 2em;               /** Font size 2em **/
+	justify-content: flex-start; 
+	align-items: center;
+} 
+
+
+.headerButtonsList li{
+	list-style-type: none;               /** Remove bullet from ul **/
+	border: 1px solid black;             /** set solid black border for buttons **/
+	background-color: rgb(100,100,100);  /** set Background coulor of button **/
+	margin-left: 5%;                     /** Move Buttons left 5% **/
+	padding: 9px 60px 9px 60px;          /** Set padding of button (size of button) **/
+} 
+
+.headerButtonsList li:hover { 
+	background-color: rgb(120,120,120);  /** Set background if hovering over button **/
+}
+
+.headerButtonsList li a {                /** Set text color of text within button (link designated by <a> **/
+	color: white; 
+}
+
+.userAndSettingButtonsList {
+    display: flex;
+	flex-direction: row;                /** Horizontal items user, settings **/
+	font-size: 1.5em;                   /** Set font size **/
+	margin-left: 40%;                   /** Set margin over 40% **/
+	justify-content: flex-start;        /** next item to left is this **/
+	align-items: center;                /** Vertically center **/
+} 
+
+
+.userAndSettingButtonsList li{
+	list-style-type: none;                  /** remove bullets **/
+	color: white;                           /** set color of item **/
+	border: 1px solid black;                /** Set border **/
+	background-color: rgb(100,100,100);     /** set background color of item **/
+	padding: 5px 60px 5px 60px;             /** set padding of item **/
+	margin-right : 1%;                      /** Set right margin of item 1% **/
+} 
+
+.noWrap { 
+	white-space: nowrap;                    /** items will not wrap to newline **/
+}
+
+.userAndSettingButtonsList li.settingsHover:hover { 
+	background-color: rgb(120,120,120);     /** button color change if hover over **/
+}
+.userAndSettingButtonsList li a {           /** color of link **/
+	color: white; 
+}
