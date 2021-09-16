@@ -2,57 +2,54 @@ section {
 	background-color: rgb(200,200,200);
 	display: flex;
 	flex-direction: row;
-	justify-content: flex-start; align-items: flex-start;
-	height: 500px; width: 100%;
+	justify-content: flex-start; 
+	align-items: flex-start;
+	height: 500px; 
+	width: 100%;
+	border-radius: 10px;
 }
 
 .leftHome {
 	display: flex;
 	flex-direction: column;
-	
 	background-color: rgb(0,0,0);
 	font-size: 2.5em; 
 	text-decoration: none;
 	color: white;
-	margin-left: 5%; 
-	margin-top:1%;
-	height: 450px; width: 30%;
+	margin: 2%; 
+	height: 450px; 
+	width: 30%;
+	border-radius: 10px;
 }
 
 .HomeItem {
-	font-size: 1.5em;
+	/* font-size: 1.5em; */
 	text-align: center;
 	background-color: rgb(0,0,150); 
 	padding: 40px 130px 40px 130px;
-	margin-right: 50px;
-	justify-content: center; align-items: center;
+	margin-right: 30px;
+	justify-content: center; 
+	align-items: center;
 	list-style-type: none;
+	border-radius: 10px;
 }
 
 .leftHomeMainList {
 	background-color: rgb(100,100,100);
-	
-	margin-left: 50px; margin-right: 50px;
-	
-	//margin: 100px 50px 100px 50px;
-	
-	margin-top: 5px;
+	margin: 5%;
 	padding: 25px 100px 25px 100px;
-	
 	display: flex;
 	flex-direction: column;
-	justify-content: center; align-items: center;
+	justify-content: center; 
+	align-items: center;
 	list-style-type: none;
+	border-radius: 10px;
 }
 
 .rightHome {
 	background-color: white;
-	margin-left: 2%;
-	margin-top:1%;
-	height: 450px; width: 60%;
+	margin: 2%;
+	height: 450px; 
+	width: 60%;
+	border-radius: 10px;
 }
-
-
-
-
-
