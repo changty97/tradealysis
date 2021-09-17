@@ -48,3 +48,19 @@ footer div ul li a {
 footer div ul li:hover { 
 	color: rgb(180,180,180);                /** Set bg color of ul li when hovering over **/
 }
+
+
+.account-section {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+}
+
+.login-box {
+	width: 300px;
+	height: 200px;
+	padding: 10px;
+	margin: 10px;
+	background-color: gray;
+	text-align: center;
+}
