@@ -101,3 +101,9 @@ width: 95%;
 	
 }
 
+.import-button {
+	width: 100%;
+}
+.import-input {
+	display: none;
+}
