@@ -1,4 +1,5 @@
 section {
+	border-style: solid; border-color: black; border-width: thin;
 	background-color: rgb(200,200,200);
 	display: flex;
 	flex-direction: row;
@@ -13,7 +14,7 @@ section {
 .leftHome {
 	display: flex-inline;
 	flex-direction: column;
-	background-color: rgb(0,0,0);
+	background-color: rgb(50,50,50);
 	font-size: 2.5em; 
 	text-decoration: none;
 	color: white;
@@ -67,6 +68,7 @@ section {
 	border-radius: 10px;
 	margin: 2%;
 	height: 85%;  width: 70%; 
+	border-style: solid; border-color: black; border-width: thin;
 }
 
 .import-button {
