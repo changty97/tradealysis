@@ -1,0 +1,47 @@
+section {
+	background-color: rgb(200,200,200);
+	display: flex;
+	flex-direction: row;
+	justify-content: center; 
+	align-items: flex-start;
+	height: 500px; 
+	width: 100%;
+	border-radius: 10px;
+}
+
+section div {
+	margin-top: 1%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center; 
+	align-items: flex-start;
+	font-size: 1.3em;
+	
+	flex-wrap: wrap;
+}
+
+section div div ul {
+	position:relative; 
+	right: 37px;
+}
+
+section div div ul li {
+	list-style-type: none; 
+	border: 1px solid black; 
+	background-color: rgb(100,100,100);
+	
+	padding: 9px 60px 9px 60px;
+}
+
+section div div ul li:hover {
+	background-color: rgb(120,120,120);
+}
+
+section div div ul a li { 
+	color: white; 
+}
+
+textarea { 
+	font-size: 18px; 
+	width:100%
+}
