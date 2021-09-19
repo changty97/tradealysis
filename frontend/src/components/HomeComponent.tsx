@@ -1,10 +1,10 @@
 import { Component, Fragment } from "react";
 import { IReportsProps } from "../models/IReportsProps";
 import { IReportsState } from "../models/IReportsState";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import { NavBarComponent } from "./NavBarComponent";
 
-class Overview extends Component<IReportsProps, IReportsState>
+class HomeComponent extends Component<IReportsProps, IReportsState>
 {
     constructor(props: IReportsProps)
     {
@@ -21,11 +21,9 @@ class Overview extends Component<IReportsProps, IReportsState>
         return (
             <Fragment>
                 <NavBarComponent/>
-                <Link to="/report"><button>Trade Report</button></Link>
-                <Link to="/overview"><button>Overview</button></Link>
-                <Link to="/strategies"><button>Strategies</button></Link>
+                You are on the home page.
             </Fragment>
         );
     }
 }
-export { Overview };
+export { HomeComponent };

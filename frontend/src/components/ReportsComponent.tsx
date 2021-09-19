@@ -1,7 +1,7 @@
 import { Component, Fragment } from "react";
 import { IReportsProps } from "../models/IReportsProps";
 import { IReportsState } from "../models/IReportsState";
-import { ExcelComponent } from "../components/ExcelComponent";
+import { SheetComponent } from "../components/SheetComponent";
 import { Link } from "react-router-dom";
 import { NavBarComponent } from "./NavBarComponent";
 
@@ -22,13 +22,11 @@ class ReportsComponent extends Component<IReportsProps, IReportsState>
         return (
             <Fragment>
                 <NavBarComponent/>
-                <Link to="/report">Trades</Link>
-                <button>Reports</button>
-                <Link to="/report/overview">Overview</Link>
-                <Link to="/strategies">Strategies</Link>
-                <button>Search</button>
-                <button>Export File</button>
-                <ExcelComponent></ExcelComponent>
+                <Link to="/report"><button>Trade Report</button></Link>
+                <Link to="/overview"><button>Overview</button></Link>
+                <Link to="/strategies"><button>Strategies</button></Link>
+                {/* Search bar & Export button moved within SheetComponent*/}
+                <SheetComponent></SheetComponent>
             </Fragment>
         );
     }
