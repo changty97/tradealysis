@@ -30,27 +30,15 @@ section {
 	justify-content: center; 
 	align-items: center;
 }
-
-.leftHomeMainList{
-	display: flex;
-	flex-direction: row;
-	justify-content: center; 
-	align-items: center;
-}
-
 .leftHomeMainList {
 	background-color: rgb(100,100,100);
 	font-size: 3.5vh;
 	margin: 5%;
 	padding: 10% 25% 10% 25%;
-	
-	
-	
-	
-	display: flex-inline;
+	display: flex;
 	flex-direction: column;
-	justify-content: center; 
-	align-items: center;
+	justify-content: center; align-items: center;
+	
 	list-style-type: none;
 	border-radius: 10px;
 }
