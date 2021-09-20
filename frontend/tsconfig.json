@@ -44,5 +44,7 @@
     "node_modules",
     "tests/",
     "Documentation/"
-  ]
+  ],
+  "types": [ "node" ],
+  "typeRoots": [ "../node_modules/@types" ]
 }

@@ -1,6 +1,7 @@
 import { Component } from "react";
 import { ReportsComponent } from "./components/ReportsComponent";
 import { StrategiesComponent } from "./components/StrategiesComponent";
+import { HomeComponent } from "./components/HomeComponent";
 import { Overview } from "./components/Overview";
 import { IAppState } from "./models/IAppState";
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
@@ -29,7 +30,6 @@ class App extends Component<any, IAppState>
     {
         return (
             <div>
-                TODO: Everything
                 <BrowserRouter>
                     <Switch>
                         <Route path="/report">
@@ -38,8 +38,11 @@ class App extends Component<any, IAppState>
                         <Route path="/strategies">
                             <StrategiesComponent/>
                         </Route>
-                        <Route path="/report/overview">
+                        <Route path="/overview">
                             <Overview></Overview>
+                        </Route>
+                        <Route path="/">
+                            <HomeComponent/>
                         </Route>
                     </Switch>
                 </BrowserRouter>

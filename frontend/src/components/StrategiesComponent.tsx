@@ -2,6 +2,7 @@ import { Component, Fragment } from "react";
 import { IReportsProps } from "../models/IReportsProps";
 import { IReportsState } from "../models/IReportsState";
 import { NavBarComponent } from "../components/NavBarComponent";
+import { Link } from "react-router-dom";
 
 
 class StrategiesComponent extends Component<IReportsProps, IReportsState>
@@ -21,8 +22,12 @@ class StrategiesComponent extends Component<IReportsProps, IReportsState>
         return (
             <Fragment>
                 <NavBarComponent/>
-                <button>New Pattern</button>
-                <button>Your Reports</button>
+                <Link to="/report"><button>Trade Report</button></Link>
+                <Link to="/overview"><button>Overview</button></Link>
+                <Link to="/strategies"><button>Strategies</button></Link>
+                <button style={ {
+                    float: 'right'
+                }}>New Pattern</button>
             </Fragment>
         );
     }
