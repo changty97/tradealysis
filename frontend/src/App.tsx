@@ -32,9 +32,6 @@ class App extends Component<any, IAppState>
             <div>
                 <BrowserRouter>
                     <Switch>
-                        <Route path="/home">
-                            <HomeComponent/>
-                        </Route>
                         <Route path="/report">
                             <ReportsComponent/>
                         </Route>
@@ -43,6 +40,9 @@ class App extends Component<any, IAppState>
                         </Route>
                         <Route path="/overview">
                             <Overview></Overview>
+                        </Route>
+                        <Route path="/">
+                            <HomeComponent/>
                         </Route>
                     </Switch>
                 </BrowserRouter>

@@ -25,7 +25,9 @@ class StrategiesComponent extends Component<IReportsProps, IReportsState>
                 <Link to="/report"><button>Trade Report</button></Link>
                 <Link to="/overview"><button>Overview</button></Link>
                 <Link to="/strategies"><button>Strategies</button></Link>
-                <button style={ {float: 'right'}}>New Pattern</button>
+                <button style={ {
+                    float: 'right'
+                }}>New Pattern</button>
             </Fragment>
         );
     }

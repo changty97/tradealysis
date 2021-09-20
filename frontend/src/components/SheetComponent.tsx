@@ -22,7 +22,8 @@ class SheetComponent extends Component<any, ISheetComponentState>
         this.saveNewData = this.saveNewData.bind(this);
     }
 
-    componentDidMount() {
+    componentDidMount() : void
+    {
         /* Calculate the initial row id. */
         const dataArray = Array(4) // default # of rows
             .fill(undefined)
@@ -32,18 +33,24 @@ class SheetComponent extends Component<any, ISheetComponentState>
                 id: index
             }));
 
-        this.setState({lastRowId: Math.max(...dataArray.map(i => i.id))});
+        this.setState({
+            lastRowId: Math.max(...dataArray.map(i => i.id))
+        });
     }
 
-    generateNewId(): number {
+    generateNewId(): number
+    {
         const newRowId: number = this.state.lastRowId + 1;
 
-        this.setState({ lastRowId: newRowId });
+        this.setState({
+            lastRowId: newRowId
+        });
 
         return newRowId;
     }
 
-    saveNewData(): void {
+    saveNewData(): void
+    {
         const rowKeyValue = this.generateNewId();
 
         this.dispatch(saveNewRow(rowKeyValue, {
@@ -82,7 +89,7 @@ class SheetComponent extends Component<any, ISheetComponentState>
                 <Table
                     {...this.state.tableProps}
                     childComponents={{
-                        cellEditor: 
+                        cellEditor:
                         {
                             content: props =>
                             {
@@ -129,8 +136,8 @@ class SheetComponent extends Component<any, ISheetComponentState>
                             }
                         }
                     }}
-                    dispatch={this.dispatch} 
-            />
+                    dispatch={this.dispatch}
+                />
 
             </Fragment>
         );
