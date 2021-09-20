@@ -39,6 +39,7 @@ footer div ul {
 
 footer div ul li { 
 	margin-left: 10px;                                 /** set l margin 10px to left **/
+	padding-right: 1em;								   /** increase spacing between items in a list to clearly show items of double words (Added by Harry)
 }
 
 footer div ul li a {

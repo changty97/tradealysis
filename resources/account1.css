@@ -1,0 +1,91 @@
+section {
+	background-color: rgb(200,200,200);
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start; 
+	align-items: left;
+	height: 35vw; /** Modification: height: 550px; **/
+	width: 100%;
+	border-radius: 10px;
+	font-size: 20px;
+}
+
+/** 
+.rightTop {
+	display: flex;
+	flex-direction: row;
+	justify-content: center; align-items: center;
+	// background-color: green; 
+	margin: 1%;
+	height: 250px;  
+width: 95%; 
+}
+
+.rightTopLeft {
+	background-color: white;
+	margin: 1%;
+	height: 190px;  width: 50%; 
+	flex-grow : 1;
+}
+
+.rightTopRight {
+	background-color: white;
+	margin: 1%;
+	height: 190px;  width: 50%;
+	flex-grow : 1;
+}
+
+.rightBottom {
+	display: flex;
+	flex-direction: row;
+	justify-content: center; align-items: left;
+	//background-color: red; 
+	margin-top: 5px;
+	margin: 1%;
+	height: auto;  width: 95%; 
+}
+
+.rightBottomCenter {
+	display: inline;
+	background-color: white;
+	margin: 1%;
+	height: 190px;  width: 100%;
+	flex-grow : 1;
+	flex-shrink : 1;
+}
+
+**/
+
+
+form { background-color:rgb(200,200,200);
+	font-family: Arial, sans-serif;
+	text-align: center;
+	padding: 10px; 
+	margin-left: 100px;}
+label { float: left;
+	 width: 8em;
+	 clear: left;
+	 text-align: left;
+	 padding-right: 2em;
+	 margin-top: 25px; }
+input, textarea { margin-top: 2em;
+	              display: block; }
+
+
+ul#horizontal-list {	
+  list-style: none;
+  margin: 0;
+  color:black;
+  font-weight: bold; 
+  Font-size: 1.2em;
+}
+
+ul#horizontal-list li {display: inline;
+						padding-right: 5em;}
+
+.accountlist {
+	margin-top: 50px; 
+	margin-right: auto;
+	margin-bottom: auto; 
+	margin-left: auto;
+}
