@@ -17,11 +17,6 @@ class StrategiesComponent extends Component<IReportsProps, IReportsState>
 
     }
 
-    addStrategy() {
-
-        
-    }
-
     render(): JSX.Element
     {
         return (
