@@ -1,11 +1,16 @@
-
-
 form { background-color:wheat;
+	border-style: solid; 
+	border-color: rgb(97,97,97); 
+	border-font: 1px;
+	border-radius: 5px;
 	font-family: Arial, sans-serif;
 	text-align: center;
 	padding: 20px; 
 	margin-left: 10px;
+	margin-right: 10px;
 	margin-top: 50px}
+	
+
 label { float: left;
 	 width: 15em;
 	 clear: left;
@@ -13,6 +18,7 @@ label { float: left;
 	 padding-right: 0;
 	 margin-top: 25px; 
 	 font-size: 20px;}
+
 input, textarea { margin-top: 2em;
 	              display: block; }
 

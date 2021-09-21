@@ -5,9 +5,9 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<link rel="stylesheet" href="all.css" type="text/css">
 		<link rel="stylesheet" href="headerNavBar.css" type="text/css">
+		
+		
 		<link rel="stylesheet" href="home.css" type="text/css">
-		<link rel="stylesheet" href="report.css" type="text/css">
-		<link rel="stylesheet" href="strategy.css" type="text/css">
 		<link rel="stylesheet" href="import.css" type="text/css">
 		<title>Home</title>
 		
@@ -50,11 +50,13 @@
 				
 			</div>
 			<div class="rightHome">
-				<form action="/action_page.php">
-				  <label for="myfile">Select the broker's file to import:</label>
-				  <input type="file" id="myfile" name="myfile"><br><br>
-				  <input type="submit">
-				</form>
+				<div class="formBlock">
+					<form action="./home.html">
+					  <label for="myfile">Select the broker's file to import:</label>
+					  <input type="file" id="myfile" name="file_input"><br><br>
+					  <input type="submit">
+					</form>
+				</div>
 			</div>
 		</section>
 		
