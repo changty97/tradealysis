@@ -47,6 +47,20 @@ section {
 	background-color:rgb(0,0,150)
 }
 
+.import-button {
+	display: flex-inline;
+	flex-direction: row;
+	justify-content: flex-start;
+	allign-items: center;
+	font-size: 2vh;
+	width: 120%;
+	height: 10%;
+	white-space: normal
+}
+.import-input {
+	display:none; 
+}
+
 .rightHome {
 	display: flex-inline;
 	flex-direction: column;
@@ -55,25 +69,26 @@ section {
 	background-color: white;
 	border-radius: 10px;
 	margin: 2%;
-	height: 85%;  width: 70%; 
-	border-style: solid; border-color: black; border-width: thin;
+	height: 85%;  
+	width: 70%; 
+	border-style: solid; 
+	border-color: black; 
+	border-width: thin;
 }
 
-.import-button {
-	display: flex-inline;
+.dataIconDiv {
+	display:flex;
 	flex-direction: row;
 	justify-content: flex-start;
-	allign-items: center;
-
-	
-	font-size: 2vh;
-	
-	width: 120%;
-	height: 10%;
-	white-space: normal
-
-	
+	allign-items: flex-start;
+	margin: 2.5%;
 }
-.import-input {
-	display:none; 
+
+.dataIcon {
+	max-height:17%; 
+	max-width: 17%; 
+}
+
+#dataIconMap {
+	 padding:10px;
 }
