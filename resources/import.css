@@ -1,73 +1,26 @@
-
-
-.importFileForm {
-	display: flex; flex-direction: column; justify-content: center; align-items:  center;
-	background-color:wheat;  border-style: solid; border-color: rgb(97,97,97); border-font: 1px;  border-radius: 5px; font-family: Arial, sans-serif;
-	margin-left: 18%; margin-top: 10%; margin-bottom: 10%;
-	
-	margin: 10% 0% 10% 18%;
-	
-	padding: 10px; 
-	width: 60%; height: 40%;
-	font-size: 3vh;
-	max-width: 100%;
-}
-
-.inportTheFile {
-	
-}
-
-label {
-	padding: 10px;
-	margin-top: 10px;
-	
-	width: 100%;
-}
-
-#myfile {
-	
-}
-
-.submitStuff {
-	display: flex;
-	
-	width: 100%;
-}
-
-
-
-
-/**
-form { 
-
-	display: flex; flex-direction: column;
-	justify-content: center;  align-items: flex-start;
-
-	background-color:wheat; border-style: solid; border-color: rgb(97,97,97); border-font: 1px; border-radius: 5px; font-family: Arial, sans-serif;
-	padding: 20px; margin: 50px 10px 0px 10px; max-height: 100%; max-width: 100%;	
-}
-
-.importStuff {
-	display: flex;
-	flex-direction: row;
-	justify-content: flex-start;  align-items: flex-start;
-}
-	
-
-label { 
-	float: left;
-	width: 15em;
-	clear: left;
-	text-align: left;
-	padding-right: 0;
-	margin-top: 25px; 
-	font-size: 20px;}
-
-input, textarea { 
-	margin-top: 2em;
-	display: block; 
+form { background-color:wheat;
+	border-style: solid; 
+	border-color: rgb(97,97,97); 
+	border-font: 1px;
+	border-radius: 5px;
+	font-family: Arial, sans-serif;
 	text-align: center;
-}
+	padding: 20px; 
+	margin-left: 10px;
+	margin-right: 10px;
+	margin-top: 50px}
+	
+
+label { float: left;
+	 width: 15em;
+	 clear: left;
+	 text-align: left;
+	 padding-right: 0;
+	 margin-top: 25px; 
+	 font-size: 20px;}
+
+input, textarea { margin-top: 2em;
+	              display: block; }
 
 
 ul#horizontal-list {	
@@ -87,4 +40,3 @@ ul#horizontal-list li {display: inline;
 	margin-bottom: auto; 
 	margin-left: auto;
 }
-**/
