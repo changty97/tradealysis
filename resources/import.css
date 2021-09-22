@@ -1,3 +1,43 @@
+
+
+.importFileForm {
+	display: flex; flex-direction: column; justify-content: center; align-items:  center;
+	background-color:wheat;  border-style: solid; border-color: rgb(97,97,97); border-font: 1px;  border-radius: 5px; font-family: Arial, sans-serif;
+	margin-left: 18%; margin-top: 10%; margin-bottom: 10%;
+	
+	margin: 10% 0% 10% 18%;
+	
+	padding: 10px; 
+	width: 60%; height: 40%;
+	font-size: 3vh;
+	max-width: 100%;
+}
+
+.inportTheFile {
+	
+}
+
+label {
+	padding: 10px;
+	margin-top: 10px;
+	
+	width: 100%;
+}
+
+#myfile {
+	
+}
+
+.submitStuff {
+	display: flex;
+	
+	width: 100%;
+}
+
+
+
+
+/**
 form { 
 
 	display: flex; flex-direction: column;
@@ -30,7 +70,6 @@ input, textarea {
 }
 
 
-/**
 ul#horizontal-list {	
   list-style: none;
   margin: 0;
