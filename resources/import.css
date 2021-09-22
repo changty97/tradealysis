@@ -1,28 +1,36 @@
-form { background-color:wheat;
-	border-style: solid; 
-	border-color: rgb(97,97,97); 
-	border-font: 1px;
-	border-radius: 5px;
-	font-family: Arial, sans-serif;
-	text-align: center;
-	padding: 20px; 
-	margin-left: 10px;
-	margin-right: 10px;
-	margin-top: 50px}
+form { 
+
+	display: flex; flex-direction: column;
+	justify-content: center;  align-items: flex-start;
+
+	background-color:wheat; border-style: solid; border-color: rgb(97,97,97); border-font: 1px; border-radius: 5px; font-family: Arial, sans-serif;
+	padding: 20px; margin: 50px 10px 0px 10px; max-height: 100%; max-width: 100%;	
+}
+
+.importStuff {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;  align-items: flex-start;
+}
 	
 
-label { float: left;
-	 width: 15em;
-	 clear: left;
-	 text-align: left;
-	 padding-right: 0;
-	 margin-top: 25px; 
-	 font-size: 20px;}
+label { 
+	float: left;
+	width: 15em;
+	clear: left;
+	text-align: left;
+	padding-right: 0;
+	margin-top: 25px; 
+	font-size: 20px;}
 
-input, textarea { margin-top: 2em;
-	              display: block; }
+input, textarea { 
+	margin-top: 2em;
+	display: block; 
+	text-align: center;
+}
 
 
+/**
 ul#horizontal-list {	
   list-style: none;
   margin: 0;
@@ -40,3 +48,4 @@ ul#horizontal-list li {display: inline;
 	margin-bottom: auto; 
 	margin-left: auto;
 }
+**/
