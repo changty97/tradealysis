@@ -4,7 +4,7 @@ section {
 	flex-direction: column;
 	justify-content: flex-start; 
 	align-items: left;
-	height: 550px;
+	height: 550px; /** Modification: height: 550px; **/
 	width: 100%;
 	border-radius: 10px;
 	font-size: 20px;
@@ -58,14 +58,13 @@ width: 95%;
 
 
 form { 
-	background-color:rgb(250,200,200);
+	background-color:rgb(230, 199, 255);
+	border-style: solid; border-color: rgb(150,100,100); border-width: thin;
 	font-family: Arial, sans-serif;
 	text-align: center;
-	padding: 5% 5% 5% 5%; 
+	padding: 10px 13px 10px 13px; 
 	margin-left: 0%;
 	margin-right:0%;
-	
-	
 }
 	
 label { 
@@ -80,36 +79,33 @@ input, textarea { margin-top: 2em;
 	              display: block; }
 
 
-
-
-ul#horizontal-list {
-display: block;
-float:left;
-clear: left;
+ul#horizontal-list {	
+	background-color:rgb(199, 203, 255);
+	border-style: solid; border-color: rgb(150,100,100); border-width: thin;
 	
   list-style: none;
   margin: 0;
-  color: black;
+  color:black;
   font-weight: bold; 
   Font-size: 1.2em;
-  
-  background-color: red;
 }
 
 ul#horizontal-list li {
-	display: inline-block;
-	margin-right: 40px;
-	margin-left: 30px;
+	display: inline;
+	padding-right: 2.5em;
+	padding-left: 2.5em;
 	
-	padding-left: 1em; 
-	padding-right: 1em;
-	background-color: orange;
 }
 
 .accountlist {
+
 	margin-top: 50px; 
 	margin-right: auto;
 	margin-bottom: auto; 
 	margin-left: auto;
 	
+}
+
+input:last-of-type {
+	margin: 20px;
 }
