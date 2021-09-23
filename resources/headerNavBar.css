@@ -42,6 +42,12 @@
 	margin-right: 0;
 }
 
+.loginNewAccountButton {
+	margin-left: auto; 
+	margin-right: 0;
+	white-space: nowrap;
+}
+
 .noWrap { 
 	white-space: nowrap;                    /** items will not wrap to newline **/
 }
