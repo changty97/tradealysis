@@ -3,7 +3,7 @@ import { IReportsProps } from "../models/IReportsProps";
 import { IReportsState } from "../models/IReportsState";
 // import { Link } from "react-router-dom";
 import { NavBarComponent } from "./NavBarComponent";
-import {FooterComponent1 } from "./FooterComponent1";
+import { FooterComponent1 } from "./FooterComponent1";
 
 
 
@@ -28,31 +28,31 @@ class SupportComponent extends Component<IReportsProps, IReportsState>
                         <header id="allHeader">
                             <NavBarComponent/>
                         </header>
-						<section>	
-							<div id="sectionDiv">
+                        <section>
+                            <div id="sectionDiv">
 							  <form>
-									<div id="header">
-										<ul id="horizontal-list">
-											<li>Support</li>
-										</ul>
-									</div>
-									<div>
-										<label>Please Enter Question:</label>
-									</div>
-									<div>
-										<textarea id="support" name="support"></textarea>
-									</div>
-									<div>
-										<input type="submit" value="Submit"/>
-									</div>
+                                    <div id="header">
+                                        <ul id="horizontal-list">
+                                            <li>Support</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <label>Please Enter Question:</label>
+                                    </div>
+                                    <div>
+                                        <textarea id="support" name="support"></textarea>
+                                    </div>
+                                    <div>
+                                        <input type="submit" value="Submit"/>
+                                    </div>
 							  </form>
 							 </div>
-						</section>
-					</body>
-					<footer>
-						<FooterComponent1/>
-					</footer>
-				</html>
+                        </section>
+                    </body>
+                    <footer>
+                        <FooterComponent1/>
+                    </footer>
+                </html>
             </Fragment>
         );
     }
