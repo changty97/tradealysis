@@ -30,7 +30,6 @@ class App extends Component
                         <Route path="/about">
                             <AboutComponent/>
                         </Route>
-						
                         <Route path="/">
                             <HomeComponent/>
                         </Route>
