@@ -4,24 +4,26 @@ import { IReportsState } from "../models/IReportsState";
 
 class FooterComponent1 extends Component<IReportsProps, IReportsState>
 {
-	constructor(props: IReportsProps)
+    constructor(props: IReportsProps)
     {
         super(props);
-        this.state = { url: "" };
+        this.state = {
+            url: ""
+        };
     }
 	
-	render(): JSX.Element
+    render(): JSX.Element
     {
         return (
             <Fragment>
-				<div>
-					<ul>
-						<li><a href="./account1.html">Your Account</a></li>
+                <div>
+                    <ul>
+                        <li><a href="./account1.html">Your Account</a></li>
                         <li><a href="/support">Support</a></li>
-                        <li><a href="./about.html">About</a></li>
+                        <li><a href="/about">About</a></li>
                         <li><a href="./privacy.html">Privacy Policy</a></li>
                     </ul>
-				</div>
+                </div>
             </Fragment>
         );
     }
