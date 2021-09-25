@@ -1,20 +1,10 @@
 import { Component, Fragment } from "react";
-import { IReportsProps } from "../models/IReportsProps";
-import { IReportsState } from "../models/IReportsState";
 import { NavBarComponent } from "./NavBarComponent";
-import { FooterComponent1 } from "./FooterComponent1";
+import { FooterComponent } from "./FooterComponent";
 import AboutImg from "../images/about.jpg";
 
-class AboutComponent extends Component<IReportsProps, IReportsState>
-{
-    constructor(props: IReportsProps)
-    {
-        super(props);
-        this.state = {
-            url: ""
-        };
-    }
-	
+class AboutComponent extends Component
+{	
     render(): JSX.Element
     {
         return (
@@ -36,7 +26,7 @@ class AboutComponent extends Component<IReportsProps, IReportsState>
                             </div>
                         </section>
                        <footer>
-                            <FooterComponent1/>
+                            <FooterComponent />
                         </footer>
                     </body>
                 </html>

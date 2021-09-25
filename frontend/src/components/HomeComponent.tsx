@@ -1,32 +1,19 @@
 import { Component, Fragment } from "react";
-import { IReportsProps } from "../models/IReportsProps";
-import { IReportsState } from "../models/IReportsState";
-// import { Link } from "react-router-dom";
 import { NavBarComponent } from "./NavBarComponent";
-import { FooterComponent1 } from "./FooterComponent1";
+import { FooterComponent } from "./FooterComponent";
 
 import dataIcon from "../images/dataIcon.jpg";
 
 
-class HomeComponent extends Component<IReportsProps, IReportsState>
+class HomeComponent extends Component
 {
-    constructor(props: IReportsProps)
-    {
-        super(props);
-
-        this.state = {
-            url: ""
-        };
-
-    }
-
     render(): JSX.Element
     {
         return (
             <Fragment>
                 <html>
                     <body>
-                        <header id="allHeader"><NavBarComponent/></header>
+                        <header id="allHeader"><NavBarComponent /></header>
                         <section>
                             <div className="leftHome">
                                 <div className="leftHomeMainListDiv noWrap">
@@ -45,7 +32,7 @@ class HomeComponent extends Component<IReportsProps, IReportsState>
                             </div>
                         </section>
                         <footer>
-                            <FooterComponent1/>
+                            <FooterComponent />
                         </footer>
                     </body>
                 </html>

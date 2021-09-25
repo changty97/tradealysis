@@ -3,7 +3,7 @@ import { IReportsProps } from "../models/IReportsProps";
 import { IReportsState } from "../models/IReportsState";
 // import { Link } from "react-router-dom";
 import { NavBarComponent } from "./NavBarComponent";
-import { FooterComponent1 } from "./FooterComponent1";
+import { FooterComponent } from "./FooterComponent";
 
 
 
@@ -50,7 +50,7 @@ class SupportComponent extends Component<IReportsProps, IReportsState>
                         </section>
                     </body>
                     <footer>
-                        <FooterComponent1/>
+                        <FooterComponent />
                     </footer>
                 </html>
             </Fragment>

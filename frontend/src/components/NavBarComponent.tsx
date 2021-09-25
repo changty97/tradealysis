@@ -1,22 +1,10 @@
 import { Component, Fragment } from "react";
-import { IReportsProps } from "../models/IReportsProps";
-import { IReportsState } from "../models/IReportsState";
 
 /* import companyLogo from "../images/logo.jpg"; */
 //import { Link } from "react-router-dom";
 
-class NavBarComponent extends Component<IReportsProps, IReportsState>
+class NavBarComponent extends Component
 {
-    constructor(props: IReportsProps)
-    {
-        super(props);
-
-        this.state = {
-            url: ""
-        };
-
-    }
-
     render(): JSX.Element
     {
         return (
