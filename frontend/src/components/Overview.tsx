@@ -8,7 +8,7 @@ class Overview extends Component
     {
         return (
             <Fragment>
-                <NavBarComponent/>
+                <NavBarComponent />
                 <Link to="/report"><button>Trade Report</button></Link>
                 <Link to="/overview"><button>Overview</button></Link>
                 <Link to="/strategies"><button>Strategies</button></Link>

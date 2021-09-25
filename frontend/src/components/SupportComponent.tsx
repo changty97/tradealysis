@@ -23,36 +23,28 @@ class SupportComponent extends Component<IReportsProps, IReportsState>
     {
         return (
             <Fragment>
-                <html>
-                    <body>
-                        <header id="allHeader">
-                            <NavBarComponent/>
-                        </header>
-                        <section>
-                            <div id="sectionDiv">
-                                <form>
-                                    <div id="header">
-                                        <ul id="horizontal-list">
-                                            <li>Support</li>
-                                        </ul>
-                                    </div>
-                                    <div>
-                                        <label>Please Enter Question:</label>
-                                    </div>
-                                    <div>
-                                        <textarea id="support" name="support"></textarea>
-                                    </div>
-                                    <div>
-                                        <input type="submit" value="Submit"/>
-                                    </div>
-                                </form>
+                <NavBarComponent />
+                <section>
+                    <div id="sectionDiv">
+                        <form>
+                            <div id="header">
+                                <ul id="horizontal-list">
+                                    <li>Support</li>
+                                </ul>
                             </div>
-                        </section>
-                    </body>
-                    <footer>
-                        <FooterComponent />
-                    </footer>
-                </html>
+                            <div>
+                                <label>Please Enter Question:</label>
+                            </div>
+                            <div>
+                                <textarea id="support" name="support"></textarea>
+                            </div>
+                            <div>
+                                <input type="submit" value="Submit"/>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+                <FooterComponent />
             </Fragment>
         );
     }

@@ -4,6 +4,7 @@ import { IReportsState } from "../models/IReportsState";
 import { SheetComponent } from "../components/SheetComponent";
 import { Link } from "react-router-dom";
 import { NavBarComponent } from "./NavBarComponent";
+import { FooterComponent } from "./FooterComponent";
 
 class ReportsComponent extends Component<IReportsProps, IReportsState>
 {
@@ -21,18 +22,13 @@ class ReportsComponent extends Component<IReportsProps, IReportsState>
     {
         return (
             <Fragment>
-                <html>
-                    <body>
-                        <header id="allHeader">
-                            <NavBarComponent/>
-                        </header>
-                        <Link to="/report"><button>Trade Report</button></Link>
-                        <Link to="/overview"><button>Overview</button></Link>
-                        <Link to="/strategies"><button>Strategies</button></Link>
-                        {/* Search bar & Export button moved within SheetComponent*/}
-                        <SheetComponent></SheetComponent>
-                    </body>
-                </html>
+                <NavBarComponent />
+                <Link to="/report"><button>Trade Report</button></Link>
+                <Link to="/overview"><button>Overview</button></Link>
+                <Link to="/strategies"><button>Strategies</button></Link>
+                {/* Search bar & Export button moved within SheetComponent*/}
+                <SheetComponent />
+                <FooterComponent />
             </Fragment>
         );
     }

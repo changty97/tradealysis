@@ -6,14 +6,16 @@ class FooterComponent extends Component
     {
         return (
             <Fragment>
-                <div>
-                    <ul>
-                        <li><a href="./account1.html">Your Account</a></li>
-                        <li><a href="/support">Support</a></li>
-                        <li><a href="/about">About</a></li>
-                        <li><a href="./privacy.html">Privacy Policy</a></li>
-                    </ul>
-                </div>
+                <footer>
+                    <div>
+                        <ul>
+                            <li><a href="./account1.html">Your Account</a></li>
+                            <li><a href="/support">Support</a></li>
+                            <li><a href="/about">About</a></li>
+                            <li><a href="./privacy.html">Privacy Policy</a></li>
+                        </ul>
+                    </div>
+                </footer>
             </Fragment>
         );
     }
