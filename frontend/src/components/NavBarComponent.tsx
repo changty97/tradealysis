@@ -22,11 +22,16 @@ class NavBarComponent extends Component<IReportsProps, IReportsState>
         return (
             <Fragment>
                 <div>
-                    <button><img src={companyLogo} alt="Tradealysis Logo"
-                        width="50" height="50"/></button>
+                    <button>
+                        <img src={companyLogo} alt="Tradealysis Logo" width="50" height="50"/>
+                    </button>
                 </div>
-                <Link to="/home"><button>Home</button></Link>
-                <Link to="/report"><button>Report</button></Link>
+                <Link to="/home">
+                    <button>Home</button>
+                </Link>
+                <Link to="/report">
+                    <button>Report</button>
+                </Link>
                 <button>User</button>
                 <button>Settings</button>
                 <p>This is the end of the NavBar Component</p>
