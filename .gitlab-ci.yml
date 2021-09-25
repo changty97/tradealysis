@@ -7,6 +7,7 @@ stages:
 npm:
   stage: npm
   script:
+    - cd frontend
     - npm install
   cache:
     paths:
@@ -22,4 +23,5 @@ test:
   dependencies:
     - npm
   script:
+    - cd frontend
     - npm test
