@@ -3,6 +3,7 @@ import { ReportsComponent } from "./components/ReportsComponent";
 import { StrategiesComponent } from "./components/StrategiesComponent";
 import { HomeComponent } from "./components/HomeComponent";
 import { Overview } from "./components/Overview";
+import { SupportComponent } from "./components/SupportComponent";
 import { IAppState } from "./models/IAppState";
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
@@ -41,6 +42,10 @@ class App extends Component<any, IAppState>
                         <Route path="/overview">
                             <Overview></Overview>
                         </Route>
+						<Route path="/support">
+                            <SupportComponent/>
+                        </Route>
+						
                         <Route path="/">
                             <HomeComponent/>
                         </Route>
