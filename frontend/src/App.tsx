@@ -5,29 +5,10 @@ import { HomeComponent } from "./components/HomeComponent";
 import { Overview } from "./components/Overview";
 import { SupportComponent } from "./components/SupportComponent";
 import { AboutComponent } from "./components/AboutComponent";
-import { IAppState } from "./models/IAppState";
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
-class App extends Component<any, IAppState>
+class App extends Component
 {
-    constructor(props: any)
-    {
-        super(props);
-
-        this.state = {
-            totalRequestsMade: 0
-        };
-
-        this.incrementTotalRequestsMade = this.incrementTotalRequestsMade.bind(this);
-    }
-
-    incrementTotalRequestsMade(): void
-    {
-        this.setState({
-            totalRequestsMade: this.state.totalRequestsMade + 1
-        });
-    }
-
     render(): JSX.Element
     {
         return (
