@@ -1,26 +1,14 @@
 import { Component, Fragment } from "react";
-import { IReportsProps } from "../models/IReportsProps";
-import { IReportsState } from "../models/IReportsState";
 import { Link } from "react-router-dom";
 import { NavBarComponent } from "./NavBarComponent";
 
-class Overview extends Component<IReportsProps, IReportsState>
+class Overview extends Component
 {
-    constructor(props: IReportsProps)
-    {
-        super(props);
-
-        this.state = {
-            url: ""
-        };
-
-    }
-
     render(): JSX.Element
     {
         return (
             <Fragment>
-                <NavBarComponent/>
+                <NavBarComponent />
                 <Link to="/report"><button>Trade Report</button></Link>
                 <Link to="/overview"><button>Overview</button></Link>
                 <Link to="/strategies"><button>Strategies</button></Link>

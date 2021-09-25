@@ -3,15 +3,16 @@ import { kaReducer, Table } from 'ka-table';
 import { CSVLink } from 'react-csv';
 import { kaPropsUtils } from 'ka-table/utils';
 import { hideNewRow, saveNewRow, showNewRow, search } from 'ka-table/actionCreators';
+import { ISheetComponentProps } from "../models/ISheetComponentProps";
 import { ISheetComponentState } from "../models/ISheetComponentState";
 import { tableProps } from "../constants/tableProps";
 
-class SheetComponent extends Component<any, ISheetComponentState>
+class SheetComponent extends Component<ISheetComponentProps, ISheetComponentState>
 {
-  
-    constructor(props: any)
+    constructor(props: ISheetComponentProps)
     {
         super(props);
+
         this.state = {
             tableProps,
             lastRowId: 0

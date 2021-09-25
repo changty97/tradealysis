@@ -17,10 +17,11 @@
     "util": "^0.11.1"
   },
   "scripts": {
-    "prebuild": "eslint -c eslint.json --ext .tsx ./src --fix",
+    "prebuild": "npm run lint",
     "build": "tsc --pretty",
     "prestart": "npm run build",
-    "start": "react-scripts start"
+    "start": "react-scripts start",
+    "lint": "eslint -c eslint.json --ext .tsx ./src --fix"
   },
   "eslintConfig": {
     "extends": [

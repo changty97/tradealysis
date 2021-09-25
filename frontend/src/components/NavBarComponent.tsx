@@ -1,22 +1,10 @@
 import { Component, Fragment } from "react";
-import { IReportsProps } from "../models/IReportsProps";
-import { IReportsState } from "../models/IReportsState";
+import { Link } from "react-router-dom";
 
 /* import companyLogo from "../images/logo.jpg"; */
-//import { Link } from "react-router-dom";
 
-class NavBarComponent extends Component<IReportsProps, IReportsState>
+class NavBarComponent extends Component
 {
-    constructor(props: IReportsProps)
-    {
-        super(props);
-
-        this.state = {
-            url: ""
-        };
-
-    }
-
     render(): JSX.Element
     {
         return (
@@ -37,43 +25,45 @@ class NavBarComponent extends Component<IReportsProps, IReportsState>
                 <hr>
                 </hr>
 			*/}
-                <div className="theHeader">
-                    <div>
-                        <h1>
-                            <a href="./home.html">
-                                <img src="./logo.jpg" alt="Tradalysis Logo" width="85%" />
-                            </a>
-                        </h1>
+                <header id="allHeader">
+                    <div className="theHeader">
+                        <div>
+                            <h1>
+                                <Link to="/home">
+                                    <img src="./logo.jpg" alt="Tradalysis Logo" width="85%" />
+                                </Link>
+                            </h1>
+                        </div>
+                        <div className="headerButtons">
+                            <ul className="headerButtonsList">
+                                <li>
+                                    <Link to="/home">
+                                        Home
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link to="/report">
+                                            Trade Report
+                                    </Link>
+                                </li>
+                            </ul>
+                        </div>
+                        <div className="userAndSettingButtons">
+                            <ul className="headerButtonsList">
+                                <li>
+                                    <Link to="/"> {/* Replace with correct routing when they're created */}
+                                        User
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link to="/"> {/* Replace with correct routing when they're created */}
+                                        Settings
+                                    </Link>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
-                    <div className="headerButtons">
-                        <ul className="headerButtonsList">
-                            <li>
-                                <a href="/home">
-									Home
-                                </a>
-                            </li>
-                            <li>
-                                <a href="/report">
-									Report
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div className="userAndSettingButtons">
-                        <ul className="headerButtonsList">
-                            <li>
-                                <a href="">
-									User
-                                </a>
-                            </li>
-                            <li>
-                                <a href="">
-									Settings
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
+                </header>
             </Fragment>
         );
     }
