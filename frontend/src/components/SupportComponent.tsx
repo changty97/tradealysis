@@ -30,7 +30,7 @@ class SupportComponent extends Component<IReportsProps, IReportsState>
                         </header>
                         <section>
                             <div id="sectionDiv">
-							  <form>
+                                <form>
                                     <div id="header">
                                         <ul id="horizontal-list">
                                             <li>Support</li>
@@ -45,8 +45,8 @@ class SupportComponent extends Component<IReportsProps, IReportsState>
                                     <div>
                                         <input type="submit" value="Submit"/>
                                     </div>
-							  </form>
-							 </div>
+                                </form>
+                            </div>
                         </section>
                     </body>
                     <footer>

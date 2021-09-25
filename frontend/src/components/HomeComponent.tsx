@@ -27,7 +27,7 @@ class HomeComponent extends Component
                             </div>
                             <div className="rightHome">
                                 <div className="dataIconDiv">
-                                    <img src={dataIcon} className="dataIcon" />
+                                    <img src={dataIcon} className="dataIcon" alt="data icon"/>
                                 </div>
                             </div>
                         </section>

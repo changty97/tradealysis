@@ -1,7 +1,7 @@
 import { Component, Fragment } from "react";
 
 class FooterComponent extends Component
-{	
+{
     render(): JSX.Element
     {
         return (

@@ -4,7 +4,7 @@ import { FooterComponent } from "./FooterComponent";
 import AboutImg from "../images/about.jpg";
 
 class AboutComponent extends Component
-{	
+{
     render(): JSX.Element
     {
         return (
@@ -16,7 +16,7 @@ class AboutComponent extends Component
                             <div className="leftHome">
                                 <h1>Welcome to Tradealysis</h1>
                                 <div id="showmedia">
-                                    <img src={AboutImg} width="440" height="265" alt="image guide"/>
+                                    <img src={AboutImg} width="440" height="265" alt="guide"/>
                                 </div>
                             </div>
                             <div className="about-rightHome">
@@ -25,7 +25,7 @@ class AboutComponent extends Component
                                 <h1>*How to contact us</h1>
                             </div>
                         </section>
-                       <footer>
+                        <footer>
                             <FooterComponent />
                         </footer>
                     </body>
