@@ -1,24 +1,48 @@
 import { Component, Fragment } from "react";
-import { IReportsProps } from "../models/IReportsProps";
-import { IReportsState } from "../models/IReportsState";
+import { IStrategiesProps } from "../models/IStrategiesProps";
+import { IStrategiesState } from "../models/IStrategiesState";
 import { NavBarComponent } from "../components/NavBarComponent";
 import { Link } from "react-router-dom";
-
-
-class StrategiesComponent extends Component<IReportsProps, IReportsState>
+import "../styles/strategies.module.css";
+class StrategiesComponent extends Component<IStrategiesProps, IStrategiesState>
 {
-    constructor(props: IReportsProps)
+    constructor(props: IStrategiesProps)
     {
         super(props);
 
         this.state = {
-            url: ""
+            showPatternForm: false,
         };
+        this.createPattern = this.createPattern.bind(this);
+    }
 
+    createPattern(): void
+    {
+        this.setState({
+            showPatternForm: true,
+        });
     }
 
     render(): JSX.Element
     {
+        
+        const patternForm = (
+            <div>
+                <h1>Enter Strategy Criteria</h1>
+                <form>
+                    <label>DOI</label>
+                    <input type="text" id="doi" value={
+                        (new Date()).toLocaleDateString(undefined, {
+                            year: "numeric",
+                            month: "2-digit",
+                            day: "2-digit"
+                        })
+                    }></input>
+                </form>
+            </div>
+
+            
+        );
         return (
             <Fragment>
                 <NavBarComponent/>
@@ -27,7 +51,8 @@ class StrategiesComponent extends Component<IReportsProps, IReportsState>
                 <Link to="/strategies"><button>Strategies</button></Link>
                 <button style={ {
                     float: 'right'
-                }}>New Pattern</button>
+                }} onClick = {this.createPattern}>New Pattern</button>
+                {this.state.showPatternForm ? patternForm : null }
             </Fragment>
         );
     }

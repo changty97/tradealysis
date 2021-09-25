@@ -12,7 +12,7 @@ const tableProps: ITableProps = {
         {
             key: 'column1',
             title: 'DOI',
-            dataType: DataType.String
+            dataType: DataType.String,
         },
         {
             key: 'column2',
