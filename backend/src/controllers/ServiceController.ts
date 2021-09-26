@@ -1,4 +1,4 @@
-import { GET, Path } from "typescript-rest";
+import { GET, Path, QueryParam } from "typescript-rest";
 import { Produces, Response } from "typescript-rest-swagger";
 import { BadRequestError } from "typescript-rest/dist/server/model/errors";
 
@@ -14,15 +14,14 @@ const badRequestExampleResponse: BadRequestError = {
 export class ServiceController
 {
     /**
-     * blah blah blah
+     * @param test
      *
-     * @returns void
+     * @returns some number
      */
     @Path("/test")
     @GET
-    public test(): void
+    public test(@QueryParam("test") test: number): number
     {
-        // eslint-disable-next-line no-console
-        console.log("test");
+        return test;
     }
 }

@@ -44,8 +44,12 @@
 					"application/json"
 				],
 				"responses": {
-					"204": {
-						"description": "No content"
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"type": "number",
+							"format": "double"
+						}
 					},
 					"400": {
 						"description": "Bad Request",
@@ -54,8 +58,17 @@
 						}
 					}
 				},
-				"description": "blah blah blah",
-				"parameters": []
+				"description": "",
+				"parameters": [
+					{
+						"description": "",
+						"in": "query",
+						"name": "test",
+						"required": true,
+						"type": "number",
+						"format": "double"
+					}
+				]
 			}
 		}
 	},
