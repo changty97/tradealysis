@@ -51,12 +51,12 @@ class NavBarComponent extends Component
                         <div className="userAndSettingButtons">
                             <ul className="headerButtonsList">
                                 <li>
-                                    <Link to="/"> {/* Replace with correct routing when they're created */}
+                                    <Link to="/login"> {/* Replace with correct routing when they're created */}
                                         User
                                     </Link>
                                 </li>
                                 <li>
-                                    <Link to="/"> {/* Replace with correct routing when they're created */}
+                                    <Link to="/account"> {/* Replace with correct routing when they're created */}
                                         Settings
                                     </Link>
                                 </li>
