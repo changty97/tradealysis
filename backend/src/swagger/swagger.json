@@ -1,0 +1,41 @@
+{
+	"definitions": {},
+	"info": {
+		"license": {
+			"name": "ISC"
+		},
+		"title": "backend",
+		"version": "1.0.0"
+	},
+	"paths": {
+		"/test": {
+			"get": {
+				"operationId": "ServiceTest",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"204": {
+						"description": "No content"
+					}
+				},
+				"description": "",
+				"parameters": []
+			}
+		}
+	},
+	"swagger": "2.0",
+	"securityDefinitions": {
+		"api_key": {
+			"type": "apiKey",
+			"name": "access_token",
+			"in": "query"
+		}
+	},
+	"consumes": [
+		"application/json"
+	],
+	"produces": [
+		"application/json"
+	]
+}

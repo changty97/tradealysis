@@ -1,0 +1,123 @@
+{
+    "parser": "@typescript-eslint/parser",
+    "plugins": [
+        "@typescript-eslint"
+    ],
+    "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended"
+    ],
+    "rules": {
+        "brace-style": [
+            "warn",
+            "allman",
+            { 
+                "allowSingleLine": false 
+            }
+        ],
+        "curly": [
+            "warn",
+            "all"
+        ],
+        "comma-dangle": [
+            "warn",
+            "only-multiline"
+        ],
+        "comma-spacing": [
+            "warn",
+            { 
+                "before": false,
+                "after": true 
+            }
+        ],
+        "object-curly-spacing": [
+            "warn",
+            "always"
+        ],
+        "space-before-function-paren":[
+            "warn",
+            "never"
+        ],
+        "space-before-blocks": [
+            "warn",
+            "always"
+        ],
+        "keyword-spacing": [
+            "warn",
+            {
+                "before": true,
+                "after": true
+            }
+        ],
+        "key-spacing": [
+            "warn",
+            {
+                "beforeColon": false,
+                "afterColon": true
+            }
+        ],
+        "no-trailing-spaces": [
+            "warn",
+            {
+                "skipBlankLines": true
+            }
+        ],
+        "space-infix-ops": [
+            "warn"
+        ],
+        "indent": [
+            "warn",
+            4
+        ],
+        "operator-linebreak": [
+            "warn",
+            "after"
+        ],
+        "object-curly-newline": [
+            "warn",
+            {
+                "ObjectExpression": "always",
+                "ObjectPattern": "always",
+                "ImportDeclaration": "never",
+                "ExportDeclaration": "never"
+            }
+        ],
+        "object-property-newline": [
+            "warn",
+            {
+                "allowAllPropertiesOnSameLine": false
+            }
+        ],
+        "dot-location": [
+            "warn",
+            "property"
+        ],
+        "prefer-template": [
+            "warn"
+        ],
+        "eol-last": [
+            "warn",
+            "always"
+        ],
+        "semi": [
+            "warn",
+            "always"
+        ],
+        "one-var-declaration-per-line": [
+            "warn",
+            "always"
+        ],
+        "no-console": [
+            "warn"
+        ],
+        "no-mixed-spaces-and-tabs": [
+            "warn"
+        ],
+        "no-non-null-assertion": [
+            "off"
+        ],
+        "@typescript-eslint/explicit-function-return-type": [
+            "warn"
+        ]
+    }
+}
