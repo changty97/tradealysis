@@ -1,0 +1,45 @@
+{
+  "compileOnSave": true,
+  "compilerOptions": {
+      "allowJs": false,
+      "allowUnreachableCode": false,
+      "declaration": true,
+      "declarationDir": "dist/types",
+      "declarationMap": true,
+      "emitDecoratorMetadata": true,
+      "esModuleInterop": true,
+      "experimentalDecorators": true,
+      "inlineSourceMap": true,
+      "inlineSources": true,
+      "lib": [
+          "esNext"
+      ],
+      "module": "commonjs",
+      "noFallthroughCasesInSwitch": true,
+      "noImplicitAny": true,
+      "noImplicitReturns": true,
+      "noImplicitThis": true,
+      "noUnusedLocals": false,
+      "noUnusedParameters": false,
+      "outDir": "./dist",
+      "preserveConstEnums": true,
+      "pretty": true,
+      "removeComments": true,
+      "target": "es6",
+      "plugins": [
+          {
+              "transform": "ts-nameof",
+              "type": "raw"
+          }
+      ]
+  },
+  "include": [
+      "src/"
+  ],
+  "exclude": [
+      "node_modules",
+      "src/tests/",
+      "tests/",
+      "Documentation/"
+  ]
+}

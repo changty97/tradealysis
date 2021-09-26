@@ -1,0 +1,89 @@
+{
+	"definitions": {
+		"BadRequestError": {
+			"description": "Represents a BAD REQUEST error. The request could not be understood by the\nserver due to malformed syntax. The client SHOULD NOT repeat the request\nwithout modifications.",
+			"properties": {
+				"message": {
+					"type": "string",
+					"description": ""
+				},
+				"statusCode": {
+					"type": "number",
+					"format": "double",
+					"description": ""
+				},
+				"name": {
+					"type": "string",
+					"description": ""
+				},
+				"stack": {
+					"type": "string",
+					"description": ""
+				}
+			},
+			"type": "object",
+			"required": [
+				"message",
+				"statusCode",
+				"name"
+			]
+		}
+	},
+	"info": {
+		"license": {
+			"name": "ISC"
+		},
+		"title": "backend",
+		"version": "1.0.0"
+	},
+	"paths": {
+		"/test": {
+			"get": {
+				"operationId": "ServiceTest",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"type": "number",
+							"format": "double"
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"schema": {
+							"$ref": "#/definitions/BadRequestError"
+						}
+					}
+				},
+				"description": "",
+				"parameters": [
+					{
+						"description": "",
+						"in": "query",
+						"name": "test",
+						"required": true,
+						"type": "number",
+						"format": "double"
+					}
+				]
+			}
+		}
+	},
+	"swagger": "2.0",
+	"securityDefinitions": {
+		"api_key": {
+			"type": "apiKey",
+			"name": "access_token",
+			"in": "query"
+		}
+	},
+	"consumes": [
+		"application/json"
+	],
+	"produces": [
+		"application/json"
+	]
+}
