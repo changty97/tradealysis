@@ -1,6 +1,6 @@
 import express from "express";
 import { Server } from "typescript-rest";
-import { PATH_TO_CONTROLLERS } from "./constants/stringConstants";
+import { PATH_TO_CONTROLLERS } from "./constants/globals";
 
 
 const app: express.Application = express();
