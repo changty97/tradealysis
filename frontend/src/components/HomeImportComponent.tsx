@@ -18,7 +18,7 @@ class HomeImportComponent extends Component
 							</ul>
 							<ul className="leftHomeMainList">
 								<button className="import-button">
-									<input type="file" className="import-input"/>Import Broker Files
+									Import Broker Files
 								</button>
 							</ul>
 						</div>
