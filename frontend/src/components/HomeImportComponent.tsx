@@ -32,7 +32,7 @@ class HomeImportComponent extends Component
 							  <input type="submit" id="myfile2"/>
                             </form>
                         </div>
-                    </div>					
+                    </div>
                 </section>
 
                 <FooterComponent/>
