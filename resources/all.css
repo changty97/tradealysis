@@ -7,50 +7,7 @@ html {
 html body { 
 	margin: 0% 5% 0% 5%;                               /** Set body default margin **/
 }
-
-a { text-decoration: none; }
-
-/** FOOTER element in html ********************************/
-footer {
-	font: normal 15px Verdana, Arial, sans-serif;      /** Footer default margin **/
-	display: flex;
-	justify-content: center;                           /** horiz center footer **/
-	align-items: center;                               /** vertically center footer **/
-	background-color: rgb(170,170,170);                /** background color of footer **/
-	padding: 0px 10px 10px 0px;                        /** padding of footer **/
-	position: inherit;
-    width: 100%;
-    text-align: center;
-    bottom: 0;
-}
-
-footer div ul {
-	list-style-type: none;                             /** ul bullets removed **/
-	display: flex;
-	flex-direction: row;                               /** flex horiz **/
-	justify-content: center;                           /** Center ul in footer **/
-	align-items: center;                               /** Vertical align ul **/
-	flex-wrap: wrap;                                   /** Wrap possible (flex) **/
-	background-color: rgb(200,200,200);                /** set bg color of ul **/        
-	padding: 10px 13px 10px 13px;                      /** sett ul padding **/
-	border-style: solid;                               /** ul border **/                                   
-	border-color: black;                               /** set border color **/
-}
-
-footer div ul li { 
-	margin-left: 10px;                                 /** set l margin 10px to left **/
-	padding-right: 1em;								   /** increase spacing between items in a list to clearly show items of double words (Added by Harry)
-}
-
-footer div ul li a {
-	color: black;                                      /** set folor of footer (links) **/                    
-}
-
-footer div ul li:hover { 
-	color: rgb(180,180,180);                /** Set bg color of ul li when hovering over **/
-}
-
-
+/**
 .account-section {
 	display: flex;
 	flex-direction: row;
@@ -65,3 +22,4 @@ footer div ul li:hover {
 	background-color: gray;
 	text-align: center;
 }
+**/

@@ -1,0 +1,49 @@
+a { text-decoration: none; }
+
+.theHeader {
+	display: flex;
+	flex-direction: row;           /** Flex Horiz **/
+	justify-content: flex-start;   /** Logo on left **/
+	align-items: center;           /** Vertically centered **/
+	margin-left: 5%;               /** Move margin over 5% **/
+	flex-wrap: wrap;               /** Wrap header items **/
+}
+
+.headerButtonsList {
+    display: flex;               
+	flex-direction: row;          /** Flex Horiz **/
+	font-size: 2em;               /** Font size 2em **/
+	justify-content: flex-start; 
+	align-items: center;
+} 
+
+.headerButtonsList li{
+	list-style-type: none;               /** Remove bullet from ul **/
+	border: 1px solid black;             /** set solid black border for buttons **/
+	background-color: rgb(100,100,100);  /** set Background coulor of button **/
+	margin-left: 5%;                     /** Move Buttons left 5% **/
+	padding: 9px 60px 9px 60px;          /** Set padding of button (size of button) **/
+} 
+
+.headerButtonsList li:hover { 
+	background-color: rgb(120,120,120);  /** Set background if hovering over button **/
+}
+
+.headerButtonsList li a {                /** Set text color of text within button (link designated by <a> **/
+	color: white; 
+}
+
+.userAndSettingButtons {
+	margin-left: auto; 
+	margin-right: 0;
+}
+
+.loginNewAccountButton {
+	margin-left: auto; 
+	margin-right: 0;
+	white-space: nowrap;
+}
+
+.noWrap { 
+	white-space: nowrap;                    /** items will not wrap to newline **/
+}
