@@ -1,0 +1,56 @@
+ section {
+	border-style: solid; 
+	border-color: black; 
+	border-width: thin; 
+	background-color: rgb(200,200,200);
+	display: flex; 
+	flex-direction: row;
+	justify-content: center; 
+	align-items: center;
+	height: 550px; width: 100%;
+	border-radius: 10px; 
+	flex-shrink: 2;
+}
+.login-box{
+	background-color: rgb(40, 40, 40);
+	background-image: url("./login2.jpg");
+	background-size: cover;
+	border-style: solid; 
+	border-color: black; 
+	border-width: thick;
+	display: inline-flex;
+	flex-direction: column;
+	justify-content: center; 
+	allign-content: flex-start;
+	height: 70%; 
+	width: 25%;  
+	white-space: wrap;
+	padding: 20px;
+}
+
+
+.usernamePasswordTextBoxes {
+	display: inline-flex;
+	flex-direction: column;
+	justify-content: center;
+	allign-content: center;
+	width: 100%;
+	margin-bottom: 10px;
+}
+
+.loginButtons {
+	display: inline-flex;
+	flex-direction: column;
+	justify-content: left;
+	allign-content: left;
+	width: 102.5%;
+}
+.usernameOrPasswordInput{
+	font-size: 1.8vh;
+	height: 100%;
+	width: 100%;
+}
+
+.forgotPsswdButton {
+	font-size: 1.8vh;
+}
