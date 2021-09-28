@@ -10,33 +10,31 @@ class HomeImportComponent extends Component
             <Fragment>
                 <NavBarComponent />
 				
-				<section>
-					<div className="leftHome">				
-						<div className="leftHomeMainListDiv noWrap">
-							<ul className="leftHomeMainList">
-								<li>Home</li>
-							</ul>
-							<ul className="leftHomeMainList">
-								<button className="import-button">
+                <section>
+                    <div className="leftHome">
+                        <div className="leftHomeMainListDiv noWrap">
+                            <ul className="leftHomeMainList">
+                                <li>Home</li>
+                            </ul>
+                            <ul className="leftHomeMainList">
+                                <button className="import-button">
 									Import Broker Files
-								</button>
-							</ul>
-						</div>
-					</div>
+                                </button>
+                            </ul>
+                        </div>
+                    </div>
 					
-					<div className="rightHome">
-						<div className="formBlock">
-							<form action="./home.html">
+                    <div className="rightHome">
+                        <div className="formBlock">
+                            <form action="./home.html">
 							  <label>Select broker's file to import: </label>
 							  <input type="file" id="myfile" name="file_input"/><br/><br/>
 							  <input type="submit" id="myfile2"/>
-							</form>
-						</div>
-					</div>
-					
-				</section>
-		
-				
+                            </form>
+                        </div>
+                    </div>
+                </section>
+
                 <FooterComponent/>
             </Fragment>
         );

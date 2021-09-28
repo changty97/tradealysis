@@ -48,10 +48,10 @@ class App extends Component
                             <AccountSettingsComponent/>
                         </Route>
 						//HomeImportComponent
-						<Route path="/input1">
+                        <Route path="/input1">
                             <HomeImportComponent/>
                         </Route>
-						<Route path="/home">
+                        <Route path="/home">
                             <HomeComponent/>
                         </Route>
                         <Route path="/">

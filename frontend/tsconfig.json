@@ -24,6 +24,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": false,
     "outDir": "./dist",
+    "plugins": [{ "name": "typescript-plugin-css-modules" }],
     "preserveConstEnums": true,
     "pretty": true,
     "removeComments": true,

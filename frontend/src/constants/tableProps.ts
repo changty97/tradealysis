@@ -1,18 +1,46 @@
 import { ITableProps } from 'ka-table';
 import { DataType, EditingMode, SortingMode } from 'ka-table/enums';
+import { Column } from 'ka-table/models';
 
+const columnTitles = ['DOI', 'P/L', 'Broker', 'Position', 
+                      'Pattern', 'Name', 'Ticker', 'Price',
+                      '52-WH', '52-WL', 'VolAvg', 'Outstanding', 
+                      'Float', 'FloatR', 'FloatC', 'MC-Cat', 
+                      'MC-Current', 'Vol-DOI', 'Vol-PreM', 'PC', 
+                      'PreM High', 'Open', 'HOD'];
+
+const columns: Column[] = Array(23).fill(undefined).map(
+  (_, index) => ({
+    key: 'column' + index,
+    width: 120,
+    title: columnTitles[index],
+    type: DataType.String,
+  }),
+);
+
+const dataArray = Array(3).fill(undefined).map(
+    (_, index) => columns.reduce((previousValue: any, currentValue) => {
+      previousValue[currentValue.key] = ``;
+      return previousValue;
+    }, { id: index }),
+  );
+  
+const tableProps: ITableProps = {
+    columns,
+    columnResizing: true,
+    data: dataArray,
+    editingMode: EditingMode.Cell,
+    rowKeyField: 'id',
+    sortingMode: SortingMode.Single
+};
+
+/*
 const tableProps: ITableProps = {
     columns: [
         {
-            key: 'addColumn',
-            style: {
-                width: 100
-            }
-        },
-        {
             key: 'column1',
             title: 'DOI',
-            dataType: DataType.String
+            dataType: DataType.String,
         },
         {
             key: 'column2',
@@ -128,11 +156,17 @@ const tableProps: ITableProps = {
             key: 'column24',
             title: 'HOD',
             dataType: DataType.String
-        }
+        },
+        {
+            key: 'addColumn',
+            style: {
+                width: 100
+            }
+        },
     ],
     editingMode: EditingMode.Cell,
     rowKeyField: 'id',
     sortingMode: SortingMode.Single
 };
-
+*/
 export { tableProps };
