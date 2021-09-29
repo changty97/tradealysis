@@ -84,7 +84,7 @@ class Home extends Component
 		display:flex;
 		flex-direction: row;
 		justify-content: flex-start;
-		allign-items: flex-start;
+		align-items: flex-start;
 		margin: 2.5%;
 	`;
 	public static readonly DATA_ICON = sty.img `
