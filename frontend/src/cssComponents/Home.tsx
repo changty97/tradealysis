@@ -62,8 +62,8 @@ class Home extends Component
 	public static readonly IMPORT_BUTTON = sty.button `
 		text-decoration: none;
 		font-size: 1.2vw;
-		width: 110%;
-		height: 10%;
+		width: 15vw;
+		height: 4vh;
 	`;
 	public static readonly IMPORT_INPUT = sty.input `
 		display: none; 
@@ -88,8 +88,8 @@ class Home extends Component
 		margin: 2.5%;
 	`;
 	public static readonly DATA_ICON = sty.img `
-		height: 40%; 
-		width:90%;
+		width: 8vw;
+		height: auto; 
 	`;
 	public static readonly DATA_ICON_MAP = sty.map `
 		padding: 10px;
