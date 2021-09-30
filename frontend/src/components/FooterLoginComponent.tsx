@@ -1,4 +1,5 @@
 import { Component, Fragment } from "react";
+import { Footer } from "../cssComponents/Footer";
 
 class FooterLoginComponent extends Component
 {
@@ -6,15 +7,15 @@ class FooterLoginComponent extends Component
     {
         return (
             <Fragment>
-                <footer>
+                <Footer.FOOTER>
                     <div>
-                        <ul>
-                            <li><a href="/support">Support</a></li>
-                            <li><a href="/about">About</a></li>
-                            <li><a href="./privacy">Privacy Policy</a></li>
-                        </ul>
+                        <Footer.FOOTER_DIV_UL>
+                            <Footer.FOOTER_DIV_UL_LI><Footer.A_LINK href="/support">Support</Footer.A_LINK></Footer.FOOTER_DIV_UL_LI>
+                            <Footer.FOOTER_DIV_UL_LI><Footer.A_LINK href="/about">About</Footer.A_LINK></Footer.FOOTER_DIV_UL_LI>
+                            <Footer.FOOTER_DIV_UL_LI><Footer.A_LINK href="./privacy">Privacy Policy</Footer.A_LINK></Footer.FOOTER_DIV_UL_LI>
+                        </Footer.FOOTER_DIV_UL>
                     </div>
-                </footer>
+                </Footer.FOOTER>
             </Fragment>
         );
     }

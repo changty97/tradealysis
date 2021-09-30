@@ -1,50 +1,47 @@
 import { Component, Fragment } from "react";
+import { All } from "../cssComponents/All";
 import { NavBarComponent } from "./NavBarComponent";
 import { FooterComponent } from "./FooterComponent";
+import { AccountSettings } from "../cssComponents/AccountSettings";
 
 class AccountSettingsComponent extends Component
 {
-	
     render(): JSX.Element
     {
         return (
             <Fragment>
-                <NavBarComponent/>
-                <section>
-                    <div className="accountlist">
-					  <ul id="horizontal-list">
-                            <li> <a href="Account1.html">Account</a> </li>
-						 
-                            <li> <a href="Broker.html">Broker</a> </li>
-                            <li> <a href="Other.html">Others</a> </li>
-					  </ul>
-                        <form>
-                            <label>Account Name:</label>
-                            <input type="text" name="myAccount" id="myAccount" value="My AccountName"/>
-							 
-							 <label>First Name:</label>
-							 <input type="text" name="myFName" id="myFName" value="My First Name"/>
-							
-                            <label>Last Name:</label>
-                            <input type="text" name="myLName" id="myLName" value="My Last Name"/>
-							
-                            <label>E-mail:</label>
-                            <input type="email" name="myEmail" id="myEmail" value="myname@gmail.com"/>
-							
-                            <label>Phone:</label>
-                            <input type="tel" name="Phone" id="Phone" value="(916) 123-4567"/>
-							
-                            <label>Birth Date</label>
-                            <input type="date" name="myDate" id="myDate"/>
-							
-                            <label>Initial Investment Amount</label>
-                            <input type="number" name="Initial Investment" id="myIniAmount" min="1" max="100000" value="10000"/>
-							 
-							 <input id="mySubmit" type="Submit" value="Save"/>
-                        </form>
-                    </div>
-                </section>
-                <FooterComponent/>
+                <All.HTML><style>{'body { background-color: rgb(170,170,170); }'}</style>
+                    <All.HTML_BODY>
+                        <NavBarComponent/>
+                        <AccountSettings.SECTION>
+                            <AccountSettings.ACCOUNT_LIST>
+                                <AccountSettings.UL_HORIZ_LIST>
+                                    <AccountSettings.UL_HORIZ_LIST_LI> <AccountSettings.HORIZONTAL_LIST_LI_A href="Account1.html">Account</AccountSettings.HORIZONTAL_LIST_LI_A> </AccountSettings.UL_HORIZ_LIST_LI>
+                                    <AccountSettings.UL_HORIZ_LIST_LI> <AccountSettings.HORIZONTAL_LIST_LI_A href="Broker.html">Broker</AccountSettings.HORIZONTAL_LIST_LI_A> </AccountSettings.UL_HORIZ_LIST_LI>
+                                    <AccountSettings.UL_HORIZ_LIST_LI> <AccountSettings.HORIZONTAL_LIST_LI_A href="Other.html">Others</AccountSettings.HORIZONTAL_LIST_LI_A> </AccountSettings.UL_HORIZ_LIST_LI>
+                                </AccountSettings.UL_HORIZ_LIST>
+                                <AccountSettings.FORM>
+                                    <AccountSettings.LABEL>Account Name:</AccountSettings.LABEL>
+                                    <AccountSettings.INPUT type="text" name="myAccount" id="myAccount" value="My AccountName"/>
+                                    <AccountSettings.LABEL>First Name:</AccountSettings.LABEL>
+                                    <AccountSettings.INPUT type="text" name="myFName" id="myFName" value="My First Name"/>
+                                    <AccountSettings.LABEL>Last Name:</AccountSettings.LABEL>
+                                    <AccountSettings.INPUT type="text" name="myLName" id="myLName" value="My Last Name"/>
+                                    <AccountSettings.LABEL>E-mail:</AccountSettings.LABEL>
+                                    <AccountSettings.INPUT type="email" name="myEmail" id="myEmail" value="myname@gmail.com"/>
+                                    <AccountSettings.LABEL>Phone:</AccountSettings.LABEL>
+                                    <AccountSettings.INPUT type="tel" name="Phone" id="Phone" value="(916) 123-4567"/>
+                                    <AccountSettings.LABEL>Birth Date</AccountSettings.LABEL>
+                                    <AccountSettings.INPUT type="date" name="myDate" id="myDate"/>
+                                    <AccountSettings.LABEL>Initial Investment Amount</AccountSettings.LABEL>
+                                    <AccountSettings.INPUT type="number" name="Initial Investment" id="myIniAmount" min="1" max="100000" value="10000"/>
+                                    <AccountSettings.INPUT_LAST_OF_TYPE id="mySubmit" type="Submit" value="Save"/>
+                                </AccountSettings.FORM>
+                            </AccountSettings.ACCOUNT_LIST>
+                        </AccountSettings.SECTION>
+                        <FooterComponent/>
+                    </All.HTML_BODY>
+                </All.HTML>
             </Fragment>
         );
     }

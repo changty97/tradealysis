@@ -1,7 +1,7 @@
 import { Component, Fragment } from "react";
 import { Link } from "react-router-dom";
-
-/* import companyLogo from "../images/logo.jpg"; */
+import { Header } from "../cssComponents/Header";
+import Logo from "../images/logo_2.jpg";
 
 class NavBarComponent extends Component
 {
@@ -9,60 +9,44 @@ class NavBarComponent extends Component
     {
         return (
             <Fragment>
-			
-                {/*
-                <div>
-                    <button><img src={companyLogo} alt="Tradealysis Logo" width="50" height="50"/> </button>
-                </div>
-                <Link to="/home"><button>Home</button></Link>
-                <Link to="/report"><button>Report</button></Link>
-                <button>User</button>
-                <button>Settings</button>
-				
-                <p>
-					This is the end of the NavBar Component
-                </p>
-                <hr>
-                </hr>
-			*/}
                 <header id="allHeader">
-                    <div className="theHeader">
+                    <Header.THE_HEADER>
                         <div>
                             <h1>
                                 <Link to="/home">
-                                    <img src="./logo.jpg" alt="Tradalysis Logo" width="85%" />
+                                    <img src={Logo} alt="Tradalysis Logo" width="85%" />
                                 </Link>
                             </h1>
                         </div>
                         <div className="headerButtons">
-                            <ul className="headerButtonsList">
-                                <li>
-                                    <Link to="/home">
-                                        Home
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link to="/report">
-                                            Trade Report
-                                    </Link>
-                                </li>
-                            </ul>
+                            <Header.HEADER_BUTTONS_LIST>
+                                <Header.HEADER_BUTTONS_LIST_LI>
+                                    <Header.LINK_1 to="/home">
+                                        <Header.HEADER_BUTTONS_LIST_LI_A>Home</Header.HEADER_BUTTONS_LIST_LI_A>
+                                    </Header.LINK_1>
+                                </Header.HEADER_BUTTONS_LIST_LI>
+                                <Header.HEADER_BUTTONS_LIST_LI>
+                                    <Header.LINK_1 to="/report">
+                                        <Header.HEADER_BUTTONS_LIST_LI_A>Reports</Header.HEADER_BUTTONS_LIST_LI_A>
+                                    </Header.LINK_1>
+                                </Header.HEADER_BUTTONS_LIST_LI>
+                            </Header.HEADER_BUTTONS_LIST>
                         </div>
-                        <div className="userAndSettingButtons">
-                            <ul className="headerButtonsList">
-                                <li>
-                                    <Link to="/login"> {/* Replace with correct routing when they're created */}
-                                        User
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link to="/account"> {/* Replace with correct routing when they're created */}
-                                        Settings
-                                    </Link>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
+                        <Header.USER_AND_SETTINGS_BUTTONS>
+                            <Header.HEADER_BUTTONS_LIST>
+                                <Header.HEADER_BUTTONS_LIST_LI>
+                                    <Header.LINK_1 to="/login"> {/* Replace with correct routing when they're created */}
+                                        <Header.HEADER_BUTTONS_LIST_LI_A>User</Header.HEADER_BUTTONS_LIST_LI_A>
+                                    </Header.LINK_1>
+                                </Header.HEADER_BUTTONS_LIST_LI>
+                                <Header.HEADER_BUTTONS_LIST_LI>
+                                    <Header.LINK_1 to="/account"> {/* Replace with correct routing when they're created */}
+                                        <Header.HEADER_BUTTONS_LIST_LI_A>Settings</Header.HEADER_BUTTONS_LIST_LI_A>
+                                    </Header.LINK_1>
+                                </Header.HEADER_BUTTONS_LIST_LI>
+                            </Header.HEADER_BUTTONS_LIST>
+                        </Header.USER_AND_SETTINGS_BUTTONS>
+                    </Header.THE_HEADER>
                 </header>
             </Fragment>
         );
