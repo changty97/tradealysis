@@ -25,11 +25,3 @@ build:
   script:
     - cd frontend
     - npm run-script build
-
-test:
-  stage: test
-  dependencies:
-    - install
-  script:
-    - cd frontend
-    - npm test
