@@ -1,11 +1,13 @@
 image: node:latest
 
 stages:
-  - install
-  - build
+  - install_frontend
+  - build_frontend
+  - install_backend
+  - build_backend
 
-install:
-  stage: install
+install_frontend:
+  stage: install_frontend
   script:
     - cd frontend
     - npm install
@@ -18,10 +20,32 @@ install:
     paths:
       - frontend/node_modules/
 
-build:
-  stage: build
+install_backend:
+  stage: install_backend
+  script:
+    - cd backend
+    - npm install
+  cache:
+    paths:
+      - backend/node_modules/
+  artifacts:
+    expire_in: 1 days
+    when: on_success
+    paths:
+      - backend/node_modules/
+
+build_frontend:
+  stage: build_frontend
   dependencies:
-    - install
+    - install_frontend
   script:
     - cd frontend
+    - npm run-script build
+
+build_backend:
+  stage: build_backend
+  dependencies:
+    - install_backend
+  script:
+    - cd backend
     - npm run-script build
