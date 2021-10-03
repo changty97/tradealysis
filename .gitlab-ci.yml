@@ -1,27 +1,35 @@
 image: node:latest
 
 stages:
-  - npm
-  - test
+  - install
+  - build
 
-npm:
-  stage: npm
+install:
+  stage: install
   script:
     - cd frontend
     - npm install
   cache:
     paths:
-      - node_modules/
+      - frontend/node_modules/
   artifacts:
     expire_in: 1 days
     when: on_success
     paths:
-      - node_modules/
+      - frontend/node_modules/
+
+build:
+  stage: build
+  dependencies:
+    - install
+  script:
+    - cd frontend
+    - npm run-script build
 
 test:
   stage: test
   dependencies:
-    - npm
+    - install
   script:
     - cd frontend
     - npm test
