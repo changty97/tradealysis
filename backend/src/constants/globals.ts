@@ -1,4 +1,11 @@
-const PATH_TO_CONTROLLERS = "./dist/controllers/*.js";
-const PORT = 3001; // Replace with env later.
+import { IMongoOptions } from "../models/IMongoOptions";
 
-export { PATH_TO_CONTROLLERS, PORT };
+const PATH_TO_CONTROLLERS = "./dist/controllers/*.js";
+const PORT: string = process.env.PORT;
+const mongoOptions: IMongoOptions = {
+    uri: process.env.DB_URI,
+    db: process.env.DB_DB,
+    collection: process.env.DB_COLLECTION
+};
+
+export { PATH_TO_CONTROLLERS, PORT, mongoOptions };
