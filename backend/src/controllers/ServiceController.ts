@@ -1,6 +1,8 @@
-import { GET, POST,  Path, QueryParam } from "typescript-rest";
+import { FileParam, FormParam, GET, POST,  Path, QueryParam } from "typescript-rest";
 import { Produces, Response } from "typescript-rest-swagger";
 import { BadRequestError } from "typescript-rest/dist/server/model/errors";
+import { CSVParser } from "../CSVParser";
+import { ICSVData } from "../models/ICSVData";
 import { exampleInsertThing, exampleRetrieveThing, genericObject } from "../Mongo";
 
 const badRequestExampleResponse: BadRequestError = {
@@ -19,8 +21,8 @@ export class ServiceController
      *
      * @returns The item
      */
-     @Path("/testGET")
-     @GET
+    @Path("/testGET")
+    @GET
     public async testGET(@QueryParam("key") key: string, @QueryParam("value") value: number): Promise<genericObject[]>
     {
         return await exampleRetrieveThing({
@@ -35,8 +37,19 @@ export class ServiceController
      */
     @Path("/testPOST")
     @POST
-     public async testPOST(@QueryParam("test") test: number): Promise<string>
-     {
-         return await exampleInsertThing(test);
-     }
+    public async testPOST(@QueryParam("test") test: number): Promise<string>
+    {
+        return await exampleInsertThing(test);
+    }
+
+    @Path("/parseCSV")
+    @POST
+    public parseCSV(@FormParam("sourceName") source: string, @FileParam("file") file: Express.Multer.File): ICSVData
+    {
+        const parser: CSVParser = new CSVParser(source);
+
+        parser.parse(file);
+        
+        return parser.toJSON();
+    }
 }

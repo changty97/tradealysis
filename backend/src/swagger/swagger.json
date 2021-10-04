@@ -5,6 +5,12 @@
 			"properties": {},
 			"type": "object"
 		},
+		"ICSVData": {
+			"description": "",
+			"properties": {},
+			"type": "object",
+			"additionalProperties": {}
+		},
 		"BadRequestError": {
 			"description": "Represents a BAD REQUEST error. The request could not be understood by the\nserver due to malformed syntax. The client SHOULD NOT repeat the request\nwithout modifications.",
 			"properties": {
@@ -117,6 +123,48 @@
 						"required": true,
 						"type": "number",
 						"format": "double"
+					}
+				]
+			}
+		},
+		"/parseCSV": {
+			"post": {
+				"operationId": "ServiceParseCSV",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"$ref": "#/definitions/ICSVData"
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"schema": {
+							"$ref": "#/definitions/BadRequestError"
+						}
+					}
+				},
+				"description": "",
+				"consumes": [
+					"multipart/form-data"
+				],
+				"parameters": [
+					{
+						"description": "",
+						"in": "formData",
+						"name": "sourceName",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"description": "",
+						"in": "formData",
+						"name": "file",
+						"required": true,
+						"type": "file"
 					}
 				]
 			}
