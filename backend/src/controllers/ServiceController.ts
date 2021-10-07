@@ -1,6 +1,7 @@
-import { GET, Path, QueryParam } from "typescript-rest";
+import { GET, POST,  Path, QueryParam } from "typescript-rest";
 import { Produces, Response } from "typescript-rest-swagger";
 import { BadRequestError } from "typescript-rest/dist/server/model/errors";
+import { exampleInsertThing, exampleRetrieveThing, genericObject } from "../Mongo";
 
 const badRequestExampleResponse: BadRequestError = {
     name: "BadRequestError",
@@ -16,12 +17,26 @@ export class ServiceController
     /**
      * @param test
      *
-     * @returns some number
+     * @returns The item
      */
-    @Path("/test")
-    @GET
-    public test(@QueryParam("test") test: number): number
+     @Path("/testGET")
+     @GET
+    public async testGET(@QueryParam("key") key: string, @QueryParam("value") value: number): Promise<genericObject[]>
     {
-        return test;
+        return await exampleRetrieveThing({
+            [key]: value
+        });
     }
+
+    /**
+     * @param test
+     *
+     * @returns The objectId of the inserted item.
+     */
+    @Path("/testPOST")
+    @POST
+     public async testPOST(@QueryParam("test") test: number): Promise<string>
+     {
+         return await exampleInsertThing(test);
+     }
 }

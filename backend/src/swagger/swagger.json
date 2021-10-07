@@ -1,5 +1,10 @@
 {
 	"definitions": {
+		"genericObject": {
+			"description": "",
+			"properties": {},
+			"type": "object"
+		},
 		"BadRequestError": {
 			"description": "Represents a BAD REQUEST error. The request could not be understood by the\nserver due to malformed syntax. The client SHOULD NOT repeat the request\nwithout modifications.",
 			"properties": {
@@ -37,9 +42,9 @@
 		"version": "1.0.0"
 	},
 	"paths": {
-		"/test": {
+		"/testGET": {
 			"get": {
-				"operationId": "ServiceTest",
+				"operationId": "ServiceTestGET",
 				"produces": [
 					"application/json"
 				],
@@ -47,8 +52,10 @@
 					"200": {
 						"description": "Ok",
 						"schema": {
-							"type": "number",
-							"format": "double"
+							"type": "array",
+							"items": {
+								"$ref": "#/definitions/genericObject"
+							}
 						}
 					},
 					"400": {
@@ -59,6 +66,49 @@
 					}
 				},
 				"description": "",
+				"parameters": [
+					{
+						"description": "",
+						"in": "query",
+						"name": "key",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"description": "",
+						"in": "query",
+						"name": "value",
+						"required": true,
+						"type": "number",
+						"format": "double"
+					}
+				]
+			}
+		},
+		"/testPOST": {
+			"post": {
+				"operationId": "ServiceTestPOST",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"type": "string"
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"schema": {
+							"$ref": "#/definitions/BadRequestError"
+						}
+					}
+				},
+				"description": "",
+				"consumes": [
+					"application/json"
+				],
 				"parameters": [
 					{
 						"description": "",
