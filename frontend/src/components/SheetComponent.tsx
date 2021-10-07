@@ -1,12 +1,16 @@
 import "ka-table/style.css";
-
 import { Component, Fragment } from "react";
 import { kaReducer, Table } from 'ka-table';
 import { CSVLink } from 'react-csv';
 import { kaPropsUtils } from 'ka-table/utils';
-import { hideNewRow, saveNewRow, showNewRow, search } from 'ka-table/actionCreators';
+import { saveNewRow, showNewRow, search } from 'ka-table/actionCreators';
 import { ISheetComponentState } from "../models/ISheetComponentState";
 import { tableProps } from "../constants/tableProps";
+import { ChildComponents } from "ka-table/models";
+import {
+    clearFocused, moveFocusedDown, moveFocusedLeft, moveFocusedRight, moveFocusedUp, openEditor,
+    setFocused, updatePageIndex, updateSortDirection,
+  } from 'ka-table/actionCreators';
 
 class SheetComponent extends Component<any, ISheetComponentState>
 {
@@ -15,28 +19,18 @@ class SheetComponent extends Component<any, ISheetComponentState>
         super(props);
         this.state = {
             tableProps,
-            lastRowId: 0
+            lastRowId: 3, // verify that dataArray in tableProps.ts is same size
         };
         
         this.dispatch = this.dispatch.bind(this);
         this.generateNewId = this.generateNewId.bind(this);
         this.saveNewData = this.saveNewData.bind(this);
+        this.createNewRow = this.createNewRow.bind(this);
     }
 
     componentDidMount() : void
     {
-        /* Calculate the initial row id. */
-        const dataArray = Array(4) // default # of rows
-            .fill(undefined)
-            .map((_, index) => ({
-                column1: `column:1 row:${index}`,
-                column2: `c2r${index}`,
-                id: index
-            }));
-
-        this.setState({
-            lastRowId: Math.max(...dataArray.map(i => i.id))
-        });
+        
     }
 
     generateNewId(): number
@@ -52,13 +46,110 @@ class SheetComponent extends Component<any, ISheetComponentState>
 
     saveNewData(): void
     {
-        const rowKeyValue = this.generateNewId();
+        let rowKeyValue = this.generateNewId();
 
         this.dispatch(saveNewRow(rowKeyValue, {
             validate: true
         }));
     }
 
+    createNewRow(): void
+    {
+        this.dispatch(showNewRow());
+        this.saveNewData();
+    }
+
+    // create new row upon updating the last existing row
+    increaseRows() : void
+    {
+        // increase the number of rows when the table is updated with a new value
+        // this will be changed to increase only when the LAST row is updated
+        const dataArray = Array(9).fill(undefined).map(
+            (_, index) => this.state.tableProps.columns.reduce((previousValue: any, currentValue) =>
+            {
+                //
+                if (previousValue[currentValue.key] !== ``)
+                {
+                    return previousValue;
+                }
+                else
+                {
+                    previousValue[currentValue.key] = ``;
+                }
+                return previousValue;
+            }, {
+                id: index
+            }),
+        );
+        this.setState((prevState) => ({
+            tableProps: {
+                ...prevState.tableProps,
+                data: dataArray
+            }
+        }));
+    }
+
+    childComponents: ChildComponents = {
+        // Allows keyboard tab navigation
+        cell: {
+          elementAttributes: ({column, rowKeyValue, isEditableCell}) => {
+            if (isEditableCell) return undefined;
+      
+            const cell = { columnKey: column.key, rowKeyValue }
+            const isFocused = cell.columnKey === tableProps.focused?.cell?.columnKey
+              && cell.rowKeyValue === tableProps.focused?.cell?.rowKeyValue;
+            return {
+              tabIndex: 0,
+              ref: (ref: any) => isFocused && ref?.focus(),
+              onKeyUp: (e) => {
+                switch (e.key){
+                  case "ArrowRight": this.dispatch(moveFocusedRight({ end: e.ctrlKey })); break;
+                  case "ArrowLeft": this.dispatch(moveFocusedLeft({ end: e.ctrlKey })); break;
+                  case "ArrowUp": this.dispatch(moveFocusedUp({ end: e.ctrlKey })); break;
+                  case "ArrowDown": this.dispatch(moveFocusedDown({ end: e.ctrlKey })); break;
+                  // opens the editor for the selected cell
+                  case "Enter":
+                    this.dispatch(openEditor(cell.rowKeyValue, cell.columnKey));
+                    this.dispatch(setFocused({ cellEditorInput: cell }));
+                    break;
+                }
+              },
+              onFocus: () => !isFocused &&  this.dispatch(setFocused({ cell: { columnKey: column.key, rowKeyValue } })),
+              onKeyDown: (e) => e.key !== "Tab" && e.preventDefault(),
+              onBlur: () => isFocused && this.dispatch(clearFocused())
+            }
+          },
+        },
+        cellEditorInput: {
+            elementAttributes: ({column, rowKeyValue}) => {
+              const isFocused = column.key === tableProps.focused?.cellEditorInput?.columnKey
+                && rowKeyValue === tableProps.focused?.cellEditorInput?.rowKeyValue;
+              const cell = { columnKey: column.key, rowKeyValue };
+              return {
+                ref: (ref: any) => isFocused && ref?.focus(),
+                onKeyUp: (e) => e.keyCode === 13 && this.dispatch(setFocused({ cell })),
+                onBlur: (e, {baseFunc}) => {
+                  baseFunc();
+                  this.dispatch(clearFocused())
+                },
+                onFocus: () => !isFocused && this.dispatch(setFocused({ cell: { columnKey: column.key, rowKeyValue } })),
+              }
+            },
+          },
+        pagingIndex: {
+          elementAttributes: (props) => ({
+            tabIndex: 0,
+            onKeyUp: (e) => e.key === "Enter" && this.dispatch(updatePageIndex(props.pageIndex))
+          }),
+        },
+        headCell: {
+          elementAttributes: (props) => ({
+            tabIndex: 0,
+            onKeyUp: (e) => e.key === "Enter" && this.dispatch(updateSortDirection(props.column.key))
+          }),
+        },
+    };
+    
     public render() : JSX.Element
     {
         return (
@@ -78,7 +169,14 @@ class SheetComponent extends Component<any, ISheetComponentState>
                         float: 'right'
                     }}>Download .csv</button>
                 </CSVLink>
-
+                {/* Add Row Button*/}
+                <button
+                    onClick={() =>
+                    {
+                        this.dispatch(showNewRow()); this.dispatch(saveNewRow(Math.random())); 
+                    }} >
+                    New Row
+                </button>
                 {/* Search Sheet*/}
                 <input type='search' defaultValue={tableProps.searchText} onChange={(event) =>
                 {
@@ -89,57 +187,9 @@ class SheetComponent extends Component<any, ISheetComponentState>
                 {/* Configurable Spreadsheet */}
                 <Table
                     {...this.state.tableProps}
-                    childComponents={{
-                        cellEditor:
-                        {
-                            content: props =>
-                            {
-                                if (props.column.key === "addColumn")
-                                {
-                                    return (
-                                        <div className="verify-trade-entry-button">
-                                            <button
-                                                onClick={this.saveNewData}
-                                            >
-                                                Confirm
-                                            </button>
-                                            <button onClick={() => this.dispatch(hideNewRow())}>
-                                                Cancel
-                                            </button>
-                                        </div>
-                                    );
-                                }
-                                else
-                                {
-                                    return;
-                                }
-                            }
-                        },
-                        headCell:
-                        {
-                            content: props =>
-                            {
-                                if (props.column.key === "addColumn")
-                                {
-                                    return (
-                                        <div className="new-trade-button">
-                                            <button
-                                                onClick={() => this.dispatch(showNewRow())}>
-                                                    New Trade
-                                            </button>
-                                        </div>
-                                    );
-                                }
-                                else
-                                {
-                                    return;
-                                }
-                            }
-                        }
-                    }}
+                    childComponents = {this.childComponents}
                     dispatch={this.dispatch}
                 />
-
             </Fragment>
         );
     }
