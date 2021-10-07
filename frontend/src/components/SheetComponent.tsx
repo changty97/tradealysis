@@ -30,7 +30,17 @@ class SheetComponent extends Component<any, ISheetComponentState>
 
     componentDidMount() : void
     {
-        
+        const dataArray = Array(4) // default # of rows
+            .fill(undefined)
+            .map((_, index) => ({
+                column1: `column:1 row:${index}`,
+                column2: `c2r${index}`,
+                id: index
+            }));
+
+        this.setState({
+            lastRowId: Math.max(...dataArray.map(i => i.id))
+        });
     }
 
     generateNewId(): number
