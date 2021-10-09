@@ -39,19 +39,19 @@ class LoginComponent extends Component<any, any>
 	                    password: `${str2Value}`
 	                }
 	            }).then(res =>
-	            {
+	            { 
 	                const myNum = Number(res.data);
-	                alert(myNum);
-
 	                if (myNum === 1)
 	                {
 	                    this.loginState = true;
-	                    alert("Login");
+	                    alert(`Login:  ${  myNum}`);
 	                }
 	                else
 	                {
-	                    alert("Not Login");
+	                    alert(`Not Login: ${  myNum}`);
 	                }
+	                (str1 as HTMLInputElement).value = '';
+	                (str2 as HTMLInputElement).value = '';
 	            });
 	        }
 	    }
