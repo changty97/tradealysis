@@ -1,7 +1,7 @@
 import { GET, POST,  Path, QueryParam } from "typescript-rest";
 import { Produces, Response } from "typescript-rest-swagger";
 import { BadRequestError } from "typescript-rest/dist/server/model/errors";
-import { exampleInsertThing, exampleRetrieveThing, genericObject } from "../Mongo";
+import { exampleInsertThing, exampleRetrieveThing, genericObject, correctLogin, saveTable } from "../Mongo";
 
 const badRequestExampleResponse: BadRequestError = {
     name: "BadRequestError",
@@ -37,6 +37,25 @@ export class ServiceController
     @POST
      public async testPOST(@QueryParam("test") test: number): Promise<string>
      {
+         console.log(test);
          return await exampleInsertThing(test);
      }
+	 
+	/**
+	  * @param username:string - username entered into login page
+	  * @param password:string - password entered into login page (clear text no encryption)
+	  * @returns 1 if username, password pair in db. otherwuse returns 0 (str character 1, 0)
+	**/
+	@Path("/testGetDb")
+	@GET
+    public async testDBGet(@QueryParam("username") username: string, @QueryParam("password") password: string)
+    {
+        return await correctLogin(username, password);
+    }
+	@Path("/postTableDB")
+	@POST
+	public async postTableDB(dataArray: any)
+	{
+	    return await saveTable(dataArray);
+	}
 }

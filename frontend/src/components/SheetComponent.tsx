@@ -7,18 +7,21 @@ import { saveNewRow, showNewRow, search } from 'ka-table/actionCreators';
 import { ISheetComponentState } from "../models/ISheetComponentState";
 import { tableProps } from "../constants/tableProps";
 import { ChildComponents } from "ka-table/models";
-import {
-    clearFocused, moveFocusedDown, moveFocusedLeft, moveFocusedRight, moveFocusedUp, openEditor,
-    setFocused, updatePageIndex, updateSortDirection,
-  } from 'ka-table/actionCreators';
-
+import { clearFocused, moveFocusedDown, moveFocusedLeft, moveFocusedRight, moveFocusedUp, openEditor,
+    setFocused, updatePageIndex, updateSortDirection } from 'ka-table/actionCreators';
+import axios from "axios";
+/*
+const api = axios.create({
+    baseURL: 'http://localhost:3001/'
+});
+*/
 class SheetComponent extends Component<any, ISheetComponentState>
 {
     constructor(props: any)
     {
         super(props);
         this.state = {
-            tableProps,
+            tableProps: tableProps,
             lastRowId: 3, // verify that dataArray in tableProps.ts is same size
         };
         
@@ -26,11 +29,27 @@ class SheetComponent extends Component<any, ISheetComponentState>
         this.generateNewId = this.generateNewId.bind(this);
         this.saveNewData = this.saveNewData.bind(this);
         this.createNewRow = this.createNewRow.bind(this);
+        this.saveTable = this.saveTable.bind(this);
     }
 
     componentDidMount() : void
     {
-        
+        console.log(this.state.tableProps);
+        const dataArray = Array(this.state.tableProps.data?.length) // default # of rows
+            .fill(undefined)
+            .map(
+                (_, index) => this.state.tableProps.columns.reduce((previousValue: any, column) => ({
+                    ...previousValue,
+                    [column.key]: `row:${index}`
+                }), {
+                    id: index
+                }),
+            );
+        console.log(dataArray);
+
+        this.setState({
+            lastRowId: Math.max(...dataArray.map(i => i.id)),
+        });
     }
 
     generateNewId(): number
@@ -46,7 +65,7 @@ class SheetComponent extends Component<any, ISheetComponentState>
 
     saveNewData(): void
     {
-        let rowKeyValue = this.generateNewId();
+        const rowKeyValue = this.generateNewId();
 
         this.dispatch(saveNewRow(rowKeyValue, {
             validate: true
@@ -57,6 +76,32 @@ class SheetComponent extends Component<any, ISheetComponentState>
     {
         this.dispatch(showNewRow());
         this.saveNewData();
+    }
+
+    saveTable(): void
+    {
+        /*
+        const x =  this.state.tableProps.data?.map(function(item)
+        {
+            const z = item['column0'];
+            return z;
+        });
+        console.log(x);
+        const test = new FormData();
+        test.append("goodbye", JSON.stringify(x));
+        */
+        const y = this.state.tableProps.data;
+        console.log(y);
+        axios.post(`http://localhost:3001/postTableDB`, {
+            dataArray: y
+        }).then(function(response)
+        {
+            console.log(response.status);
+        }).catch(function(response)
+        {
+            console.log(response);
+        });
+        
     }
 
     // create new row upon updating the last existing row
@@ -92,61 +137,104 @@ class SheetComponent extends Component<any, ISheetComponentState>
     childComponents: ChildComponents = {
         // Allows keyboard tab navigation
         cell: {
-          elementAttributes: ({column, rowKeyValue, isEditableCell}) => {
-            if (isEditableCell) return undefined;
-      
-            const cell = { columnKey: column.key, rowKeyValue }
-            const isFocused = cell.columnKey === tableProps.focused?.cell?.columnKey
-              && cell.rowKeyValue === tableProps.focused?.cell?.rowKeyValue;
-            return {
-              tabIndex: 0,
-              ref: (ref: any) => isFocused && ref?.focus(),
-              onKeyUp: (e) => {
-                switch (e.key){
-                  case "ArrowRight": this.dispatch(moveFocusedRight({ end: e.ctrlKey })); break;
-                  case "ArrowLeft": this.dispatch(moveFocusedLeft({ end: e.ctrlKey })); break;
-                  case "ArrowUp": this.dispatch(moveFocusedUp({ end: e.ctrlKey })); break;
-                  case "ArrowDown": this.dispatch(moveFocusedDown({ end: e.ctrlKey })); break;
-                  // opens the editor for the selected cell
-                  case "Enter":
-                    this.dispatch(openEditor(cell.rowKeyValue, cell.columnKey));
-                    this.dispatch(setFocused({ cellEditorInput: cell }));
-                    break;
+            elementAttributes: ({
+                column, rowKeyValue, isEditableCell
+            }) =>
+            {
+                if (isEditableCell)
+                {
+                    return undefined;
                 }
-              },
-              onFocus: () => !isFocused &&  this.dispatch(setFocused({ cell: { columnKey: column.key, rowKeyValue } })),
-              onKeyDown: (e) => e.key !== "Tab" && e.preventDefault(),
-              onBlur: () => isFocused && this.dispatch(clearFocused())
-            }
-          },
+      
+                const cell = {
+                    columnKey: column.key,
+                    rowKeyValue
+                };
+                const isFocused = cell.columnKey === tableProps.focused?.cell?.columnKey &&
+              cell.rowKeyValue === tableProps.focused?.cell?.rowKeyValue;
+                return {
+                    tabIndex: 0,
+                    ref: (ref: any) => isFocused && ref?.focus(),
+                    onKeyUp: (e) =>
+                    {
+                        switch (e.key)
+                        {
+                        case "ArrowRight": this.dispatch(moveFocusedRight({
+                            end: e.ctrlKey
+                        })); break;
+                        case "ArrowLeft": this.dispatch(moveFocusedLeft({
+                            end: e.ctrlKey
+                        })); break;
+                        case "ArrowUp": this.dispatch(moveFocusedUp({
+                            end: e.ctrlKey
+                        })); break;
+                        case "ArrowDown": this.dispatch(moveFocusedDown({
+                            end: e.ctrlKey
+                        })); break;
+                            // opens the editor for the selected cell
+                        case "Enter":
+                            this.dispatch(openEditor(cell.rowKeyValue, cell.columnKey));
+                            this.dispatch(setFocused({
+                                cellEditorInput: cell
+                            }));
+                            break;
+                        }
+                    },
+                    onFocus: () => !isFocused &&  this.dispatch(setFocused({
+                        cell: {
+                            columnKey: column.key,
+                            rowKeyValue
+                        }
+                    })),
+                    onKeyDown: (e) => e.key !== "Tab" && e.preventDefault(),
+                    onBlur: () => isFocused && this.dispatch(clearFocused())
+                };
+            },
         },
         cellEditorInput: {
-            elementAttributes: ({column, rowKeyValue}) => {
-              const isFocused = column.key === tableProps.focused?.cellEditorInput?.columnKey
-                && rowKeyValue === tableProps.focused?.cellEditorInput?.rowKeyValue;
-              const cell = { columnKey: column.key, rowKeyValue };
-              return {
-                ref: (ref: any) => isFocused && ref?.focus(),
-                onKeyUp: (e) => e.keyCode === 13 && this.dispatch(setFocused({ cell })),
-                onBlur: (e, {baseFunc}) => {
-                  baseFunc();
-                  this.dispatch(clearFocused())
-                },
-                onFocus: () => !isFocused && this.dispatch(setFocused({ cell: { columnKey: column.key, rowKeyValue } })),
-              }
+            elementAttributes: ({
+                column, rowKeyValue
+            }) =>
+            {
+                const isFocused = column.key === tableProps.focused?.cellEditorInput?.columnKey &&
+                rowKeyValue === tableProps.focused?.cellEditorInput?.rowKeyValue;
+                const cell = {
+                    columnKey: column.key,
+                    rowKeyValue
+                };
+                console.log(this.state.tableProps.data);
+                return {
+                    ref: (ref: any) => isFocused && ref?.focus(),
+                    onKeyUp: (e) => e.keyCode === 13 && this.dispatch(setFocused({
+                        cell
+                    })),
+                    onBlur: (e, {
+                        baseFunc
+                    }) =>
+                    {
+                        baseFunc();
+                        this.dispatch(clearFocused());
+                    },
+                    onFocus: () => !isFocused && this.dispatch(setFocused({
+                        cell: {
+                            columnKey: column.key,
+                            rowKeyValue
+                        }
+                    })),
+                };
             },
-          },
+        },
         pagingIndex: {
-          elementAttributes: (props) => ({
-            tabIndex: 0,
-            onKeyUp: (e) => e.key === "Enter" && this.dispatch(updatePageIndex(props.pageIndex))
-          }),
+            elementAttributes: (props) => ({
+                tabIndex: 0,
+                onKeyUp: (e) => e.key === "Enter" && this.dispatch(updatePageIndex(props.pageIndex))
+            }),
         },
         headCell: {
-          elementAttributes: (props) => ({
-            tabIndex: 0,
-            onKeyUp: (e) => e.key === "Enter" && this.dispatch(updateSortDirection(props.column.key))
-          }),
+            elementAttributes: (props) => ({
+                tabIndex: 0,
+                onKeyUp: (e) => e.key === "Enter" && this.dispatch(updateSortDirection(props.column.key))
+            }),
         },
     };
     
@@ -173,9 +261,12 @@ class SheetComponent extends Component<any, ISheetComponentState>
                 <button
                     onClick={() =>
                     {
-                        this.dispatch(showNewRow()); this.dispatch(saveNewRow(Math.random())); 
+                        this.dispatch(showNewRow()); this.dispatch(saveNewRow(Math.random()));
                     }} >
                     New Row
+                </button>
+                <button
+                    onClick= {this.saveTable}>Save Table
                 </button>
                 {/* Search Sheet*/}
                 <input type='search' defaultValue={tableProps.searchText} onChange={(event) =>

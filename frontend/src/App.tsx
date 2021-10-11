@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 import { IReportsProps } from "./models/IReportsProps";
-import { IReportsState } from "./models/IReportsState";
 import { ReportsComponent } from "./components/ReportsComponent";
 import { StrategiesComponent } from "./components/StrategiesComponent";
 import { HomeComponent } from "./components/HomeComponent";
@@ -16,14 +15,18 @@ import { NavBarComponent } from "./components/NavBarComponent";
 import { NavBarLoginComponent } from "./components/NavBarLoginComponent";
 import { FooterComponent } from "./components/FooterComponent";
 import { FooterLoginComponent } from "./components/FooterLoginComponent";
+import { IAppState } from './models/IAppState';
 
-class App extends Component<IReportsProps, IReportsState>
+class App extends Component<IReportsProps, IAppState>
 {
 	private loginComponent: LoginComponent;
 	
 	constructor(props: IReportsProps)
 	{
 	    super(props);
+	    this.state = {
+	        reportsId: null
+	    };
 	    this.loginComponent = new LoginComponent(props);
 	}
 	public getLoginState():boolean
@@ -43,7 +46,7 @@ class App extends Component<IReportsProps, IReportsState>
 			        <BrowserRouter>
 			           <NavBarComponent/>
 			            <Switch>
-			                <Route path="/report"><ReportsComponent /></Route>
+			                <Route path="/report"><ReportsComponent reportsId={this.state.reportsId}/></Route>
 			                <Route path="/strategies"><StrategiesComponent /></Route>
 			                <Route path="/overview"> <Overview /></Route>
 			                <Route path="/support"><SupportComponent/></Route>

@@ -1,19 +1,8 @@
 import { Component, Fragment } from "react";
-import { IReportsProps } from "../models/IReportsProps";
-import { IReportsState } from "../models/IReportsState";
 import { Support } from "../cssComponents/Support";
 
-class SupportComponent extends Component<IReportsProps, IReportsState>
+class SupportComponent extends Component
 {
-    constructor(props: IReportsProps)
-    {
-        super(props);
-
-        this.state = {
-            url: ""
-        };
-    }
-	
     render(): JSX.Element
     {
         return (
