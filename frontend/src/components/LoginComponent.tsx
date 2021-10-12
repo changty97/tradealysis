@@ -1,4 +1,5 @@
 import { Component, Fragment } from "react";
+ 
 import { Login } from "../cssComponents/Login";
 
 import axios from "axios";
@@ -9,20 +10,18 @@ const api = axios.create({
 
 class LoginComponent extends Component<any, any>
 {
-	public loginState : boolean;
-	
 	constructor(props: any)
 	{
 	    super(props);
-	    this.loginState = false;
 	    this.login = this.login.bind(this);
 	}
-	
-	public getLoginState():boolean
-	{
-	    return this.loginState;
-	}
 
+	private setLocalStorageState(login:string, username:string, password:string) : void  {
+		localStorage.setItem("loggedin", login);
+	    localStorage.setItem("username", username);
+	    localStorage.setItem("password", password);
+	}
+	
 	private login(): void
 	{
 	    if (document != null)
@@ -39,16 +38,16 @@ class LoginComponent extends Component<any, any>
 	                    password: `${str2Value}`
 	                }
 	            }).then(res =>
-	            { 
+	            {
 	                const myNum = Number(res.data);
 	                if (myNum === 1)
 	                {
-	                    this.loginState = true;
-	                    alert(`Login:  ${  myNum}`);
+						this.setLocalStorageState("true", str1Value, str2Value);
+	                    window.location.reload();
 	                }
 	                else
 	                {
-	                    alert(`Not Login: ${  myNum}`);
+						this.setLocalStorageState("false", '', '');
 	                }
 	                (str1 as HTMLInputElement).value = '';
 	                (str2 as HTMLInputElement).value = '';

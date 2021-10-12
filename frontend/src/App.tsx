@@ -26,39 +26,43 @@ class App extends Component<IReportsProps, IReportsState>
 	    super(props);
 	    this.loginComponent = new LoginComponent(props);
 	}
-	public getLoginState():boolean
-	{
-	    return this.loginComponent.getLoginState();
-	}
 	
 	render(): JSX.Element
 	{
 	    let elements: JSX.Element;
-		
-	    if (this.getLoginState())
+	    if (localStorage.getItem("loggedin") != null)
 	    {
-	        elements =
-			(
-			    <React.Fragment>
-			        <BrowserRouter>
-			           <NavBarComponent/>
-			            <Switch>
-			                <Route path="/report"><ReportsComponent /></Route>
-			                <Route path="/strategies"><StrategiesComponent /></Route>
-			                <Route path="/overview"> <Overview /></Route>
-			                <Route path="/support"><SupportComponent/></Route>
-			                <Route path="/about"><AboutComponent/></Route>
-			                <Route path="/privacy"><PrivacyPolicyComponent/></Route>
-			                <Route path="/login"><Redirect to="/" /></Route>
-			                <Route path="/account"><AccountSettingsComponent/></Route>
-			                <Route path="/input1"><HomeImportComponent /></Route>
-			                <Route path="/home"><Redirect to="/" /></Route>
-			                <Route path="/"><HomeComponent /></Route>
-			            </Switch>
-			            <FooterComponent/>
-			        </BrowserRouter>
-			    </React.Fragment>
-			);
+	        if (localStorage.getItem("loggedin") == 'true')
+	        {
+	            elements =
+				(
+				    <React.Fragment>
+				        <BrowserRouter>
+						   <NavBarComponent/>
+				            <Switch>
+				                <Route path="/report"><ReportsComponent /></Route>
+				                <Route path="/strategies"><StrategiesComponent /></Route>
+				                <Route path="/overview"> <Overview /></Route>
+				                <Route path="/support"><SupportComponent/></Route>
+				                <Route path="/about"><AboutComponent/></Route>
+				                <Route path="/privacy"><PrivacyPolicyComponent/></Route>
+				                <Route path="/login"><Redirect to="/" /></Route>
+				                <Route path="/account"><AccountSettingsComponent/></Route>
+				                <Route path="/input1"><HomeImportComponent /></Route>
+				                <Route path="/home"><Redirect to="/" /></Route>
+				                <Route path="/"><HomeComponent /></Route>
+				            </Switch>
+				            <FooterComponent/>
+				        </BrowserRouter>
+				    </React.Fragment>
+				);
+	        }
+	        else
+	        {
+	            localStorage.clear();
+	            elements = this.render();
+	            return elements;
+	        }
 	    }
 	    else
 	    {

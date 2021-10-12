@@ -5,6 +5,11 @@ import Logo from "../images/logo_2.jpg";
 
 class NavBarComponent extends Component
 {
+	private logout() : void {
+		localStorage.clear();
+		window.location.reload();
+	}
+	
     render(): JSX.Element
     {
         return (
@@ -44,6 +49,12 @@ class NavBarComponent extends Component
                                         <Header.HEADER_BUTTONS_LIST_LI_A>Settings</Header.HEADER_BUTTONS_LIST_LI_A>
                                     </Header.LINK_1>
                                 </Header.HEADER_BUTTONS_LIST_LI>
+								
+								 <Header.LOGOUT_BUTTON onClick={this.logout}>
+                                   Logout
+                                </Header.LOGOUT_BUTTON>
+								
+
                             </Header.HEADER_BUTTONS_LIST>
                         </Header.USER_AND_SETTINGS_BUTTONS>
                     </Header.THE_HEADER>
