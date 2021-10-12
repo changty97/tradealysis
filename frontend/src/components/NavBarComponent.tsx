@@ -14,16 +14,12 @@ class NavBarComponent extends Component
     {
         let userName = localStorage.getItem("username");
         userName = (userName == null) ? "User" : userName; // we will remove this later
-		
+        if (userName == null)
+        {
+            this.logout();
+        }
         const userNameFirstChar = userName[0].toUpperCase();
         userName = (userNameFirstChar + (userName.substring(1)).toLowerCase());
-		
-        /**
-			This will be used once we are all using the same database (online)
-			if (userName == null) {
-				this.logout();
-			}
-		**/
         return (
             <Fragment>
                 <header id="allHeader">

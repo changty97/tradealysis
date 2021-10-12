@@ -1,5 +1,5 @@
 import { InsertOneResult, MongoClient } from "mongodb";
-import { mongoOptions } from "./constants/globals";
+import { mongoOptions, mongoOptionsLogin } from "./constants/globals";
 import * as mongoDB from "mongodb";
 
 // Ignore this dirty typing. It's just for these examples.
@@ -67,11 +67,11 @@ function exampleRetrieveThing(queryObject: genericObject): Promise<genericObject
 async function correctLogin(username:string, password:string): Promise<number>
 {
     let client: MongoClient | null = null;
-    return MongoClient.connect(mongoOptions.uri).then((connection: MongoClient) =>
+    return MongoClient.connect(mongoOptionsLogin.uri).then((connection: MongoClient) =>
     {
         client = connection;
-        const db: mongoDB.Db = client.db(mongoOptions.db);
-        const theCollection: mongoDB.Collection = db.collection(mongoOptions.collection);
+        const db: mongoDB.Db = client.db(mongoOptionsLogin.db);
+        const theCollection: mongoDB.Collection = db.collection(mongoOptionsLogin.collection);
         const x = (theCollection.find(
             {
                 "uname": username,
