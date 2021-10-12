@@ -29,8 +29,9 @@ class App extends Component<IReportsProps, IReportsState>
 	
 	render(): JSX.Element
 	{
+		
 	    let elements: JSX.Element;
-	    if (localStorage.getItem("loggedin") != null)
+	    if (localStorage.getItem("loggedin") != null )
 	    {
 	        if (localStorage.getItem("loggedin") == 'true')
 	        {

@@ -13,12 +13,12 @@ class NavBarComponent extends Component
     render(): JSX.Element
     {
         let userName = localStorage.getItem("username");
-		userName = (userName == null) ? "User" : userName; // we will remove this later
+        userName = (userName == null) ? "User" : userName; // we will remove this later
 		
-		let userNameFirstChar = userName[0].toUpperCase();
-		userName = (userNameFirstChar + (userName.substring(1)).toLowerCase());
+        const userNameFirstChar = userName[0].toUpperCase();
+        userName = (userNameFirstChar + (userName.substring(1)).toLowerCase());
 		
-		/**
+        /**
 			This will be used once we are all using the same database (online)
 			if (userName == null) {
 				this.logout();
