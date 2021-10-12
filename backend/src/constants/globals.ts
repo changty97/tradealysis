@@ -1,6 +1,6 @@
 import { IMongoOptions } from "../models/IMongoOptions";
 const PATH_TO_CONTROLLERS = "./dist/controllers/*.js";
-const PORT = `3001`;
+const PORT = process.env.PORT;
 
 const mongoOptions: IMongoOptions = {
     uri: process.env.DB_URI,
@@ -18,19 +18,21 @@ export { PATH_TO_CONTROLLERS, PORT, mongoOptions, mongoOptionsLogin };
 
 
 /** .env file: **/
-/**
+/** (NOTE: I DONT USE DB_URI, DB_DB, DB_COLLECTION)
 PORT = "3001"
 DB_URI = "mongodb://mongoAdmin:916..S%40cTowN%21@52.37.185.66:27017/?authSource=admin&readPreference=primary&appname=MongoDB%20Compass&ssl=false"
 DB_DB = "Test"
 DB_COLLECTION = "Stuff"
-DB_URI2 = "mongodb://localhost:27017"
-DB_DB2 = "t_db"
-DB_COLLECTION2 = "t_1"
+DB_URI2 = "mongodb://mongoAdmin:916..S%40cTowN%21@52.37.185.66:27017/?authSource=admin&readPreference=primary&appname=MongoDB%20Compass&ssl=false"
+DB_DB2 = "db_kevin"
+DB_COLLECTION2 = "userTable"
 **/
 
-/** Data you can import into collection t_1 (As a json file in Mongo Compass**/
+/** 
+	Data you can import into collection userTable 
+	(As a json file in Mongo Compass for local db)
+**/
 /*****************************************************
-
 [{
   "_id": {
     "$oid": "615d3e5750f3d196b7ecf097"
