@@ -10,20 +10,21 @@ const api = axios.create({
 
 class LoginComponent extends Component<any, any>
 {
-	constructor(props: any)
-	{
+    constructor(props: any)
+    {
 	    super(props);
 	    this.login = this.login.bind(this);
-	}
+    }
 
-	private setLocalStorageState(login:string, username:string, password:string) : void  {
-		localStorage.setItem("loggedin", login);
+    private setLocalStorageState(login:string, username:string, password:string) : void
+    {
+        localStorage.setItem("loggedin", login);
 	    localStorage.setItem("username", username);
 	    localStorage.setItem("password", password);
-	}
+    }
 	
-	private login(): void
-	{
+    private login(): void
+    {
 	    if (document != null)
 	    {
 	        const str1 = document.getElementById(`uname`);
@@ -42,22 +43,22 @@ class LoginComponent extends Component<any, any>
 	                const myNum = Number(res.data);
 	                if (myNum === 1)
 	                {
-						this.setLocalStorageState("true", str1Value, str2Value);
+                        this.setLocalStorageState("true", str1Value, str2Value);
 	                    window.location.reload();
 	                }
 	                else
 	                {
-						this.setLocalStorageState("false", '', '');
+                        this.setLocalStorageState("false", '', '');
 	                }
 	                (str1 as HTMLInputElement).value = '';
 	                (str2 as HTMLInputElement).value = '';
 	            });
 	        }
 	    }
-	}
+    }
 	
-	render(): JSX.Element
-	{
+    render(): JSX.Element
+    {
 	    return (
 	        <Fragment>
 	            
@@ -89,6 +90,6 @@ class LoginComponent extends Component<any, any>
 	            </Login.SECTION>
 	        </Fragment>
 	    );
-	}
+    }
 }
 export { LoginComponent };

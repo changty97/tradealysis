@@ -16,7 +16,7 @@ class Login extends Component
 		border-radius: 10px; 
 		flex-shrink: 2;
 	`;
-	public static readonly LOGIN_BOX = sty.div `
+	public static readonly LOGIN_BOX = sty.form `
 		background-color: rgb(240,240,240);
 		border-style: solid; 
 		border-color: black; 
