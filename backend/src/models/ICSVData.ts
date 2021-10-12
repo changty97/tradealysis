@@ -1,5 +1,3 @@
 export interface ICSVData {
-    [section: string]: {
-        [header: string]: string[];
-    }
+    [section: string]: {[key: string]: string}[];
 }

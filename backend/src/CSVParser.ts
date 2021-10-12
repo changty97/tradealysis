@@ -57,8 +57,7 @@ class CSVParser
 
             if (!this.parsedData[section])
             {
-                this.parsedData[section] = {
-                };
+                this.parsedData[section] = [];
             }
 
             headers.forEach((header: string, col: number) =>
@@ -68,16 +67,22 @@ class CSVParser
                 {
                     colsToIgnore.push(col);
                 }
-                else
-                {
-                    this.parsedData[section][header] = [];
-                }
             });
 
             content.slice(1).forEach((row: string) =>
             {
                 // Holy shit, you don't understand how hard it is to deal with commas within data that's separated by commas.
-                row.match(/(?:,|\n|^)("(?:(?:"")*[^"]*)*"|[^",\n]*|(?:\n|$))/g).forEach((data: string, col: number) =>
+                const parsedRow: string[] = row.match(/(?:,|\n|^)("(?:(?:"")*[^"]*)*"|[^",\n]*|(?:\n|$))/g);
+
+                /*if (parsedRow.length >= headers.length - colsToIgnore.length)
+                {
+                    throw new Error("Not enough headers to contain provided data.");
+                }*/
+
+                const convertedRow: {[key: string]: string} = {
+                };
+
+                parsedRow.forEach((data: string, col: number) =>
                 {
                     if (col >= headers.length - colsToIgnore.length)
                     {
@@ -90,10 +95,12 @@ class CSVParser
                         {
                             data = data.slice(1);
                         }
-                        
-                        this.parsedData[section][headers[col]].push(data);
+
+                        convertedRow[headers[col]] = data;
                     }
                 });
+
+                this.parsedData[section].push(convertedRow);
             });
         });
     }
