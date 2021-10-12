@@ -1,6 +1,4 @@
-import { ISectionedContent } from "../models/ISectionedContent";
-
-const sourcePatterns: ISectionedContent = {
+const sourcePatterns: {[key: string]: string[]} = {
     TDAmeritrade: [
         "Cash Balance",
         "Account Trade History",

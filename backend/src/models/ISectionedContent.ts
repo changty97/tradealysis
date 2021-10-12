@@ -1,3 +1,3 @@
 export interface ISectionedContent {
-    [sourceName: string]: string[];
+    [sourceName: string]: string;
 }

@@ -1,6 +1,7 @@
 import { sourcePatterns } from "./constants/sourcePatterns";
 import { ICSVData } from "./models/ICSVData";
 import { ISectionedContent } from "./models/ISectionedContent";
+import csv from "csvtojson/v2";
 
 class CSVParser
 {
@@ -18,10 +19,11 @@ class CSVParser
         this.source = source;
     }
 
-    public parse(file: Express.Multer.File): void
+    public async parse(file: Express.Multer.File): Promise<ICSVData>
     {
         const sectionedData: ISectionedContent = {
         };
+        const promises: PromiseLike<void>[] = [];
         let focus: string = null;
 
         /* Section out content */
@@ -37,10 +39,10 @@ class CSVParser
             {
                 if (!sectionedData[focus])
                 {
-                    sectionedData[focus] = [];
+                    sectionedData[focus] = "";
                 }
 
-                sectionedData[focus].push(line);
+                sectionedData[focus] += `${line}\n`;
             }
 
             if (sourcePatterns[this.source].includes(line))
@@ -50,63 +52,20 @@ class CSVParser
         });
 
         /* Parse sections into JSON */
-        Object.entries(sectionedData).forEach(([section, content]: [string, string[]]) =>
+        Object.entries(sectionedData).forEach(([section, content]: [string, string]) =>
         {
-            const headers: string[] = content[0].split(',');
-            const colsToIgnore: number[] = [];
-
-            if (!this.parsedData[section])
-            {
-                this.parsedData[section] = [];
-            }
-
-            headers.forEach((header: string, col: number) =>
-            {
-                // Make a list of columns to ignore where the header is empty.
-                if (!header || header === '')
+            promises.push(csv({
+                ignoreEmpty: true
+            })
+                .fromString(content)
+                .then((json: {[key: string]: string}[]) =>
                 {
-                    colsToIgnore.push(col);
-                }
-            });
-
-            content.slice(1).forEach((row: string) =>
-            {
-                // Holy shit, you don't understand how hard it is to deal with commas within data that's separated by commas.
-                const parsedRow: string[] = row.match(/(?:,|\n|^)("(?:(?:"")*[^"]*)*"|[^",\n]*|(?:\n|$))/g);
-
-                /*if (parsedRow.length >= headers.length - colsToIgnore.length)
-                {
-                    throw new Error("Not enough headers to contain provided data.");
-                }*/
-
-                const convertedRow: {[key: string]: string} = {
-                };
-
-                parsedRow.forEach((data: string, col: number) =>
-                {
-                    if (col >= headers.length - colsToIgnore.length)
-                    {
-                        throw new Error("Not enough headers to contain provided data.");
-                    }
-
-                    if (!colsToIgnore.includes(col))
-                    {
-                        if (data.startsWith(','))
-                        {
-                            data = data.slice(1);
-                        }
-
-                        convertedRow[headers[col]] = data;
-                    }
-                });
-
-                this.parsedData[section].push(convertedRow);
-            });
+                    this.parsedData[section] = json;
+                }));
         });
-    }
 
-    public toJSON(): ICSVData
-    {
+        await Promise.all(promises);
+
         return this.parsedData;
     }
 }

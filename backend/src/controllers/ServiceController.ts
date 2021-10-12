@@ -44,12 +44,10 @@ export class ServiceController
 
     @Path("/parseCSV")
     @POST
-    public parseCSV(@FormParam("sourceName") source: string, @FileParam("file") file: Express.Multer.File): ICSVData
+    public async parseCSV(@FormParam("sourceName") sourceName: string, @FileParam("file") file: Express.Multer.File): Promise<ICSVData>
     {
-        const parser: CSVParser = new CSVParser(source);
+        const parser: CSVParser = new CSVParser(sourceName);
 
-        parser.parse(file);
-        
-        return parser.toJSON();
+        return await parser.parse(file);
     }
 }
