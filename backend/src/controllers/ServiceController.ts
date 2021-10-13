@@ -37,7 +37,6 @@ export class ServiceController
     @POST
      public async testPOST(@QueryParam("test") test: number): Promise<string>
      {
-         console.log(test);
          return await exampleInsertThing(test);
      }
 	 
@@ -52,6 +51,11 @@ export class ServiceController
     {
         return await correctLogin(username, password);
     }
+
+ 	/**
+	  * @param dataArray: any - 2d array which contains data of every cell in the spreadsheet
+	  * @returns the spreadsheet array as a JSON object
+	**/
 	@Path("/postTableDB")
 	@POST
 	public async postTableDB(dataArray: any)

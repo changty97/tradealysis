@@ -92,7 +92,7 @@ async function correctLogin(username:string, password:string): Promise<number>
         });
 }
 
-function saveTable(thing: any): Promise<string>
+function saveTable(dataArray: any): Promise<string>
 {
     let client: MongoClient | null = null;
 
@@ -100,11 +100,10 @@ function saveTable(thing: any): Promise<string>
         .then((connection: MongoClient) =>
         {
             client = connection;
-
             return client.db(mongoOptions.db)
                 .collection(mongoOptions.collection)
                 .insertOne({
-                    "test": thing
+                    "table_data": dataArray
                 });
         })
         .then((result: InsertOneResult<genericObject>) =>

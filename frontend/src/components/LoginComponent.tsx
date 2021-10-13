@@ -14,7 +14,7 @@ class LoginComponent extends Component<any, any>
 	constructor(props: any)
 	{
 	    super(props);
-	    this.loginState = true;
+	    this.loginState = false;
 	    this.login = this.login.bind(this);
 	}
 	

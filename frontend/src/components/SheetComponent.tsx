@@ -21,7 +21,7 @@ class SheetComponent extends Component<any, ISheetComponentState>
     {
         super(props);
         this.state = {
-            tableProps: tableProps,
+            tableProps,
             lastRowId: 3, // verify that dataArray in tableProps.ts is same size
         };
         
@@ -34,22 +34,7 @@ class SheetComponent extends Component<any, ISheetComponentState>
 
     componentDidMount() : void
     {
-        console.log(this.state.tableProps);
-        const dataArray = Array(this.state.tableProps.data?.length) // default # of rows
-            .fill(undefined)
-            .map(
-                (_, index) => this.state.tableProps.columns.reduce((previousValue: any, column) => ({
-                    ...previousValue,
-                    [column.key]: `row:${index}`
-                }), {
-                    id: index
-                }),
-            );
-        console.log(dataArray);
-
-        this.setState({
-            lastRowId: Math.max(...dataArray.map(i => i.id)),
-        });
+        return;
     }
 
     generateNewId(): number
@@ -80,28 +65,16 @@ class SheetComponent extends Component<any, ISheetComponentState>
 
     saveTable(): void
     {
-        /*
-        const x =  this.state.tableProps.data?.map(function(item)
-        {
-            const z = item['column0'];
-            return z;
-        });
-        console.log(x);
-        const test = new FormData();
-        test.append("goodbye", JSON.stringify(x));
-        */
-        const y = this.state.tableProps.data;
-        console.log(y);
+        const tableData = this.state.tableProps.data;
         axios.post(`http://localhost:3001/postTableDB`, {
-            dataArray: y
+            dataArray: tableData
         }).then(function(response)
         {
-            console.log(response.status);
-        }).catch(function(response)
+            return;
+        }).catch(function(error)
         {
-            console.log(response);
+            console.log('Error', error);
         });
-        
     }
 
     // create new row upon updating the last existing row
@@ -112,7 +85,6 @@ class SheetComponent extends Component<any, ISheetComponentState>
         const dataArray = Array(9).fill(undefined).map(
             (_, index) => this.state.tableProps.columns.reduce((previousValue: any, currentValue) =>
             {
-                //
                 if (previousValue[currentValue.key] !== ``)
                 {
                     return previousValue;
@@ -205,7 +177,7 @@ class SheetComponent extends Component<any, ISheetComponentState>
                 console.log(this.state.tableProps.data);
                 return {
                     ref: (ref: any) => isFocused && ref?.focus(),
-                    onKeyUp: (e) => e.keyCode === 13 && this.dispatch(setFocused({
+                    onKeyUp: (e) => e.key === "Enter" && this.dispatch(setFocused({
                         cell
                     })),
                     onBlur: (e, {

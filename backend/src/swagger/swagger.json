@@ -180,7 +180,7 @@
 				],
 				"parameters": [
 					{
-						"description": "",
+						"description": ": any - 2d array which contains data of every cell in the spreadsheet",
 						"in": "body",
 						"name": "dataArray",
 						"required": true,
