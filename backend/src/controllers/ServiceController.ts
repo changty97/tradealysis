@@ -1,7 +1,9 @@
-import { GET, POST,  Path, QueryParam } from "typescript-rest";
+import { FileParam, FormParam, GET, POST,  Path, QueryParam } from "typescript-rest";
 import { Produces, Response } from "typescript-rest-swagger";
 import { BadRequestError } from "typescript-rest/dist/server/model/errors";
-import { exampleInsertThing, exampleRetrieveThing, genericObject, correctLogin, saveTable } from "../Mongo";
+import { CSVParser } from "../CSVParser";
+import { ICSVData } from "../models/ICSVData";
+import { exampleInsertThing, exampleRetrieveThing, genericObject } from "../Mongo";
 
 const badRequestExampleResponse: BadRequestError = {
     name: "BadRequestError",
@@ -19,8 +21,8 @@ export class ServiceController
      *
      * @returns The item
      */
-     @Path("/testGET")
-     @GET
+    @Path("/testGET")
+    @GET
     public async testGET(@QueryParam("key") key: string, @QueryParam("value") value: number): Promise<genericObject[]>
     {
         return await exampleRetrieveThing({
@@ -35,31 +37,17 @@ export class ServiceController
      */
     @Path("/testPOST")
     @POST
-     public async testPOST(@QueryParam("test") test: number): Promise<string>
-     {
-         return await exampleInsertThing(test);
-     }
-	 
-	/**
-	  * @param username:string - username entered into login page
-	  * @param password:string - password entered into login page (clear text no encryption)
-	  * @returns 1 if username, password pair in db. otherwuse returns 0 (str character 1, 0)
-	**/
-	@Path("/testGetDb")
-	@GET
-    public async testDBGet(@QueryParam("username") username: string, @QueryParam("password") password: string)
+    public async testPOST(@QueryParam("test") test: number): Promise<string>
     {
-        return await correctLogin(username, password);
+        return await exampleInsertThing(test);
     }
 
- 	/**
-	  * @param dataArray: any - 2d array which contains data of every cell in the spreadsheet
-	  * @returns the spreadsheet array as a JSON object
-	**/
-	@Path("/postTableDB")
-	@POST
-	public async postTableDB(dataArray: any)
-	{
-	    return await saveTable(dataArray);
-	}
+    @Path("/parseCSV")
+    @POST
+    public async parseCSV(@FormParam("sourceName") sourceName: string, @FileParam("file") file: Express.Multer.File): Promise<ICSVData>
+    {
+        const parser: CSVParser = new CSVParser(sourceName);
+
+        return await parser.parse(file);
+    }
 }
