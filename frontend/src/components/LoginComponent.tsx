@@ -9,22 +9,21 @@ const api = axios.create({
 
 class LoginComponent extends Component<any, any>
 {
-	public loginState : boolean;
-	
-	constructor(props: any)
-	{
+    constructor(props: any)
+    {
 	    super(props);
-	    this.loginState = false;
 	    this.login = this.login.bind(this);
-	}
-	
-	public getLoginState():boolean
-	{
-	    return this.loginState;
-	}
+    }
 
-	private login(): void
-	{
+    private setLocalStorageState(login:string, username:string, password:string) : void
+    {
+        localStorage.setItem("loggedin", login);
+	    localStorage.setItem("username", username);
+	    localStorage.setItem("password", password);
+    }
+
+    private login(): void
+    {
 	    if (document != null)
 	    {
 	        const str1 = document.getElementById(`uname`);
@@ -33,7 +32,7 @@ class LoginComponent extends Component<any, any>
 	        {
 	            const str1Value = (str1 as HTMLInputElement).value;
 	            const str2Value = (str2 as HTMLInputElement).value;
-	            api.get('testGetDb', {
+	            api.get('loginGet', {
 	                params: {
 	                    username: `${str1Value}`,
 	                    password: `${str2Value}`
@@ -41,24 +40,25 @@ class LoginComponent extends Component<any, any>
 	            }).then(res =>
 	            {
 	                const myNum = Number(res.data);
-	                alert(myNum);
-
 	                if (myNum === 1)
 	                {
-	                    this.loginState = true;
-	                    alert("Login");
+                        this.setLocalStorageState("true", str1Value, str2Value);
+	                    window.location.reload();
 	                }
 	                else
 	                {
-	                    alert("Not Login");
+                        this.setLocalStorageState("false", '', '');
 	                }
+	                (str1 as HTMLInputElement).value = '';
+	                (str2 as HTMLInputElement).value = '';
 	            });
 	        }
 	    }
-	}
+    }
 	
-	render(): JSX.Element
-	{
+	
+    render(): JSX.Element
+    {
 	    return (
 	        <Fragment>
 	            
@@ -90,6 +90,6 @@ class LoginComponent extends Component<any, any>
 	            </Login.SECTION>
 	        </Fragment>
 	    );
-	}
+    }
 }
 export { LoginComponent };
