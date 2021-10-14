@@ -19,49 +19,51 @@ import { IAppState } from './models/IAppState';
 
 class App extends Component<IReportsProps, IAppState>
 {
-	private loginComponent: LoginComponent;
-	
-	constructor(props: IReportsProps)
-	{
+    constructor(props: IReportsProps)
+    {
 	    super(props);
 	    this.state = {
 	        reportsId: null
 	    };
-	    this.loginComponent = new LoginComponent(props);
-	}
-	public getLoginState():boolean
-	{
-	    return this.loginComponent.getLoginState();
-	}
+    }
 	
-	render(): JSX.Element
-	{
+    render(): JSX.Element
+    {
 	    let elements: JSX.Element;
 		
-	    if (this.getLoginState())
+	    if (localStorage.getItem("loggedin") != null )
 	    {
-	        elements =
-			(
-			    <React.Fragment>
-			        <BrowserRouter>
-			           <NavBarComponent/>
-			            <Switch>
-			                <Route path="/report"><ReportsComponent reportsId={this.state.reportsId}/></Route>
-			                <Route path="/strategies"><StrategiesComponent /></Route>
-			                <Route path="/overview"> <Overview /></Route>
-			                <Route path="/support"><SupportComponent/></Route>
-			                <Route path="/about"><AboutComponent/></Route>
-			                <Route path="/privacy"><PrivacyPolicyComponent/></Route>
-			                <Route path="/login"><Redirect to="/" /></Route>
-			                <Route path="/account"><AccountSettingsComponent/></Route>
-			                <Route path="/input1"><HomeImportComponent /></Route>
-			                <Route path="/home"><Redirect to="/" /></Route>
-			                <Route path="/"><HomeComponent /></Route>
-			            </Switch>
-			            <FooterComponent/>
-			        </BrowserRouter>
-			    </React.Fragment>
-			);
+	        if (localStorage.getItem("loggedin") === 'true')
+	        {
+	            elements =
+				(
+				    <React.Fragment>
+				        <BrowserRouter>
+						   <NavBarComponent/>
+				            <Switch>
+				                <Route path="/report"><ReportsComponent reportsId={this.state.reportsId}/></Route>
+				                <Route path="/strategies"><StrategiesComponent /></Route>
+				                <Route path="/overview"> <Overview /></Route>
+				                <Route path="/support"><SupportComponent/></Route>
+				                <Route path="/about"><AboutComponent/></Route>
+				                <Route path="/privacy"><PrivacyPolicyComponent/></Route>
+				                <Route path="/login"><Redirect to="/" /></Route>
+				                <Route path="/account"><AccountSettingsComponent/></Route>
+				                <Route path="/input1"><HomeImportComponent /></Route>
+				                <Route path="/home"><Redirect to="/" /></Route>
+				                <Route path="/"><HomeComponent /></Route>
+				            </Switch>
+				            <FooterComponent/>
+				        </BrowserRouter>
+				    </React.Fragment>
+				);
+	        }
+	        else
+	        {
+	            localStorage.clear();
+	            elements = this.render();
+	            return elements;
+	        }
 	    }
 	    else
 	    {
@@ -77,7 +79,7 @@ class App extends Component<IReportsProps, IAppState>
 			                <Route path="/support"><SupportComponent/></Route>
 			                <Route path="/about"><AboutComponent/></Route>
 			                <Route path="/privacy"><PrivacyPolicyComponent/></Route>
-			                <Route path="/login">{ this.loginComponent.render() }</Route>
+			                <Route path="/login"><LoginComponent/></Route>
 			                <Route path="/account"><AccountSettingsComponent/></Route>
 			                <Route path="/input1"><Redirect to="/login" /></Route>
 			                <Route path="/home"><Redirect to="/" /></Route>
@@ -89,6 +91,6 @@ class App extends Component<IReportsProps, IAppState>
 			);
 	    }
 	    return elements;
-	}
+    }
 }
 export { App };

@@ -52,6 +52,18 @@ class Header extends Component
 	public static readonly NOWRAP = sty.div `
 		white-space: nowrap;
 	`;
+	
+	public static readonly LOGOUT_BUTTON = sty.button `
+		margin-right: 1.7%;
+		padding-left: 25px;
+		padding-right: 25px;
+		padding-top: 2px;
+		padding-bottom: 2px;
+		
+		position: absolute;
+		top: 10px;
+		right: 20px;
+	`;
 }
 export { Header };
  

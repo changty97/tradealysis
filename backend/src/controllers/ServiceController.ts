@@ -3,7 +3,8 @@ import { Produces, Response } from "typescript-rest-swagger";
 import { BadRequestError } from "typescript-rest/dist/server/model/errors";
 import { CSVParser } from "../CSVParser";
 import { ICSVData } from "../models/ICSVData";
-import { exampleInsertThing, exampleRetrieveThing, genericObject } from "../Mongo";
+import { exampleInsertThing, exampleRetrieveThing, genericObject, saveTable } from "../Mongo";
+import { correctLogin } from "../MongoLogin";
 
 const badRequestExampleResponse: BadRequestError = {
     name: "BadRequestError",
@@ -50,4 +51,28 @@ export class ServiceController
 
         return await parser.parse(file);
     }
+	
+    /**
+      * @param dataArray: any - 2d array which contains data of every cell in the spreadsheet
+      * @returns the spreadsheet array as a JSON object
+    **/
+    @Path("/postTableDB")
+    @POST
+    public async postTableDB(dataArray: any)
+    {
+        return await saveTable(dataArray);
+    }
+	
+    /**
+	  * @param username:string - username entered into login page
+	  * @param password:string - password entered into login page (clear text no encryption)
+	  * @returns 1 if username, password pair in db. otherwuse returns 0 (str character 1, 0)
+	 **/
+	 @Path("/loginGet")
+	 @GET
+    public async loginGet(@QueryParam("username") username: string, @QueryParam("password") password: string) : Promise<number>
+    {
+        return await correctLogin(username, password);
+    }
+	 
 }
