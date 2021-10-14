@@ -11,7 +11,7 @@ const columnTitles = ['DOI', 'P/L', 'Broker', 'Position',
 
 const columns: Column[] = Array(23).fill(undefined).map(
   (_, index) => ({
-    key: 'column' + index,
+    key: columnTitles[index],
     width: 120,
     title: columnTitles[index],
     type: DataType.String,
