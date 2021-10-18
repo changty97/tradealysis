@@ -15,6 +15,7 @@ const api = axios.create({
     baseURL: 'http://localhost:3001/'
 });
 */
+
 class SheetComponent extends Component<any, ISheetComponentState>
 {
     constructor(props: any)
@@ -23,6 +24,7 @@ class SheetComponent extends Component<any, ISheetComponentState>
         this.state = {
             tableProps,
             lastRowId: 3, // verify that dataArray in tableProps.ts is same size
+            table_identifier: ""
         };
         
         this.dispatch = this.dispatch.bind(this);
@@ -30,11 +32,32 @@ class SheetComponent extends Component<any, ISheetComponentState>
         this.saveNewData = this.saveNewData.bind(this);
         this.createNewRow = this.createNewRow.bind(this);
         this.saveTable = this.saveTable.bind(this);
-    }
+    } 
 
     componentDidMount() : void
     {
-        return;
+        console.log(this.state.table_identifier);
+        // const idStr = "616a2e4a69a0afcdaf56edd1";
+        axios.get(`http://localhost:3001/getTableDB`, {
+            params: {
+                objId: "9999999"
+            }
+        }).then((response) =>
+        {
+            console.log(response);
+            console.log(response.data[0]["table_data"]["dataArray"]);
+            this.setState((prevState) => ({
+                tableProps: {
+                    ...prevState.tableProps,
+                    data: response.data[0]["table_data"]["dataArray"]
+                }
+            }));
+            console.log("Current Values:");
+            console.log(this.state.tableProps.data);
+        }).catch(function(error)
+        {
+            console.log('Error', error);
+        });
     }
 
     generateNewId(): number
@@ -68,6 +91,23 @@ class SheetComponent extends Component<any, ISheetComponentState>
         const tableData = this.state.tableProps.data;
         axios.post(`http://localhost:3001/postTableDB`, {
             dataArray: tableData
+        }).then((response) =>
+        {
+            console.log("object id");
+            console.log(response.data);
+            
+            this.setState({
+                table_identifier: (response.data).toString(),
+            });            
+            
+            return;
+        }).catch(function(error)
+        {
+            console.log('Error', error);
+        });
+        /*
+        axios.post(`http://localhost:3001/updateTableDB`, {
+            finvizData: getFinvizData()
         }).then(function(response)
         {
             return;
@@ -75,6 +115,7 @@ class SheetComponent extends Component<any, ISheetComponentState>
         {
             console.log('Error', error);
         });
+        */
     }
 
     // create new row upon updating the last existing row
@@ -174,7 +215,6 @@ class SheetComponent extends Component<any, ISheetComponentState>
                     columnKey: column.key,
                     rowKeyValue
                 };
-                console.log(this.state.tableProps.data);
                 return {
                     ref: (ref: any) => isFocused && ref?.focus(),
                     onKeyUp: (e) => e.key === "Enter" && this.dispatch(setFocused({
