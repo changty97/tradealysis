@@ -242,6 +242,77 @@
 					}
 				]
 			}
+		},
+		"/loginKeyGET": {
+			"get": {
+				"operationId": "ServiceLoginKeyGET",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"type": "string"
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"schema": {
+							"$ref": "#/definitions/BadRequestError"
+						}
+					}
+				},
+				"description": "",
+				"parameters": [
+					{
+						"description": ":string - username entered into login page",
+						"in": "query",
+						"name": "username",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"description": ":string - password entered into login page (clear text no encryption)",
+						"in": "query",
+						"name": "password",
+						"required": true,
+						"type": "string"
+					}
+				]
+			}
+		},
+		"/usernameFromKeyGET": {
+			"get": {
+				"operationId": "ServiceUsernameFromKeyGET",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"type": "string"
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"schema": {
+							"$ref": "#/definitions/BadRequestError"
+						}
+					}
+				},
+				"description": "",
+				"parameters": [
+					{
+						"description": "",
+						"in": "query",
+						"name": "key",
+						"required": true,
+						"type": "string"
+					}
+				]
+			}
 		}
 	},
 	"swagger": "2.0",

@@ -4,7 +4,7 @@ import { BadRequestError } from "typescript-rest/dist/server/model/errors";
 import { CSVParser } from "../CSVParser";
 import { ICSVData } from "../models/ICSVData";
 import { exampleInsertThing, exampleRetrieveThing, genericObject, saveTable } from "../Mongo";
-import { correctLogin } from "../MongoLogin";
+import { correctLogin, correctLoginKey, userFromKey } from "../MongoLogin";
 
 const badRequestExampleResponse: BadRequestError = {
     name: "BadRequestError",
@@ -74,5 +74,24 @@ export class ServiceController
     {
         return await correctLogin(username, password);
     }
+	
+	    /**
+	  * @param username:string - username entered into login page
+	  * @param password:string - password entered into login page (clear text no encryption)
+	  * @returns 1 if username, password pair in db. otherwuse returns 0 (str character 1, 0)
+	 **/
+	 @Path("/loginKeyGET")
+	 @GET
+	 public async loginKeyGET(@QueryParam("username") username: string, @QueryParam("password") password: string) : Promise<string>
+	 {
+	     return await correctLoginKey(username, password);
+	 }
+	 
+	 @Path("/usernameFromKeyGET")
+	 @GET
+	 public async usernameFromKeyGET(@QueryParam("key") key: string) : Promise<string>
+	 {
+	     return await userFromKey(key);
+	 }
 	 
 }
