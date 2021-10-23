@@ -31,9 +31,9 @@ class App extends Component<IReportsProps, IAppState>
     {
 	    let elements: JSX.Element;
 		
-	    if (localStorage.getItem("loggedin") != null )
+	    if (localStorage.getItem("Key") != null )
 	    {
-	        if (localStorage.getItem("loggedin") === 'true')
+	        if (localStorage.getItem("Key") !== "")
 	        {
 	            elements =
 				(
