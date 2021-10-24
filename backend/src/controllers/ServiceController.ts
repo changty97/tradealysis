@@ -4,7 +4,7 @@ import { BadRequestError } from "typescript-rest/dist/server/model/errors";
 import { CSVParser } from "../CSVParser";
 import { ICSVData } from "../models/ICSVData";
 import { exampleInsertThing, exampleRetrieveThing, genericObject, saveTable } from "../Mongo";
-import { correctLogin, correctLoginKey, userFromKey } from "../MongoLogin";
+import { correctLogin, correctLoginKey, userFromKey, userExists, createAccount } from "../MongoLogin";
 
 const badRequestExampleResponse: BadRequestError = {
     name: "BadRequestError",
@@ -88,15 +88,16 @@ export class ServiceController
 	     return await correctLoginKey(username, password);
 	 }
 	 
-	 /**
-	  * @param key:string - key that is in local storage
-	  * @return uname:Promise<string> if key matches with user in db. else returns empty str
-	 **/
-	 @Path("/usernameFromKeyGET")
-	 @GET
-	 public async usernameFromKeyGET(@QueryParam("key") key: string) : Promise<string>
+	 @Path("/createAccountPost")
+	 @POST
+	 public async createAccountPost(@QueryParam("username") username:string,
+								    @QueryParam("password") password:string,
+									@QueryParam("fName")    fName:string,
+									@QueryParam("lName")    lName:string,
+									@QueryParam("email")    email:string,
+									@QueryParam("phone")    phone:string,
+									@QueryParam("bdate")    bdate:string) : Promise<number>
 	 {
-	     return await userFromKey(key);
+		 return await createAccount(username, password, fName, lName, email, phone, bdate);
 	 }
-	 
 }

@@ -18,13 +18,13 @@ class LoginComponent extends Component<any, any>
     {
         localStorage.setItem("Key", theKey);
     }
-	
+
     private loginKey(): void
     {
         if (document != null)
 	    {
-	        const str1 = document.getElementById(`uname`);
-	        const str2 = document.getElementById(`pssd`);
+	        const str1 = document.getElementById(`username`);
+	        const str2 = document.getElementById(`password`);
 	        if (str1 != null && str2 != null)
 	        {
 	            const str1Value = (str1 as HTMLInputElement).value;
@@ -76,13 +76,15 @@ class LoginComponent extends Component<any, any>
 	                        <Login.USERNAME_AND_PASSWORD_TXT_BOXES>
 	                            <Login.USERNAME_AND_PASSWORD_TXT_BOXE_LABELS>Username</Login.USERNAME_AND_PASSWORD_TXT_BOXE_LABELS>
 	                            <Login.USERNAME_OR_PSWD_INPUT
-	                                id="uname"
+                                name="username"
+	                                id="username"
 	                                type="text"
 	                                placeholder=""
 	                            />
 	                            <Login.USERNAME_AND_PASSWORD_TXT_BOXE_LABELS>Password</Login.USERNAME_AND_PASSWORD_TXT_BOXE_LABELS>
 	                            <Login.USERNAME_OR_PSWD_INPUT
-	                                id="pssd"
+	                                name="password"
+                                id="password"
 	                                type="password"
 	                                placeholder=""
 	                            />
@@ -97,5 +99,7 @@ class LoginComponent extends Component<any, any>
 	        </Fragment>
 	    );
     }
+
+
 }
 export { LoginComponent };

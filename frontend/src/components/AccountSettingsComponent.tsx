@@ -10,9 +10,7 @@ class AccountSettingsComponent extends Component
                 <AccountSettings.SECTION>
                     <AccountSettings.ACCOUNT_LIST>
                         <AccountSettings.UL_HORIZ_LIST>
-                            <AccountSettings.UL_HORIZ_LIST_LI> <AccountSettings.HORIZONTAL_LIST_LI_A href="Account1.html">Account</AccountSettings.HORIZONTAL_LIST_LI_A> </AccountSettings.UL_HORIZ_LIST_LI>
-                            <AccountSettings.UL_HORIZ_LIST_LI> <AccountSettings.HORIZONTAL_LIST_LI_A href="Broker.html">Broker</AccountSettings.HORIZONTAL_LIST_LI_A> </AccountSettings.UL_HORIZ_LIST_LI>
-                            <AccountSettings.UL_HORIZ_LIST_LI> <AccountSettings.HORIZONTAL_LIST_LI_A href="Other.html">Others</AccountSettings.HORIZONTAL_LIST_LI_A> </AccountSettings.UL_HORIZ_LIST_LI>
+                            <AccountSettings.UL_HORIZ_LIST_LI>Account</AccountSettings.UL_HORIZ_LIST_LI>
                         </AccountSettings.UL_HORIZ_LIST>
                         <AccountSettings.FORM>
                             <AccountSettings.LABEL>Account Name:</AccountSettings.LABEL>

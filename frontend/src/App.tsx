@@ -10,6 +10,7 @@ import { SupportComponent } from "./components/SupportComponent";
 import { AboutComponent } from "./components/AboutComponent";
 import { PrivacyPolicyComponent } from "./components/PrivacyPolicyComponent";
 import { LoginComponent } from "./components/LoginComponent";
+import { CreateAccountComponent } from "./components/CreateAccountComponent";
 import { AccountSettingsComponent } from "./components/AccountSettingsComponent";
 import { NavBarComponent } from "./components/NavBarComponent";
 import { NavBarLoginComponent } from "./components/NavBarLoginComponent";
@@ -81,6 +82,9 @@ class App extends Component<IReportsProps, IAppState>
 			                <Route path="/privacy"><PrivacyPolicyComponent/></Route>
 			                <Route path="/login"><LoginComponent/></Route>
 			                <Route path="/account"><AccountSettingsComponent/></Route>
+			                <Route path="/createaccount"><CreateAccountComponent/></Route>
+							
+							
 			                <Route path="/input1"><Redirect to="/login" /></Route>
 			                <Route path="/home"><Redirect to="/" /></Route>
 			                <Route path="/"><Redirect to="/login" /></Route>

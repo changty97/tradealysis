@@ -13,7 +13,7 @@ class AccountSettings extends Component
 		flex-direction: column;
 		justify-content: flex-start; 
 		align-items: flex-start;
-		height: 550px;
+		height: 600px;
 		width: 100%;
 		font-size: 20px;
 		overflow: auto;
@@ -25,15 +25,31 @@ class AccountSettings extends Component
 	`;
 	
 	public static readonly FORM = sty.form `
-		background-color:rgb(220, 199, 255);
+		background-color: rgb(240,240,240);
 		border-style: solid; 
 		border-color: black; 
-		border-width: thin;
+		border-width: 1px;
 		font-family: Arial, sans-serif;
 		text-align: center;
-		padding: 10px 13px 10px 13px; 
+		padding: 10px 40px 10px 40px; 
 		margin-left: 0%;
 		margin-right:0%;
+		margin-bottom: 10px;
+		border-radius:5px;
+	`;
+	
+	public static readonly FORM_DIV = sty.div `
+		background-color: rgb(240,240,240);
+		border-style: solid; 
+		border-color: black; 
+		border-width: 1px;
+		font-family: Arial, sans-serif;
+		text-align: center;
+		padding: 10px 40px 10px 40px; 
+		margin-left: 0%;
+		margin-right:0%;
+		margin-bottom: 10px;
+		border-radius:4px;
 	`;
 	
 	public static readonly LABEL = sty.label `
@@ -41,7 +57,7 @@ class AccountSettings extends Component
 		width: 8em;
 		clear: left;
 		text-align: left;
-		padding-right: 2em;
+		padding-right: 2.5em;
 		margin-top: 25px; 
 	`;
 	
@@ -56,21 +72,22 @@ class AccountSettings extends Component
 	`;
 	
 	public static readonly UL_HORIZ_LIST = sty.ul `
-		background-color:rgb(199, 203, 255);
+		background-color: rgb(240,240,240);
 		border-style: solid; 
 		border-color: rgb(150,100,100); 
-		border-width: thin;
+		border-width: 1px;
 		list-style: none;	
 		margin: 0;
 		color:black;
 		font-weight: bold; 
 		font-size: 1.2em;
+		border-radius:3px;
 	`;
 	
 	public static readonly UL_HORIZ_LIST_LI = sty.li `
-		display: inline;
-		padding-right: 2.5em;
-		padding-left: 2.5em;
+		margin-left: 28%;
+		margin-top: 7px;
+		margin-bottom: 7px;
 	`;
 	
 	public static readonly ACCOUNT_LIST = sty.div `

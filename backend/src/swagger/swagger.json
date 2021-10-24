@@ -282,9 +282,9 @@
 				]
 			}
 		},
-		"/usernameFromKeyGET": {
-			"get": {
-				"operationId": "ServiceUsernameFromKeyGET",
+		"/createAccountPost": {
+			"post": {
+				"operationId": "ServiceCreateAccountPost",
 				"produces": [
 					"application/json"
 				],
@@ -292,7 +292,8 @@
 					"200": {
 						"description": "Ok",
 						"schema": {
-							"type": "string"
+							"type": "number",
+							"format": "double"
 						}
 					},
 					"400": {
@@ -303,11 +304,56 @@
 					}
 				},
 				"description": "",
+				"consumes": [
+					"application/json"
+				],
 				"parameters": [
 					{
-						"description": ":string - key that is in local storage",
+						"description": "",
 						"in": "query",
-						"name": "key",
+						"name": "username",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"description": "",
+						"in": "query",
+						"name": "password",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"description": "",
+						"in": "query",
+						"name": "fName",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"description": "",
+						"in": "query",
+						"name": "lName",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"description": "",
+						"in": "query",
+						"name": "email",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"description": "",
+						"in": "query",
+						"name": "phone",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"description": "",
+						"in": "query",
+						"name": "bdate",
 						"required": true,
 						"type": "string"
 					}

@@ -106,7 +106,6 @@ async function userFromKey(key:string):Promise<string>
         const theCollectionKeyTable:  Collection = db.collection(mongoOptionsUserKey.collection);
 		
         let retVal = "";
-		
         return theCollectionKeyTable.distinct("user_obj_id", {
             "key": key
         }).then((results : ObjectId[] ) =>
@@ -157,4 +156,137 @@ async function userFromKey(key:string):Promise<string>
             }
         });
 }
-export { correctLogin, correctLoginKey, userFromKey };
+
+/** Returns 1 on success, 0 on failure **/
+async function userExists(username:string): Promise<number>
+{
+    let client: MongoClient | null = null;
+    return MongoClient.connect(mongoOptionsUserTable.uri).then((connection: MongoClient) =>
+    {
+        client = connection;
+        const db: Db = client.db(mongoOptionsUserTable.db);
+        const theCollection: Collection = db.collection(mongoOptionsUserTable.collection);
+        return (theCollection.find(
+            {
+                "uname": username
+            }).count()
+        ).then((results: number) =>
+        {
+            if (results > 0)
+            {
+                return 1;
+            }
+            return 0;
+        });
+    })
+        .catch((err: Error) =>
+        {
+            return Promise.reject(err);
+        })
+        .finally(() =>
+        {
+            if (client)
+            {
+                client.close();
+            }
+        });
+}
+
+async function createAccount(username:string, password:string, fName:string, lName:string,
+							 email:string, phone:string, bdate:string): Promise<number>
+{
+    let client: MongoClient | null = null;
+    return MongoClient.connect(mongoOptionsUserTable.uri).then((connection: MongoClient) =>
+    {
+        client = connection;
+        const db: Db = client.db(mongoOptionsUserTable.db);
+        const theCollectionUserTable: Collection       = db.collection(mongoOptionsUserTable.collection);
+        const theCollectionAccountTable:  Collection   = db.collection(mongoOptionsUserAccount.collection);
+        const theCollectionKeyTable:  Collection       = db.collection(mongoOptionsUserKey.collection);
+        const theCollectionSessionTable:  Collection   = db.collection(mongoOptionsUserSessions.collection);
+
+        return userExists(username).then((res:number)=>
+        {
+            if (res == 1)
+            {
+                return 0;
+            }
+            else
+            {
+				 return theCollectionUserTable.insertOne({
+                    "uname": username,
+                    "pssd": password
+                }).then((res2)=>
+                {
+                    if (res2 !== null)
+                    {
+                        if (res2.insertedId !== null)
+                        {
+                            return theCollectionAccountTable.insertOne(
+                                {
+                                    "user_obj_id": res2.insertedId,
+                                    "fName": fName,
+                                    "lName": lName,
+                                    "email": email,
+                                    "phone": phone,
+                                    "bdate": bdate
+                                }
+                            ).then((res3)=>
+                            {
+                                if (res3 !== null)
+                                {
+                                    if (res3.insertedId !== null)
+                                    {
+                                        const originalKey = `${username  }_key`;
+										
+                                        return theCollectionKeyTable.insertOne({
+                                            "key": originalKey,
+                                            "user_obj_id": res2.insertedId,
+                                            "active": 1
+                                        }).then((res4)=>
+                                        {
+											
+                                            return 1;
+                                        })
+                                            .catch((err: Error)=>
+                                            {
+                                                return Promise.reject(err);
+                                            });
+                                    }
+                                }
+                                return 0;
+                            })
+                                .catch((err: Error) =>
+                                {
+                                    return Promise.reject(err);
+                                });
+                        }
+                    }
+                    return 0;
+                })
+                    .catch((err: Error) =>
+                    {
+                        return Promise.reject(err);
+                    });
+            }
+        })
+            .catch((err: Error) =>
+            {
+                return Promise.reject(err);
+            });
+    })
+        .catch((err: Error) =>
+        {
+            return Promise.reject(err);
+        })
+        .finally(() =>
+        {
+            if (client)
+            {
+                client.close();
+            }
+        }
+        );
+}
+
+export { correctLogin, correctLoginKey, userFromKey, userExists, createAccount };
