@@ -305,7 +305,7 @@
 				"description": "",
 				"parameters": [
 					{
-						"description": "",
+						"description": ":string - key that is in local storage",
 						"in": "query",
 						"name": "key",
 						"required": true,

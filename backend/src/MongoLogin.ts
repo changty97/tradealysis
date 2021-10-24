@@ -1,6 +1,6 @@
-import { InsertOneResult, MongoClient, ObjectId } from "mongodb";
+import { InsertOneResult, MongoClient, ObjectId, Db, Collection } from "mongodb";
 import { mongoOptionsLogin, mongoOptionsUserTable, mongoOptionsUserKey, mongoOptionsUserAccount, mongoOptionsUserSessions } from "./constants/globals";
-import * as mongoDB from "mongodb";
+//import * as mongoDB from "mongodb";
 
 /** Returns 1 on success, 0 on failure **/
 async function correctLogin(username:string, password:string): Promise<number>
@@ -9,8 +9,8 @@ async function correctLogin(username:string, password:string): Promise<number>
     return MongoClient.connect(mongoOptionsUserTable.uri).then((connection: MongoClient) =>
     {
         client = connection;
-        const db: mongoDB.Db = client.db(mongoOptionsUserTable.db);
-        const theCollection: mongoDB.Collection = db.collection(mongoOptionsUserTable.collection);
+        const db: Db = client.db(mongoOptionsUserTable.db);
+        const theCollection: Collection = db.collection(mongoOptionsUserTable.collection);
         const x = (theCollection.find(
             {
                 "uname": username,
@@ -37,20 +37,19 @@ async function correctLoginKey(username:string, password:string): Promise<string
     return MongoClient.connect(mongoOptionsUserTable.uri).then((connection: MongoClient) =>
     {
         client = connection;
-        const db: mongoDB.Db = client.db(mongoOptionsUserTable.db);
-        const theCollectionUserTable: mongoDB.Collection = db.collection(mongoOptionsUserTable.collection);
-        const theCollectionKeyTable:  mongoDB.Collection = db.collection(mongoOptionsUserKey.collection);
+        const db: Db = client.db(mongoOptionsUserTable.db);
+        const theCollectionUserTable: Collection = db.collection(mongoOptionsUserTable.collection);
+        const theCollectionKeyTable:  Collection = db.collection(mongoOptionsUserKey.collection);
 
         let retVal = "";
-		
         return theCollectionUserTable.distinct("_id", {
             "uname": username,
             "pssd": password
         }).then((results : ObjectId[] ) =>
         {
-            if (results != null)
+            if (results !== null)
             {
-                if (results.length != 0)
+                if (results.length !== 0)
                 {
                     return theCollectionKeyTable.distinct(
                         "key", {
@@ -58,9 +57,9 @@ async function correctLoginKey(username:string, password:string): Promise<string
                         }
                     ).then((results2 : ObjectId[] ) =>
                     {
-                        if (results2 != null)
+                        if (results2 !== null)
                         {
-                            if (results2.length != 0)
+                            if (results2.length !== 0)
                             {
                                 const key : ObjectId = results2[0];
                                 retVal =  key.toString();
@@ -95,17 +94,16 @@ async function correctLoginKey(username:string, password:string): Promise<string
         });
 }
 
-
 async function userFromKey(key:string):Promise<string>
 {
     let client: MongoClient | null = null;
     return MongoClient.connect(mongoOptionsUserTable.uri).then((connection: MongoClient) =>
     {
         client = connection;
-        const db: mongoDB.Db = client.db(mongoOptionsUserTable.db);
-        const theCollection: mongoDB.Collection = db.collection(mongoOptionsUserTable.collection);
-        const theCollectionUserTable: mongoDB.Collection = db.collection(mongoOptionsUserTable.collection);
-        const theCollectionKeyTable:  mongoDB.Collection = db.collection(mongoOptionsUserKey.collection);
+        const db: Db = client.db(mongoOptionsUserTable.db);
+        const theCollection: Collection = db.collection(mongoOptionsUserTable.collection);
+        const theCollectionUserTable: Collection = db.collection(mongoOptionsUserTable.collection);
+        const theCollectionKeyTable:  Collection = db.collection(mongoOptionsUserKey.collection);
 		
         let retVal = "";
 		
@@ -113,9 +111,9 @@ async function userFromKey(key:string):Promise<string>
             "key": key
         }).then((results : ObjectId[] ) =>
         {
-            if (results != null)
+            if (results !== null)
             {
-                if (results.length != 0)
+                if (results.length !== 0)
                 {
                     return theCollectionUserTable.distinct(
                         "uname", {
@@ -123,9 +121,9 @@ async function userFromKey(key:string):Promise<string>
                         }
                     ).then((results2 : ObjectId[] ) =>
                     {
-                        if (results2 != null)
+                        if (results2 !== null)
                         {
-                            if (results2.length != 0)
+                            if (results2.length !== 0)
                             {
                                 const un : ObjectId = results2[0];
                                 retVal =  un.toString();
@@ -146,7 +144,6 @@ async function userFromKey(key:string):Promise<string>
             {
                 return Promise.reject(err);
             });
-		
     })
         .catch((err: Error) =>
         {
@@ -160,6 +157,4 @@ async function userFromKey(key:string):Promise<string>
             }
         });
 }
-
 export { correctLogin, correctLoginKey, userFromKey };
-

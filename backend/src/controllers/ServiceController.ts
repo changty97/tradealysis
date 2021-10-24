@@ -75,10 +75,11 @@ export class ServiceController
         return await correctLogin(username, password);
     }
 	
-	    /**
+	 /**
 	  * @param username:string - username entered into login page
 	  * @param password:string - password entered into login page (clear text no encryption)
-	  * @returns 1 if username, password pair in db. otherwuse returns 0 (str character 1, 0)
+	  * @returns ObjectId toString value of user that maps to uname,pssd. If the username,password
+	  *          does not map to a user, it returns a empty str
 	 **/
 	 @Path("/loginKeyGET")
 	 @GET
@@ -87,6 +88,10 @@ export class ServiceController
 	     return await correctLoginKey(username, password);
 	 }
 	 
+	 /**
+	  * @param key:string - key that is in local storage
+	  * @return uname:Promise<string> if key matches with user in db. else returns empty str
+	 **/
 	 @Path("/usernameFromKeyGET")
 	 @GET
 	 public async usernameFromKeyGET(@QueryParam("key") key: string) : Promise<string>
