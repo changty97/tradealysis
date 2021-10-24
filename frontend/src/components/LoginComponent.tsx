@@ -39,7 +39,7 @@ class LoginComponent extends Component<any, any>
                     if (res != null)
                     {
                         const val = res.data;
-                        if (val != "")
+                        if (val !== "")
                         {
                             this.setLocalStorageStateKey(val);
                             window.location.reload();

@@ -10,15 +10,15 @@ const api = axios.create({
 
 class NavBarComponent extends Component<any, any>
 {
-	constructor(props: any)
-	{
+    constructor(props: any)
+    {
 	    super(props);
 	    this.state = {
 	        user: "User"
 	    };
-	}
-	componentWillMount(): void
-	{
+    }
+    componentWillMount(): void
+    {
 	    const theKey = localStorage.getItem("Key");
 	    if (theKey == null)
 	    {
@@ -33,18 +33,20 @@ class NavBarComponent extends Component<any, any>
 	    )
 	    .then((res) =>
 	    {
-		   this.setState({ user: res.data});  
+		   this.setState({
+                    user: res.data
+                });
 	    });
-	}
+    }
 	
-	private logout() : void
-	{
+    private logout() : void
+    {
 	    localStorage.clear();
 	    window.location.reload();
-	}
+    }
 
-	render(): JSX.Element
-	{
+    render(): JSX.Element
+    {
 	    return (
 	        <Fragment>
 	            <header id="allHeader">
@@ -83,6 +85,6 @@ class NavBarComponent extends Component<any, any>
 	            </header>
 	        </Fragment>
 	    );
-	}
+    }
 }
 export { NavBarComponent };
