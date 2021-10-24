@@ -59,12 +59,7 @@ async function correctLoginKey(username:string, password:string): Promise<string
                     {
                         if (results2 !== null)
                         {
-                            if (results2.length !== 0)
-                            {
-                                const key : ObjectId = results2[0];
-                                retVal =  key.toString();
-                                return retVal;
-                            }
+                            retVal = results2[0].toString();
                         }
                         return retVal;
                     })
@@ -94,6 +89,11 @@ async function correctLoginKey(username:string, password:string): Promise<string
         });
 }
 
+
+
+
+
+
 async function userFromKey(key:string):Promise<string>
 {
     let client: MongoClient | null = null;
@@ -106,13 +106,14 @@ async function userFromKey(key:string):Promise<string>
         const theCollectionKeyTable:  Collection = db.collection(mongoOptionsUserKey.collection);
 		
         let retVal = "";
+		
         return theCollectionKeyTable.distinct("user_obj_id", {
             "key": key
         }).then((results : ObjectId[] ) =>
         {
-            if (results !== null)
+            if (results != null)
             {
-                if (results.length !== 0)
+                if (results.length != 0)
                 {
                     return theCollectionUserTable.distinct(
                         "uname", {
@@ -120,14 +121,9 @@ async function userFromKey(key:string):Promise<string>
                         }
                     ).then((results2 : ObjectId[] ) =>
                     {
-                        if (results2 !== null)
+                        if (results2 != null)
                         {
-                            if (results2.length !== 0)
-                            {
-                                const un : ObjectId = results2[0];
-                                retVal =  un.toString();
-                                return retVal;
-                            }
+                            retVal = results2[0].toString();
                         }
                         return retVal;
                     })
@@ -143,6 +139,7 @@ async function userFromKey(key:string):Promise<string>
             {
                 return Promise.reject(err);
             });
+		
     })
         .catch((err: Error) =>
         {
@@ -156,6 +153,30 @@ async function userFromKey(key:string):Promise<string>
             }
         });
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /** Returns 1 on success, 0 on failure **/
 async function userExists(username:string): Promise<number>

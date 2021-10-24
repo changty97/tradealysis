@@ -67,15 +67,16 @@ export class ServiceController
 	  * @param username:string - username entered into login page
 	  * @param password:string - password entered into login page (clear text no encryption)
 	  * @returns 1 if username, password pair in db. otherwuse returns 0 (str character 1, 0)
-	 **/
+	 
 	 @Path("/loginGet")
 	 @GET
     public async loginGet(@QueryParam("username") username: string, @QueryParam("password") password: string) : Promise<number>
     {
         return await correctLogin(username, password);
     }
+	**/
 	
-	 /**
+    /**
 	  * @param username:string - username entered into login page
 	  * @param password:string - password entered into login page (clear text no encryption)
 	  * @returns ObjectId toString value of user that maps to uname,pssd. If the username,password
@@ -87,6 +88,16 @@ export class ServiceController
 	 {
 	     return await correctLoginKey(username, password);
 	 }
+	 
+	 //async function userFromKey(key:string):Promise<string>
+	 
+	 @Path("/usernameFromKeyGET")
+	 @GET
+	 public async usernameFromKeyGET(@QueryParam("key") key: string):Promise<string>
+	 {
+		 return await userFromKey(key);
+	 }
+
 	 
 	 @Path("/createAccountPost")
 	 @POST
