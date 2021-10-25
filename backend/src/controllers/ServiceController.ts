@@ -4,7 +4,10 @@ import { BadRequestError } from "typescript-rest/dist/server/model/errors";
 import { CSVParser } from "../CSVParser";
 import { ICSVData } from "../models/ICSVData";
 import { exampleInsertThing, exampleRetrieveThing, genericObject, saveTable } from "../Mongo";
-import { correctLogin } from "../MongoLogin";
+import { correctLoginKey, userFromKey } from "../MongoLogin";
+import { createAccount } from "../MongoCreateAccount";
+import { fnameFromKey } from "../MongoAccountSettings";
+
 
 const badRequestExampleResponse: BadRequestError = {
     name: "BadRequestError",
@@ -66,13 +69,80 @@ export class ServiceController
     /**
 	  * @param username:string - username entered into login page
 	  * @param password:string - password entered into login page (clear text no encryption)
-	  * @returns 1 if username, password pair in db. otherwuse returns 0 (str character 1, 0)
+	  * @returns ObjectId toString value of user that maps to uname,pssd. If the username,password
+	  *          does not map to a user, it returns a empty str
 	 **/
-	 @Path("/loginGet")
+	 @Path("/loginKeyGET")
 	 @GET
-    public async loginGet(@QueryParam("username") username: string, @QueryParam("password") password: string) : Promise<number>
-    {
-        return await correctLogin(username, password);
-    }
+	 public async loginKeyGET(@QueryParam("username") username: string, @QueryParam("password") password: string) : Promise<string>
+	 {
+	     return await correctLoginKey(username, password);
+	 }
+
 	 
+	 /**
+	 *   Get a username from a key in browser local storage
+     *   If the key does not match with a user, nothing is returned
+     *   else the user's username is returned
+     *   @returns username : string or "" : string if key does not relate to user in backend
+	**/
+	 @Path("/usernameFromKeyGET")
+	 @GET
+	 public async usernameFromKeyGET(@QueryParam("key") key: string):Promise<string>
+	 {
+		 return await userFromKey(key);
+	 }
+
+	 /**
+	  * Method creates Account
+	  * @returns 1 if account is created. 0 if username already exists or account not created
+	 **/
+	 @Path("/createAccountPost")
+	 @POST
+	 public async createAccountPost(body: any) : Promise<number>
+	 {
+		 return await createAccount(body.userInfo.username, body.userInfo.password, body.userInfo.fName, body.userInfo.lName, body.userInfo.email, body.userInfo.phone, body.userInfo.bdate);
+	 }
+	 
+	 @Path("/accountunameFromKeyGET")
+	 @GET
+	 public async accountunameFromKeyGET(@QueryParam("key") key: string):Promise<string>
+	 {
+		 return await this.usernameFromKeyGET(key);
+	 }
+	 
+	 @Path("/accountfNameFromKeyGET")
+	 @GET
+	 public async accountfnameFromKeyGET(@QueryParam("key") key: string):Promise<string>
+	 {
+		 return await fnameFromKey(key, "fName");
+	 }
+	 
+	 @Path("/accountlNameFromKeyGET")
+	 @GET
+	 public async accountlNameFromKeyGET(@QueryParam("key") key: string):Promise<string>
+	 {
+		 return await fnameFromKey(key, "lName");
+	 }
+	 
+	 @Path("/accountemailFromKeyGET")
+	 @GET
+	 public async accountemailFromKeyGET(@QueryParam("key") key: string):Promise<string>
+	 {
+		 return await fnameFromKey(key, "email");
+	 }
+	 
+	 @Path("/accountphoneFromKeyGET")
+	 @GET
+	 public async accountphoneFromKeyGET(@QueryParam("key") key: string):Promise<string>
+	 {
+		 return await fnameFromKey(key, "phone");
+	 }
+	 
+	 @Path("/accountbdateFromKeyGET")
+	 @GET
+	 public async accountbdateFromKeyGET(@QueryParam("key") key: string):Promise<string>
+	 {
+		 return await fnameFromKey(key, "bdate");
+	 }
 }

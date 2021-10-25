@@ -203,9 +203,9 @@
 				]
 			}
 		},
-		"/loginGet": {
+		"/loginKeyGET": {
 			"get": {
-				"operationId": "ServiceLoginGet",
+				"operationId": "ServiceLoginKeyGET",
 				"produces": [
 					"application/json"
 				],
@@ -213,8 +213,7 @@
 					"200": {
 						"description": "Ok",
 						"schema": {
-							"type": "number",
-							"format": "double"
+							"type": "string"
 						}
 					},
 					"400": {
@@ -237,6 +236,268 @@
 						"description": ":string - password entered into login page (clear text no encryption)",
 						"in": "query",
 						"name": "password",
+						"required": true,
+						"type": "string"
+					}
+				]
+			}
+		},
+		"/usernameFromKeyGET": {
+			"get": {
+				"operationId": "ServiceUsernameFromKeyGET",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"type": "string"
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"schema": {
+							"$ref": "#/definitions/BadRequestError"
+						}
+					}
+				},
+				"description": "Get a username from a key in browser local storage\n   If the key does not match with a user, nothing is returned\n   else the user's username is returned",
+				"parameters": [
+					{
+						"description": "",
+						"in": "query",
+						"name": "key",
+						"required": true,
+						"type": "string"
+					}
+				]
+			}
+		},
+		"/createAccountPost": {
+			"post": {
+				"operationId": "ServiceCreateAccountPost",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"type": "number",
+							"format": "double"
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"schema": {
+							"$ref": "#/definitions/BadRequestError"
+						}
+					}
+				},
+				"description": "Method creates Account",
+				"consumes": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"description": "",
+						"in": "body",
+						"name": "body",
+						"required": true,
+						"schema": {
+							"type": "object"
+						}
+					}
+				]
+			}
+		},
+		"/accountunameFromKeyGET": {
+			"get": {
+				"operationId": "ServiceAccountunameFromKeyGET",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"type": "string"
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"schema": {
+							"$ref": "#/definitions/BadRequestError"
+						}
+					}
+				},
+				"description": "",
+				"parameters": [
+					{
+						"description": "",
+						"in": "query",
+						"name": "key",
+						"required": true,
+						"type": "string"
+					}
+				]
+			}
+		},
+		"/accountfNameFromKeyGET": {
+			"get": {
+				"operationId": "ServiceAccountfnameFromKeyGET",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"type": "string"
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"schema": {
+							"$ref": "#/definitions/BadRequestError"
+						}
+					}
+				},
+				"description": "",
+				"parameters": [
+					{
+						"description": "",
+						"in": "query",
+						"name": "key",
+						"required": true,
+						"type": "string"
+					}
+				]
+			}
+		},
+		"/accountlNameFromKeyGET": {
+			"get": {
+				"operationId": "ServiceAccountlNameFromKeyGET",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"type": "string"
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"schema": {
+							"$ref": "#/definitions/BadRequestError"
+						}
+					}
+				},
+				"description": "",
+				"parameters": [
+					{
+						"description": "",
+						"in": "query",
+						"name": "key",
+						"required": true,
+						"type": "string"
+					}
+				]
+			}
+		},
+		"/accountemailFromKeyGET": {
+			"get": {
+				"operationId": "ServiceAccountemailFromKeyGET",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"type": "string"
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"schema": {
+							"$ref": "#/definitions/BadRequestError"
+						}
+					}
+				},
+				"description": "",
+				"parameters": [
+					{
+						"description": "",
+						"in": "query",
+						"name": "key",
+						"required": true,
+						"type": "string"
+					}
+				]
+			}
+		},
+		"/accountphoneFromKeyGET": {
+			"get": {
+				"operationId": "ServiceAccountphoneFromKeyGET",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"type": "string"
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"schema": {
+							"$ref": "#/definitions/BadRequestError"
+						}
+					}
+				},
+				"description": "",
+				"parameters": [
+					{
+						"description": "",
+						"in": "query",
+						"name": "key",
+						"required": true,
+						"type": "string"
+					}
+				]
+			}
+		},
+		"/accountbdateFromKeyGET": {
+			"get": {
+				"operationId": "ServiceAccountbdateFromKeyGET",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"type": "string"
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"schema": {
+							"$ref": "#/definitions/BadRequestError"
+						}
+					}
+				},
+				"description": "",
+				"parameters": [
+					{
+						"description": "",
+						"in": "query",
+						"name": "key",
 						"required": true,
 						"type": "string"
 					}

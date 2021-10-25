@@ -1,22 +1,40 @@
-import { InsertOneResult, MongoClient } from "mongodb";
-import { mongoOptionsLogin } from "./constants/globals";
-import * as mongoDB from "mongodb";
+import { InsertOneResult, MongoClient, ObjectId, Db, Collection } from "mongodb";
+import { userMongoOptions } from "./constants/globals";
 
-/** Returns 1 on success, 0 on failure **/
-async function correctLogin(username:string, password:string): Promise<number>
+/**
+ * Method returns key based on username, passwork pair
+ * @return key:string associated with username, password pair or "" if username, password pair not in db
+ */
+async function correctLoginKey(username:string, password:string): Promise<string>
 {
     let client: MongoClient | null = null;
-    return MongoClient.connect(mongoOptionsLogin.uri).then((connection: MongoClient) =>
+    return MongoClient.connect(userMongoOptions.uri).then((connection: MongoClient) =>
     {
         client = connection;
-        const db: mongoDB.Db = client.db(mongoOptionsLogin.db);
-        const theCollection: mongoDB.Collection = db.collection(mongoOptionsLogin.collection);
-        const x = (theCollection.find(
+        const db: Db = client.db(userMongoOptions.db);
+        const theCollectionUserTable: Collection = db.collection(userMongoOptions.collections['userTable']);
+        const theCollectionKeyTable:  Collection = db.collection(userMongoOptions.collections['userKey']);
+
+        let retVal = "";
+        return theCollectionUserTable.distinct("_id", {
+            "uname": username,
+            "pssd": password
+        }).then((results : ObjectId[] ) =>
+        {
+            if (results !== null && results.length !== 0)
             {
-                "uname": username,
-                "pssd": password,
-            }).count());
-        return x;
+                return theCollectionKeyTable.distinct(
+                    "key", {
+                        "user_obj_id": results[0]
+                    }
+                ).then((results2 : ObjectId[] ) =>
+                {
+                    retVal = (results2 !== null) ? results2[0].toString() : retVal;
+                    return retVal;
+                });
+            }
+            return retVal;
+        });
     })
         .catch((err: Error) =>
         {
@@ -31,5 +49,86 @@ async function correctLogin(username:string, password:string): Promise<number>
         });
 }
 
-export { correctLogin };
+/**
+ * Returns username from a key in local storage
+ * @returns username:string if key matches with user, else empty str ""
+ **/
+async function userFromKey(key:string):Promise<string>
+{
+    let client: MongoClient | null = null;
+    return MongoClient.connect(userMongoOptions.uri).then((connection: MongoClient) =>
+    {
+        client = connection;
+        const db: Db = client.db(userMongoOptions.db);
+        const theCollectionUserTable: Collection = db.collection(userMongoOptions.collections['userTable']);
+        const theCollectionKeyTable:  Collection = db.collection(userMongoOptions.collections['userKey']);
+        let retVal = "";
+        return theCollectionKeyTable.distinct("user_obj_id", {
+            "key": key
+        }).then((results : ObjectId[] ) =>
+        {
+            if (results !== null && results.length !== 0)
+            {
+                return theCollectionUserTable.distinct(
+                    "uname", {
+                        "_id": results[0]
+                    }
+                ).then((results2 : ObjectId[] ) =>
+                {
+                    retVal = (results2 !== null) ? results2[0].toString() : retVal;
+                    return retVal;
+                });
+            }
+            return retVal;
+        });
+    })
+        .catch((err: Error) =>
+        {
+            return Promise.reject(err);
+        })
+        .finally(() =>
+        {
+            if (client)
+            {
+                client.close();
+            }
+        });
+}
 
+/**
+ * Method returns 1 if a user currently exists in the backend db. If the user
+ * does not exists, return 0
+ * @return 0 if user does not exist, 1 if the user exists
+ */
+async function userExists(username:string): Promise<number>
+{
+    let client: MongoClient | null = null;
+    return MongoClient.connect(userMongoOptions.uri).then((connection: MongoClient) =>
+    {
+        client = connection;
+        const db: Db = client.db(userMongoOptions.db);
+        const theCollection: Collection = db.collection(userMongoOptions.collections['userTable']);
+		
+        return (theCollection.find(
+            {
+                "uname": username
+            }).count()
+        ).then((results: number) =>
+        {
+            return ((results > 0) ? 1 : 0);
+        });
+    })
+        .catch((err: Error) =>
+        {
+            return Promise.reject(err);
+        })
+        .finally(() =>
+        {
+            if (client)
+            {
+                client.close();
+            }
+        });
+}
+
+export { correctLoginKey, userFromKey, userExists };
