@@ -25,6 +25,15 @@ class App extends Component<IReportsProps, IAppState>
 	    this.state = {
 	        reportsId: null
 	    };
+
+        this.setFocus = this.setFocus.bind(this);
+    }
+
+    setFocus(id: string): void
+    {
+        this.setState({
+            reportsId: id
+        });
     }
 	
     render(): JSX.Element
@@ -49,7 +58,7 @@ class App extends Component<IReportsProps, IAppState>
 				                <Route path="/privacy"><PrivacyPolicyComponent/></Route>
 				                <Route path="/login"><Redirect to="/" /></Route>
 				                <Route path="/account"><AccountSettingsComponent/></Route>
-				                <Route path="/input1"><HomeImportComponent /></Route>
+				                <Route path="/input1"><HomeImportComponent setFocus={this.setFocus}/></Route>
 				                <Route path="/home"><Redirect to="/" /></Route>
 				                <Route path="/"><HomeComponent /></Route>
 				            </Switch>
