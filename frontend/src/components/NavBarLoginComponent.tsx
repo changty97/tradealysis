@@ -15,23 +15,17 @@ class NavBarLoginComponent extends Component
                         <div className="headerButtons">
                             <Header.HEADER_BUTTONS_LIST>
                                 <Header.HEADER_BUTTONS_LIST_LI>
-                                    <Header.LINK_1 to="/login">
-                                        <Header.HEADER_BUTTONS_LIST_LI_A>Home</Header.HEADER_BUTTONS_LIST_LI_A>
-                                    </Header.LINK_1>
+                                    <Header.LINK_1 to="/login">Home</Header.LINK_1>
                                 </Header.HEADER_BUTTONS_LIST_LI>
                                 <Header.HEADER_BUTTONS_LIST_LI>
-                                    <Header.LINK_1 to="/about">
-                                        <Header.HEADER_BUTTONS_LIST_LI_A>About</Header.HEADER_BUTTONS_LIST_LI_A>
-                                    </Header.LINK_1>
+                                    <Header.LINK_1 to="/about">About</Header.LINK_1>
                                 </Header.HEADER_BUTTONS_LIST_LI>
                             </Header.HEADER_BUTTONS_LIST>
                         </div>
                         <Header.USER_AND_SETTINGS_BUTTONS>
                             <Header.HEADER_BUTTONS_LIST>
                                 <Header.HEADER_BUTTONS_LIST_LI>
-                                    <Header.LINK_1 to="/createaccount">
-                                        <Header.HEADER_BUTTONS_LIST_LI_A>Create new Account</Header.HEADER_BUTTONS_LIST_LI_A>
-                                    </Header.LINK_1>
+                                    <Header.LINK_1 to="/createaccount">Create new Account</Header.LINK_1>
                                 </Header.HEADER_BUTTONS_LIST_LI>
                             </Header.HEADER_BUTTONS_LIST>
                         </Header.USER_AND_SETTINGS_BUTTONS>

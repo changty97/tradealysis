@@ -6,6 +6,9 @@ import { ICSVData } from "../models/ICSVData";
 import { exampleInsertThing, exampleRetrieveThing, genericObject, saveTable } from "../Mongo";
 import { correctLoginKey, userFromKey } from "../MongoLogin";
 import { createAccount } from "../MongoCreateAccount";
+import { fnameFromKey } from "../MongoAccountSettings";
+
+
 const badRequestExampleResponse: BadRequestError = {
     name: "BadRequestError",
     message: "Your request payload was not in the expected format.",
@@ -99,5 +102,47 @@ export class ServiceController
 	 public async createAccountPost(body: any) : Promise<number>
 	 {
 		 return await createAccount(body.userInfo.username, body.userInfo.password, body.userInfo.fName, body.userInfo.lName, body.userInfo.email, body.userInfo.phone, body.userInfo.bdate);
+	 }
+	 
+	 @Path("/accountunameFromKeyGET")
+	 @GET
+	 public async accountunameFromKeyGET(@QueryParam("key") key: string):Promise<string>
+	 {
+		 return await this.usernameFromKeyGET(key);
+	 }
+	 
+	 @Path("/accountfNameFromKeyGET")
+	 @GET
+	 public async accountfnameFromKeyGET(@QueryParam("key") key: string):Promise<string>
+	 {
+		 return await fnameFromKey(key, "fName");
+	 }
+	 
+	 @Path("/accountlNameFromKeyGET")
+	 @GET
+	 public async accountlNameFromKeyGET(@QueryParam("key") key: string):Promise<string>
+	 {
+		 return await fnameFromKey(key, "lName");
+	 }
+	 
+	 @Path("/accountemailFromKeyGET")
+	 @GET
+	 public async accountemailFromKeyGET(@QueryParam("key") key: string):Promise<string>
+	 {
+		 return await fnameFromKey(key, "email");
+	 }
+	 
+	 @Path("/accountphoneFromKeyGET")
+	 @GET
+	 public async accountphoneFromKeyGET(@QueryParam("key") key: string):Promise<string>
+	 {
+		 return await fnameFromKey(key, "phone");
+	 }
+	 
+	 @Path("/accountbdateFromKeyGET")
+	 @GET
+	 public async accountbdateFromKeyGET(@QueryParam("key") key: string):Promise<string>
+	 {
+		 return await fnameFromKey(key, "bdate");
 	 }
 }

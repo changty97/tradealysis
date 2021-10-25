@@ -1,8 +1,57 @@
 import { Component, Fragment } from "react";
 import { AccountSettings } from "../cssComponents/AccountSettings";
+import axios from "axios";
 
-class AccountSettingsComponent extends Component
+const api = axios.create({
+    baseURL: 'http://localhost:3001/'
+});
+
+class AccountSettingsComponent extends Component<any, any>
 {
+    constructor(props: any)
+    {
+	    super(props);
+	    this.state = {
+	        uname: "",
+            pssd: "",
+            fName: "",
+            lName: "",
+            email: "",
+            phone: "",
+            date: ""
+	    };
+    }
+    componentWillMount(): void
+    {
+        console.log("mount");
+        const theKey = localStorage.getItem("Key");
+	    if (theKey == null)
+	    {
+	        this.logout();
+	        return;
+	    }
+        
+        api.get('accountunameFromKeyGET', {
+	        params: {
+	            key: `${theKey}`,
+	            }
+	        }
+	    )
+	    .then((res) =>
+	    {
+		   this.setState({
+                    uname: res.data
+                });
+	    });
+        
+    }
+	
+    private logout() : void
+    {
+	    localStorage.clear();
+	    window.location.href = "/login";
+    }
+	
     render(): JSX.Element
     {
         return (

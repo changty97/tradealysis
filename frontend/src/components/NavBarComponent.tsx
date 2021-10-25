@@ -42,7 +42,7 @@ class NavBarComponent extends Component<any, any>
     private logout() : void
     {
 	    localStorage.clear();
-	    window.location.href="/login"
+	    window.location.href = "/login";
     }
 
     render(): JSX.Element
@@ -55,28 +55,20 @@ class NavBarComponent extends Component<any, any>
 	                    <div className="headerButtons">
 	                        <Header.HEADER_BUTTONS_LIST>
 	                            <Header.HEADER_BUTTONS_LIST_LI>
-	                                <Header.LINK_1 to="/home">
-	                                    <Header.HEADER_BUTTONS_LIST_LI_A>Home</Header.HEADER_BUTTONS_LIST_LI_A>
-	                                </Header.LINK_1>
+	                                <Header.LINK_1 to="/home">Home</Header.LINK_1>
 	                            </Header.HEADER_BUTTONS_LIST_LI>
 	                            <Header.HEADER_BUTTONS_LIST_LI>
-	                                <Header.LINK_1 to="/report">
-	                                    <Header.HEADER_BUTTONS_LIST_LI_A>Reports</Header.HEADER_BUTTONS_LIST_LI_A>
-	                                </Header.LINK_1>
+	                                <Header.LINK_1 to="/report">Reports</Header.LINK_1>
 	                            </Header.HEADER_BUTTONS_LIST_LI>
 	                        </Header.HEADER_BUTTONS_LIST>
 	                    </div>
 	                    <Header.USER_AND_SETTINGS_BUTTONS>
 	                        <Header.HEADER_BUTTONS_LIST>
 	                            <Header.HEADER_BUTTONS_LIST_LI>
-	                                <Header.LINK_1 to="/login"> {/* Replace with correct routing when they're created */}
-	                                    <Header.HEADER_BUTTONS_LIST_LI_A>{this.state.user}</Header.HEADER_BUTTONS_LIST_LI_A>
-	                                </Header.LINK_1>
+	                                <Header.LINK_1 to="/login">{this.state.user}</Header.LINK_1>
 	                            </Header.HEADER_BUTTONS_LIST_LI>
 	                            <Header.HEADER_BUTTONS_LIST_LI>
-	                                <Header.LINK_1 to="/account"> {/* Replace with correct routing when they're created */}
-	                                    <Header.HEADER_BUTTONS_LIST_LI_A>Settings</Header.HEADER_BUTTONS_LIST_LI_A>
-	                                </Header.LINK_1>
+	                                <Header.LINK_1 to="/account">Settings</Header.LINK_1>
 	                            </Header.HEADER_BUTTONS_LIST_LI>
 										 <Header.LOGOUT_BUTTON onClick={this.logout}>Logout</Header.LOGOUT_BUTTON>
 	                        </Header.HEADER_BUTTONS_LIST>
