@@ -42,7 +42,7 @@ class NavBarComponent extends Component<any, any>
     private logout() : void
     {
 	    localStorage.clear();
-	    window.location.reload();
+	    window.location.href="/login"
     }
 
     render(): JSX.Element
