@@ -262,7 +262,7 @@
 						}
 					}
 				},
-				"description": "",
+				"description": "Get a username from a key in browser local storage\n   If the key does not match with a user, nothing is returned\n   else the user's username is returned",
 				"parameters": [
 					{
 						"description": "",
@@ -295,59 +295,19 @@
 						}
 					}
 				},
-				"description": "",
+				"description": "Method creates Account",
 				"consumes": [
 					"application/json"
 				],
 				"parameters": [
 					{
 						"description": "",
-						"in": "query",
-						"name": "username",
+						"in": "body",
+						"name": "body",
 						"required": true,
-						"type": "string"
-					},
-					{
-						"description": "",
-						"in": "query",
-						"name": "password",
-						"required": true,
-						"type": "string"
-					},
-					{
-						"description": "",
-						"in": "query",
-						"name": "fName",
-						"required": true,
-						"type": "string"
-					},
-					{
-						"description": "",
-						"in": "query",
-						"name": "lName",
-						"required": true,
-						"type": "string"
-					},
-					{
-						"description": "",
-						"in": "query",
-						"name": "email",
-						"required": true,
-						"type": "string"
-					},
-					{
-						"description": "",
-						"in": "query",
-						"name": "phone",
-						"required": true,
-						"type": "string"
-					},
-					{
-						"description": "",
-						"in": "query",
-						"name": "bdate",
-						"required": true,
-						"type": "string"
+						"schema": {
+							"type": "object"
+						}
 					}
 				]
 			}

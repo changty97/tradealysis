@@ -1,8 +1,13 @@
 import { InsertOneResult, MongoClient, ObjectId, Db, Collection } from "mongodb";
-import { mongoOptionsLogin, mongoOptionsUserTable, mongoOptionsUserKey, mongoOptionsUserAccount, mongoOptionsUserSessions } from "./constants/globals";
-//import * as mongoDB from "mongodb";
+import { mongoOptionsLogin, mongoOptionsUserTable,
+    mongoOptionsUserKey, mongoOptionsUserAccount,
+    mongoOptionsUserSessions } from "./constants/globals";
 
-/** Returns 1 on success, 0 on failure **/
+/**
+ *  If username, password are in userTable collection, return 1. Else return 0
+ *  Note: Dont use this in final implementation
+ *  @return 0 if user does not exist, 1+ if this user does.
+ **/
 async function correctLogin(username:string, password:string): Promise<number>
 {
     let client: MongoClient | null = null;
@@ -11,11 +16,10 @@ async function correctLogin(username:string, password:string): Promise<number>
         client = connection;
         const db: Db = client.db(mongoOptionsUserTable.db);
         const theCollection: Collection = db.collection(mongoOptionsUserTable.collection);
-        const x = (theCollection.find(
-            {
-                "uname": username,
-                "pssd": password,
-            }).count());
+        const x = (theCollection.find({
+            "uname": username,
+            "pssd": password
+        }).count());
         return x;
     })
         .catch((err: Error) =>
@@ -31,6 +35,10 @@ async function correctLogin(username:string, password:string): Promise<number>
         });
 }
 
+/**
+ * Method returns key based on username, passwork pair
+ * @return key:string associated with username, password pair or "" if username, password pair not in db
+ */
 async function correctLoginKey(username:string, password:string): Promise<string>
 {
     let client: MongoClient | null = null;
@@ -89,11 +97,10 @@ async function correctLoginKey(username:string, password:string): Promise<string
         });
 }
 
-
-
-
-
-
+/**
+ * Returns username from a key in local storage
+ * @returns username:string if key matches with user, else empty str ""
+ **/
 async function userFromKey(key:string):Promise<string>
 {
     let client: MongoClient | null = null;
@@ -111,9 +118,9 @@ async function userFromKey(key:string):Promise<string>
             "key": key
         }).then((results : ObjectId[] ) =>
         {
-            if (results != null)
+            if (results !== null)
             {
-                if (results.length != 0)
+                if (results.length !== 0)
                 {
                     return theCollectionUserTable.distinct(
                         "uname", {
@@ -121,7 +128,7 @@ async function userFromKey(key:string):Promise<string>
                         }
                     ).then((results2 : ObjectId[] ) =>
                     {
-                        if (results2 != null)
+                        if (results2 !== null)
                         {
                             retVal = results2[0].toString();
                         }
@@ -154,31 +161,11 @@ async function userFromKey(key:string):Promise<string>
         });
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/** Returns 1 on success, 0 on failure **/
+/**
+ * Method returns 1 if a user currently exists in the backend db. If the user
+ * does not exists, return 0
+ * @return 0 if user does not exist, 1 if the user exists
+ */
 async function userExists(username:string): Promise<number>
 {
     let client: MongoClient | null = null;
@@ -213,101 +200,4 @@ async function userExists(username:string): Promise<number>
         });
 }
 
-async function createAccount(username:string, password:string, fName:string, lName:string,
-							 email:string, phone:string, bdate:string): Promise<number>
-{
-    let client: MongoClient | null = null;
-    return MongoClient.connect(mongoOptionsUserTable.uri).then((connection: MongoClient) =>
-    {
-        client = connection;
-        const db: Db = client.db(mongoOptionsUserTable.db);
-        const theCollectionUserTable: Collection       = db.collection(mongoOptionsUserTable.collection);
-        const theCollectionAccountTable:  Collection   = db.collection(mongoOptionsUserAccount.collection);
-        const theCollectionKeyTable:  Collection       = db.collection(mongoOptionsUserKey.collection);
-        const theCollectionSessionTable:  Collection   = db.collection(mongoOptionsUserSessions.collection);
-
-        return userExists(username).then((res:number)=>
-        {
-            if (res == 1)
-            {
-                return 0;
-            }
-            else
-            {
-				 return theCollectionUserTable.insertOne({
-                    "uname": username,
-                    "pssd": password
-                }).then((res2)=>
-                {
-                    if (res2 !== null)
-                    {
-                        if (res2.insertedId !== null)
-                        {
-                            return theCollectionAccountTable.insertOne(
-                                {
-                                    "user_obj_id": res2.insertedId,
-                                    "fName": fName,
-                                    "lName": lName,
-                                    "email": email,
-                                    "phone": phone,
-                                    "bdate": bdate
-                                }
-                            ).then((res3)=>
-                            {
-                                if (res3 !== null)
-                                {
-                                    if (res3.insertedId !== null)
-                                    {
-                                        const originalKey = `${username  }_key`;
-										
-                                        return theCollectionKeyTable.insertOne({
-                                            "key": originalKey,
-                                            "user_obj_id": res2.insertedId,
-                                            "active": 1
-                                        }).then((res4)=>
-                                        {
-											
-                                            return 1;
-                                        })
-                                            .catch((err: Error)=>
-                                            {
-                                                return Promise.reject(err);
-                                            });
-                                    }
-                                }
-                                return 0;
-                            })
-                                .catch((err: Error) =>
-                                {
-                                    return Promise.reject(err);
-                                });
-                        }
-                    }
-                    return 0;
-                })
-                    .catch((err: Error) =>
-                    {
-                        return Promise.reject(err);
-                    });
-            }
-        })
-            .catch((err: Error) =>
-            {
-                return Promise.reject(err);
-            });
-    })
-        .catch((err: Error) =>
-        {
-            return Promise.reject(err);
-        })
-        .finally(() =>
-        {
-            if (client)
-            {
-                client.close();
-            }
-        }
-        );
-}
-
-export { correctLogin, correctLoginKey, userFromKey, userExists, createAccount };
+export { correctLogin, correctLoginKey, userFromKey, userExists };

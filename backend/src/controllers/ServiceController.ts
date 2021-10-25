@@ -4,8 +4,8 @@ import { BadRequestError } from "typescript-rest/dist/server/model/errors";
 import { CSVParser } from "../CSVParser";
 import { ICSVData } from "../models/ICSVData";
 import { exampleInsertThing, exampleRetrieveThing, genericObject, saveTable } from "../Mongo";
-import { correctLogin, correctLoginKey, userFromKey, userExists, createAccount } from "../MongoLogin";
-
+import { correctLogin, correctLoginKey, userFromKey, userExists } from "../MongoLogin";
+import { createAccount } from "../MongoCreateAccount";
 const badRequestExampleResponse: BadRequestError = {
     name: "BadRequestError",
     message: "Your request payload was not in the expected format.",
@@ -89,8 +89,12 @@ export class ServiceController
 	     return await correctLoginKey(username, password);
 	 }
 	 
-	 //async function userFromKey(key:string):Promise<string>
-	 
+	 /**
+	 *   Get a username from a key in browser local storage
+     *   If the key does not match with a user, nothing is returned
+     *   else the user's username is returned
+     *   @returns username : string or "" : string if key does not relate to user in backend
+	**/
 	 @Path("/usernameFromKeyGET")
 	 @GET
 	 public async usernameFromKeyGET(@QueryParam("key") key: string):Promise<string>
@@ -98,17 +102,14 @@ export class ServiceController
 		 return await userFromKey(key);
 	 }
 
-	 
+	 /**
+	  * Method creates Account
+	  * @returns 1 if account is created. 0 if username already exists or account not created
+	 **/
 	 @Path("/createAccountPost")
 	 @POST
-	 public async createAccountPost(@QueryParam("username") username:string,
-								    @QueryParam("password") password:string,
-									@QueryParam("fName")    fName:string,
-									@QueryParam("lName")    lName:string,
-									@QueryParam("email")    email:string,
-									@QueryParam("phone")    phone:string,
-									@QueryParam("bdate")    bdate:string) : Promise<number>
+	 public async createAccountPost(body: any) : Promise<number>
 	 {
-		 return await createAccount(username, password, fName, lName, email, phone, bdate);
+		 return await createAccount(body.userInfo.username, body.userInfo.password, body.userInfo.fName, body.userInfo.lName, body.userInfo.email, body.userInfo.phone, body.userInfo.bdate);
 	 }
 }

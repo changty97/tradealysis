@@ -50,6 +50,7 @@ class App extends Component<IReportsProps, IAppState>
 				                <Route path="/privacy"><PrivacyPolicyComponent/></Route>
 				                <Route path="/login"><Redirect to="/" /></Route>
 				                <Route path="/account"><AccountSettingsComponent/></Route>
+				                <Route path="/createaccount"><Redirect to="/" /></Route>
 				                <Route path="/input1"><HomeImportComponent /></Route>
 				                <Route path="/home"><Redirect to="/" /></Route>
 				                <Route path="/"><HomeComponent /></Route>
@@ -83,8 +84,6 @@ class App extends Component<IReportsProps, IAppState>
 			                <Route path="/login"><LoginComponent/></Route>
 			                <Route path="/account"><AccountSettingsComponent/></Route>
 			                <Route path="/createaccount"><CreateAccountComponent/></Route>
-							
-							
 			                <Route path="/input1"><Redirect to="/login" /></Route>
 			                <Route path="/home"><Redirect to="/" /></Route>
 			                <Route path="/"><Redirect to="/login" /></Route>

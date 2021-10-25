@@ -1,14 +1,34 @@
 import { Component, Fragment } from "react";
 import { AccountSettings } from "../cssComponents/AccountSettings";
 import axios from "axios";
-
+ 
 const api = axios.create({
     baseURL: 'http://localhost:3001/'
 });
 
-
 class CreateAccountComponent extends Component<any, any>
 {
+    constructor(props: any)
+    {
+	    super(props);
+        this.createAccount = this.createAccount.bind(this);
+    }
+	
+    /**
+		Method finds id elements from CreateAccountComponent
+		If they are found, we do the following:
+		1. check the len userName value. if less then 0, this is
+		   an invalid possible username
+		2. Try to post data to backend with axios.post
+		3. If 0 is returned, their is a problem. The only
+		   problem that could have happened at this point is
+		   db is not implemented properly (not likely), db
+		   will not connect, or username is already associated
+		   with an account.
+		   
+		   - On success: redirect to login pageX
+		   - On fail:    clears form onscreen
+	**/
     private createAccount(): void
     {
         if (document != null)
@@ -25,31 +45,44 @@ class CreateAccountComponent extends Component<any, any>
 			   lastName !== null && emailAddr !== null && phoneNum !== null &&
 			   myBdate !== null)
             {
-                if (userName.value.length > 0 && passWord.value.length > 0)
+                if (userName.value.length > 0)
                 {
-                    console.log("test");
-                    api.get('loginKeyGET', {
-                        params: {
-                            username: ``,
-                            password: ``
-                        }
-                    }).then(res =>
-                    {
-                        console.log("test");
-                    })
+                    api.post('createAccountPost',
+                        {
+                            userInfo: {
+                                username: userName.value,
+                                password: passWord.value,
+                                fName: firstName.value,
+                                lName: lastName.value,
+                                email: emailAddr.value,
+                                phone: phoneNum.value,
+                                bdate: myBdate.value
+                            }
+                        })
+                        .then(res =>
+                        {
+                            if (res != null)
+                            {
+                                if (Number(res.data) == 1)
+                                {
+                                    window.location.href = "/login";
+                                }
+                            }
+                        })
                         .catch((err: Error) =>
                         {
                             return Promise.reject(err);
                         })
                         .finally(() =>
                         {
-                            console.log("test");
+                            userName.value = '';
+                            passWord.value = '';
+                            firstName.value = '';
+                            lastName.value = '';
+                            emailAddr.value = '';
+                            phoneNum.value = '';
+                            myBdate.value = '';
                         });
-					
-                }
-                else
-                {
-                    console.log("test");
                 }
             }
 	    }
@@ -67,7 +100,6 @@ class CreateAccountComponent extends Component<any, any>
                             <AccountSettings.INPUT type="text" name="myUsername" id="myUsername"/>
                             <AccountSettings.LABEL>Password:</AccountSettings.LABEL>
                             <AccountSettings.INPUT type="password" name="myPassword" id="myPassword"/>
-							
                             <AccountSettings.LABEL>First Name:</AccountSettings.LABEL>
                             <AccountSettings.INPUT type="text" name="myFName" id="myFName"/>
                             <AccountSettings.LABEL>Last Name:</AccountSettings.LABEL>
