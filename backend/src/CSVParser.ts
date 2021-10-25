@@ -2,6 +2,7 @@ import { sourcePatterns } from "./constants/sourcePatterns";
 import { ICSVData } from "./models/ICSVData";
 import { ISectionedContent } from "./models/ISectionedContent";
 import csv from "csvtojson/v2";
+import { ITableData } from "./models/ITableData";
 
 class CSVParser
 {
@@ -19,7 +20,7 @@ class CSVParser
         this.source = source;
     }
 
-    public async parse(file: Express.Multer.File): Promise<ICSVData>
+    public async parse(file: Express.Multer.File): Promise<void>
     {
         const sectionedData: ISectionedContent = {
         };
@@ -45,7 +46,7 @@ class CSVParser
                 sectionedData[focus] += `${line}\n`;
             }
 
-            if (sourcePatterns[this.source].includes(line))
+            if (sourcePatterns[this.source].sections.includes(line))
             {
                 focus = line;
             }
@@ -58,15 +59,37 @@ class CSVParser
                 ignoreEmpty: true
             })
                 .fromString(content)
-                .then((json: {[key: string]: string}[]) =>
+                .then((json: ITableData[]) =>
                 {
                     this.parsedData[section] = json;
                 }));
         });
 
         await Promise.all(promises);
+    }
 
-        return this.parsedData;
+    public filter(): ITableData[]
+    {
+        const result: ITableData[] = [];
+
+        Object.values(this.parsedData).forEach((section: ITableData[]) =>
+        {
+            section.reverse().forEach((row: ITableData) =>
+            {
+                if (row["Side"] === "SELL")
+                {
+                    result.push({
+                        DOI: row[sourcePatterns[this.source].translations["DOI"]] || "",
+                        Ticker: row[sourcePatterns[this.source].translations["Ticker"]] || "",
+                        "# Shares": row[sourcePatterns[this.source].translations["# Shares"]] ? row[sourcePatterns[this.source].translations["# Shares"]].slice(1) : "",
+                        Price: row[sourcePatterns[this.source].translations["Price"]] || ""
+                    });
+                }
+
+            });
+        });
+
+        return result;
     }
 }
 

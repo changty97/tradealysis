@@ -3,6 +3,7 @@ import { Produces, Response } from "typescript-rest-swagger";
 import { BadRequestError } from "typescript-rest/dist/server/model/errors";
 import { CSVParser } from "../CSVParser";
 import { ICSVData } from "../models/ICSVData";
+import { ITableData } from "../models/ITableData";
 import { exampleInsertThing, exampleRetrieveThing, genericObject, saveTable } from "../Mongo";
 import { correctLogin } from "../MongoLogin";
 
@@ -43,13 +44,23 @@ export class ServiceController
         return await exampleInsertThing(test);
     }
 
+    /**
+     * Parses a given csv file according to a predefined pattern specified by the sourceName.
+     *
+     * @param sourceName Pattern to parse by
+     * @param file csv file to parse data from.
+     *
+     * @returns
+     */
     @Path("/parseCSV")
     @POST
-    public async parseCSV(@FormParam("sourceName") sourceName: string, @FileParam("file") file: Express.Multer.File): Promise<ICSVData>
+    public async parseCSV(@FormParam("sourceName") sourceName: string, @FileParam("file") file: Express.Multer.File): Promise<ITableData[]>
     {
         const parser: CSVParser = new CSVParser(sourceName);
 
-        return await parser.parse(file);
+        await parser.parse(file);
+
+        return parser.filter();
     }
 	
     /**
