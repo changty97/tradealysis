@@ -1,5 +1,5 @@
 import { InsertOneResult, MongoClient, ObjectId, Db, Collection } from "mongodb";
-import { mongoOptionsLogin, mongoOptionsUserTable, mongoOptionsUserKey, mongoOptionsUserAccount, mongoOptionsUserSessions } from "./constants/globals";
+import { userMongoOptions } from "./constants/globals";
 import { userExists } from "./MongoLogin";
 
 /**
@@ -15,110 +15,76 @@ import { userExists } from "./MongoLogin";
 async function createAccount(username:string, password:string, fName:string, lName:string, email:string, phone:string, bdate:string): Promise<number>
 {
     let client: MongoClient | null = null;
-    return MongoClient.connect(mongoOptionsUserTable.uri).then((connection: MongoClient) =>
+    return MongoClient.connect(userMongoOptions.uri).then((connection: MongoClient) =>
     {
         client = connection;
-        const db: Db = client.db(mongoOptionsUserTable.db);
-        const theCollectionUserTable: Collection       = db.collection(mongoOptionsUserTable.collection);
-        const theCollectionAccountTable:  Collection   = db.collection(mongoOptionsUserAccount.collection);
-        const theCollectionKeyTable:  Collection       = db.collection(mongoOptionsUserKey.collection);
-        const theCollectionSessionTable:  Collection   = db.collection(mongoOptionsUserSessions.collection);
+        const db: Db = client.db(userMongoOptions.db);
+        const theCollectionUserTable: Collection = db.collection(userMongoOptions.collections['userTable']);
+        const theCollectionAccountTable: Collection = db.collection(userMongoOptions.collections['userAccount']);
+        const theCollectionKeyTable: Collection = db.collection(userMongoOptions.collections['userKey']);
+        const theCollectionSessionTable: Collection = db.collection(userMongoOptions.collections['userSessions']);
 
         return userExists(username).then((res:number)=>
         {
-            if (res == 1)
-            {
-                return 0;
-            }
-            else
+            if (res == 0)
             {
 				 return theCollectionUserTable.insertOne({
                     "uname": username,
                     "pssd": password
                 }).then((res2)=>
                 {
-                    if (res2 !== null)
+                    if (res2 !== null && res2.insertedId !== null)
                     {
-                        if (res2.insertedId !== null)
-                        {
-                            return theCollectionAccountTable.insertOne(
-                                {
-                                    "user_obj_id": res2.insertedId,
-                                    "fName": fName,
-                                    "lName": lName,
-                                    "email": email,
-                                    "phone": phone,
-                                    "bdate": bdate
-                                }
-                            ).then((res3)=>
+                        return theCollectionAccountTable.insertOne(
                             {
-                                if (res3 !== null)
+                                "user_obj_id": res2.insertedId,
+                                "fName": fName,
+                                "lName": lName,
+                                "email": email,
+                                "phone": phone,
+                                "bdate": bdate
+                            }
+                        ).then((res3)=>
+                        {
+                            if (res3 !== null && res3.insertedId !== null)
+                            {
+                                const originalKey = `${username  }_key`;
+                                return theCollectionKeyTable.insertOne({
+                                    "key": originalKey,
+                                    "user_obj_id": res2.insertedId,
+                                    "active": 1
+                                }).then((res4)=>
                                 {
-                                    if (res3.insertedId !== null)
-                                    {
-                                        const originalKey = `${username  }_key`;
-                                        return theCollectionKeyTable.insertOne({
-                                            "key": originalKey,
-                                            "user_obj_id": res2.insertedId,
-                                            "active": 1
-                                        }).then((res4)=>
+                                    return theCollectionSessionTable.insertOne({
+                                        "user_obj_id": res2.insertedId,
+                                        "session_ids": [ ]
+                                    })
+                                        .then((res5)=>
                                         {
-                                            return theCollectionSessionTable.insertOne({
-                                                "user_obj_id": res2.insertedId,
-                                                "session_ids": [ ]
-                                            })
-                                                .then((res5)=>
+                                            return theCollectionSessionTable.updateOne(
                                                 {
-                                                    const newSessionName = `${username  }_1`;
-                                                    return theCollectionSessionTable.updateOne(
-                                                        {
-                                                            "user_obj_id": res2.insertedId
-                                                        },
-                                                        {
-                                                            $push: {
-                                                                "session_ids": newSessionName
-                                                            }
-                                                        },
-                                                    ).then((res6)=>
-                                                    {
-                                                        return 1;
-                                                    })
-                                                        .catch((err: Error)=>
-                                                        {
-                                                            return Promise.reject(err);
-                                                        });
-                                                })
-                                                .catch((err: Error)=>
+                                                    "user_obj_id": res2.insertedId
+                                                },
                                                 {
-                                                    return Promise.reject(err);
-                                                });
-                                        })
-                                            .catch((err: Error)=>
+                                                    $push: {
+                                                        "session_ids": `${username  }_1`
+                                                    }
+                                                },
+                                            ).then((res6)=>
                                             {
-                                                return Promise.reject(err);
+                                                return 1;
                                             });
-                                    }
-                                }
-                                return 0;
-                            })
-                                .catch((err: Error) =>
-                                {
-                                    return Promise.reject(err);
+                                        });
                                 });
-                        }
+                            }
+                            return 0;
+                        });
                     }
                     return 0;
-                })
-                    .catch((err: Error) =>
-                    {
-                        return Promise.reject(err);
-                    });
+                });
             }
-        })
-            .catch((err: Error) =>
-            {
-                return Promise.reject(err);
-            });
+            return 0;
+        });
     })
         .catch((err: Error) =>
         {

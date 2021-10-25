@@ -1,6 +1,5 @@
 import { InsertOneResult, MongoClient } from "mongodb";
 import { mongoOptions } from "./constants/globals";
-import * as mongoDB from "mongodb";
 
 // Ignore this dirty typing. It's just for these examples.
 type genericObject = { [key: string]: number | string | null };

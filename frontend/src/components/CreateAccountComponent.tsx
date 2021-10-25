@@ -25,7 +25,6 @@ class CreateAccountComponent extends Component<any, any>
 		   db is not implemented properly (not likely), db
 		   will not connect, or username is already associated
 		   with an account.
-		   
 		   - On success: redirect to login pageX
 		   - On fail:    clears form onscreen
 	**/
@@ -45,7 +44,7 @@ class CreateAccountComponent extends Component<any, any>
 			   lastName !== null && emailAddr !== null && phoneNum !== null &&
 			   myBdate !== null)
             {
-                if (userName.value.length > 0)
+                if (userName.value.length > 0 && passWord.value.length > 0)
                 {
                     api.post('createAccountPost',
                         {
@@ -61,13 +60,7 @@ class CreateAccountComponent extends Component<any, any>
                         })
                         .then(res =>
                         {
-                            if (res != null)
-                            {
-                                if (Number(res.data) == 1)
-                                {
-                                    window.location.href = "/login";
-                                }
-                            }
+                            window.location.href = ((res !== null && Number(res.data) === 1) ? "/login" : "/createaccount");
                         })
                         .catch((err: Error) =>
                         {

@@ -4,7 +4,7 @@ import { BadRequestError } from "typescript-rest/dist/server/model/errors";
 import { CSVParser } from "../CSVParser";
 import { ICSVData } from "../models/ICSVData";
 import { exampleInsertThing, exampleRetrieveThing, genericObject, saveTable } from "../Mongo";
-import { correctLogin, correctLoginKey, userFromKey, userExists } from "../MongoLogin";
+import { correctLoginKey, userFromKey } from "../MongoLogin";
 import { createAccount } from "../MongoCreateAccount";
 const badRequestExampleResponse: BadRequestError = {
     name: "BadRequestError",
@@ -66,19 +66,6 @@ export class ServiceController
     /**
 	  * @param username:string - username entered into login page
 	  * @param password:string - password entered into login page (clear text no encryption)
-	  * @returns 1 if username, password pair in db. otherwuse returns 0 (str character 1, 0)
-	 
-	 @Path("/loginGet")
-	 @GET
-    public async loginGet(@QueryParam("username") username: string, @QueryParam("password") password: string) : Promise<number>
-    {
-        return await correctLogin(username, password);
-    }
-	**/
-	
-    /**
-	  * @param username:string - username entered into login page
-	  * @param password:string - password entered into login page (clear text no encryption)
 	  * @returns ObjectId toString value of user that maps to uname,pssd. If the username,password
 	  *          does not map to a user, it returns a empty str
 	 **/
@@ -88,6 +75,7 @@ export class ServiceController
 	 {
 	     return await correctLoginKey(username, password);
 	 }
+
 	 
 	 /**
 	 *   Get a username from a key in browser local storage

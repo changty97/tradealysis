@@ -34,21 +34,22 @@ class LoginComponent extends Component<any, any>
 	                    username: `${str1Value}`,
 	                    password: `${str2Value}`
 	                }
-	            }).then(res =>
+	            })
+                    .then(res =>
 	            {
-                    if (res != null)
-                    {
-                        const val = res.data;
-                        if (val !== "")
+                        if (res != null)
                         {
-                            this.setLocalStorageStateKey(val);
-                            window.location.reload();
+                            const val = res.data;
+                            if (val !== "")
+                            {
+                                this.setLocalStorageStateKey(val);
+                                window.location.reload();
+                            }
+                            else
+                            {
+                                this.setLocalStorageStateKey("");
+                            }
                         }
-                        else
-                        {
-                            this.setLocalStorageStateKey("");
-                        }
-                    }
 	            })
                     .catch((err: Error) =>
                     {
@@ -67,7 +68,6 @@ class LoginComponent extends Component<any, any>
     {
 	    return (
 	        <Fragment>
-	            
 	            <Login.SECTION>
 	                <Login.LOGIN_BOX>
 	                    <Login.LOGIN_LABEL_DIV>
@@ -99,7 +99,5 @@ class LoginComponent extends Component<any, any>
 	        </Fragment>
 	    );
     }
-
-
 }
 export { LoginComponent };
