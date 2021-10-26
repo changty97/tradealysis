@@ -29,22 +29,6 @@ class AccountSettingsComponent extends Component<any, any>
 	        this.logout();
 	        return;
 	    }
-        
-		/**
-		api.get('accountunameFromKeyGET', {
-	        params: {
-	            key: `${theKey}`,
-	            }
-	        }
-	    )
-	    .then((res) =>
-	    {
-		   this.setState({
-                    uname: res.data
-                });
-	    })
-		
-		**/
         api.get('accountunameFromKeyGET', {
 	        params: {
 	            key: `${theKey}`,
