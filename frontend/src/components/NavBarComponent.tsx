@@ -17,7 +17,7 @@ class NavBarComponent extends Component<any, any>
 	        user: "User"
 	    };
     }
-    componentWillMount(): void
+    componentDidMount(): void
     {
 	    const theKey = localStorage.getItem("Key");
 	    if (theKey == null)
