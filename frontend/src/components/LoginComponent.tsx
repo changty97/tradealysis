@@ -12,6 +12,7 @@ class LoginComponent extends Component<any, any>
     {
 	    super(props);
         this.loginKey = this.loginKey.bind(this);
+		this.signupKey = this.signupKey.bind(this);
     }
 
     private setLocalStorageStateKey(theKey:string) : void
@@ -64,6 +65,9 @@ class LoginComponent extends Component<any, any>
 	    }
     }
 
+	private signupKey(): void {
+		window.location.href="/createaccount";
+	}
     render(): JSX.Element
     {
 	    return (
@@ -92,7 +96,7 @@ class LoginComponent extends Component<any, any>
 						   <Login.LOGIN_BUTTON>
 	                        <Login.FORGOT_PSSD_BUTTON type="submit" onClick={this.loginKey}>Login</Login.FORGOT_PSSD_BUTTON>
 	                            <Login.FORGOT_PSSD_BUTTON>Forgot Password ?</Login.FORGOT_PSSD_BUTTON>
-	                            <Login.FORGOT_PSSD_BUTTON>Sign Up</Login.FORGOT_PSSD_BUTTON>
+	                            <Login.FORGOT_PSSD_BUTTON type="submit" onClick={this.signupKey}>Sign Up</Login.FORGOT_PSSD_BUTTON>
 	                        </Login.LOGIN_BUTTON>
 	                </Login.LOGIN_BOX>
 	            </Login.SECTION>
