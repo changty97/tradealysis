@@ -1,4 +1,4 @@
-import { FileParam, FormParam, GET, POST,  Path, QueryParam } from "typescript-rest";
+import { FileParam, FormParam, GET, POST,  Path, QueryParam, PathParam } from "typescript-rest";
 import { Produces, Response } from "typescript-rest-swagger";
 import { BadRequestError } from "typescript-rest/dist/server/model/errors";
 import { CSVParser } from "../CSVParser";
@@ -7,6 +7,7 @@ import { exampleInsertThing, exampleRetrieveThing, genericObject, saveTable } fr
 import { correctLoginKey, userFromKey } from "../MongoLogin";
 import { createAccount } from "../MongoCreateAccount";
 import { fnameFromKey } from "../MongoAccountSettings";
+import { getStockData } from "../stockapi";
 
 
 const badRequestExampleResponse: BadRequestError = {
@@ -35,10 +36,16 @@ export class ServiceController
     **/
     @Path("/postTableDB")
     @POST
-    public async postTableDB(dataArray: any)
+    public async postTableDB(dataArray: any): Promise<string>
     {
         return await saveTable(dataArray);
     }
+
+	@Path("/stockapi/:ID")
+	@GET
+	public async getStock(@PathParam("ID") ID: string): Promise<any> {
+		return await getStockData(ID);
+	}
 	
     /**
 	  * @param username:string - username entered into login page
