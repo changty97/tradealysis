@@ -3,7 +3,8 @@ import { Produces, Response } from "typescript-rest-swagger";
 import { BadRequestError } from "typescript-rest/dist/server/model/errors";
 import { CSVParser } from "../CSVParser";
 import { ICSVData } from "../models/ICSVData";
-import { exampleInsertThing, exampleRetrieveThing, genericObject, saveTable } from "../Mongo";
+//import { exampleInsertThing, exampleRetrieveThing, genericObject, saveTable } from "../Mongo";
+import { saveTable } from "../Mongo";
 import { correctLoginKey, userFromKey } from "../MongoLogin";
 import { createAccount } from "../MongoCreateAccount";
 import { fnameFromKey } from "../MongoAccountSettings";
@@ -43,11 +44,12 @@ export class ServiceController
 
 	@Path("/stockapi/:ID")
 	@GET
-	public async getStock(@PathParam("ID") ID: string): Promise<any> {
-		return await getStockData(ID);
-	}
+    public async getStock(@PathParam("ID") ID: string): Promise<any>
+    {
+        return await getStockData(ID);
+    }
 	
-    /**
+	/**
 	  * @param username:string - username entered into login page
 	  * @param password:string - password entered into login page (clear text no encryption)
 	  * @returns ObjectId toString value of user that maps to uname,pssd. If the username,password
