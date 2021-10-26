@@ -20,32 +20,6 @@ const badRequestExampleResponse: BadRequestError = {
 @Path("/")
 export class ServiceController
 {
-    /**
-     * @param test
-     *
-     * @returns The item
-     */
-    @Path("/testGET")
-    @GET
-    public async testGET(@QueryParam("key") key: string, @QueryParam("value") value: number): Promise<genericObject[]>
-    {
-        return await exampleRetrieveThing({
-            [key]: value
-        });
-    }
-
-    /**
-     * @param test
-     *
-     * @returns The objectId of the inserted item.
-     */
-    @Path("/testPOST")
-    @POST
-    public async testPOST(@QueryParam("test") test: number): Promise<string>
-    {
-        return await exampleInsertThing(test);
-    }
-
     @Path("/parseCSV")
     @POST
     public async parseCSV(@FormParam("sourceName") sourceName: string, @FileParam("file") file: Express.Multer.File): Promise<ICSVData>
