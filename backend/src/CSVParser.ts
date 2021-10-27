@@ -3,6 +3,7 @@ import { ICSVData } from "./models/ICSVData";
 import { ISectionedContent } from "./models/ISectionedContent";
 import csv from "csvtojson/v2";
 import { ITableData } from "./models/ITableData";
+import { ITradeInfo } from "./models/ITradeInfo";
 
 class CSVParser
 {
@@ -70,26 +71,71 @@ class CSVParser
 
     public filter(): ITableData[]
     {
-        const result: ITableData[] = [];
+        const stocksInfo: ITradeInfo = {
+        };
 
-        Object.values(this.parsedData).forEach((section: ITableData[]) =>
+        // Go through the Account Trade History in reverse and calculate average entry price
+        // Will need to generalize this in the future, but for now just handle TDA pattern.
+        this.parsedData["Account Trade History"].reverse().forEach((row: ITableData) =>
         {
-            section.reverse().forEach((row: ITableData) =>
-            {
-                if (row["Side"] === "SELL")
-                {
-                    result.push({
-                        DOI: row[sourcePatterns[this.source].translations["DOI"]] || "",
-                        Ticker: row[sourcePatterns[this.source].translations["Ticker"]] || "",
-                        "# Shares": row[sourcePatterns[this.source].translations["# Shares"]] ? row[sourcePatterns[this.source].translations["# Shares"]].slice(1) : "",
-                        Price: row[sourcePatterns[this.source].translations["Price"]] || ""
-                    });
-                }
+            // Translate header names and grab the data.
+            const symbol: string = row[sourcePatterns[this.source].translations["Ticker"]];
+            const action: string = row[sourcePatterns[this.source].translations["Action"]];
+            const DOI: string = row[sourcePatterns[this.source].translations["DOI"]];
+            const quantity: number = -parseInt(row[sourcePatterns[this.source].translations["# Shares"]]);
+            const priceTradedAt: number = parseFloat(row[sourcePatterns[this.source].translations["Price"]]);
 
-            });
+            if (!Object.keys(stocksInfo).includes(symbol))
+            {
+                // Initialize counters
+                stocksInfo[symbol] = {
+                    buy: {
+                        totalStocks: 0,
+                        totalPrice: 0,
+                    },
+                    sell: {
+                        totalStocks: 0,
+                        totalPrice: 0,
+                    },
+                    DOI: "",
+                    // If the first instance of a stock trade is a sale, the user is shorting the stock.
+                    position: action === "SELL" ? "Short" : "Long"
+                };
+            }
+
+            // This will keep the last trade of the stock as the date of interest.
+            stocksInfo[symbol].DOI = DOI;
+
+            stocksInfo[symbol][action === "BUY" ? "buy" : "sell"].totalStocks += quantity;
+            stocksInfo[symbol][action === "BUY" ? "buy" : "sell"].totalPrice += quantity * priceTradedAt;
         });
 
-        return result;
+        // Calculate and reformat the data
+        return Object.keys(stocksInfo).map((symbol: string) =>
+        {
+            /**
+             * Some formulas I'm using here:
+             * 
+             * Average entry price = |total price spent / # of stocks bought|
+             * Average exit price = |total profit made / # of stocks sold|
+             * Profit or loss = total profit made - total price spent
+             * Profit or loss percentage = profit or loss / (# stocks sold * Average entry price) 
+             */
+            const avgEntryPrice: number = Math.abs(stocksInfo[symbol].buy.totalPrice / stocksInfo[symbol].buy.totalStocks);
+            const avgExitPrice: number = Math.abs(stocksInfo[symbol].sell.totalPrice / stocksInfo[symbol].sell.totalStocks);
+            const PL: number = stocksInfo[symbol].sell.totalPrice + stocksInfo[symbol].buy.totalPrice;
+            const PLPerc: number = PL / (stocksInfo[symbol].sell.totalStocks * avgEntryPrice);
+
+            return {
+                DOI: stocksInfo[symbol].DOI,
+                "P/L": PL.toFixed(2),
+                "P/L %": (100 * PLPerc).toFixed(2),
+                Ticker: symbol,
+                Position: stocksInfo[symbol].position,
+                "Average Entry Price": avgEntryPrice.toFixed(2),
+                "Average Exit Price": avgExitPrice.toFixed(2)
+            };
+        });
     }
 }
 

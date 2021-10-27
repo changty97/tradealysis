@@ -4,7 +4,7 @@ const sourcePatterns: ISourcePatterns = {
     TDAmeritrade: {
         translations: {
             "DOI": "Exec Time",
-            "Position": "Side",
+            "Action": "Side",
             "Ticker": "Symbol",
             "# Shares": "Qty",
             "Price": "Price"

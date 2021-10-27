@@ -50,7 +50,7 @@ export class ServiceController
      * @param sourceName Pattern to parse by
      * @param file csv file to parse data from.
      *
-     * @returns
+     * @returns Currently this returns an array of objects containing the DOI, ticker, position, P/L, P/L%, Avg. entry price and Avg. exit price.
      */
     @Path("/parseCSV")
     @POST
