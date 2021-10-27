@@ -1,5 +1,5 @@
 import { InsertOneResult, MongoClient, ObjectId, Db, Collection } from "mongodb";
-import { userMongoOptions } from "./constants/globals";
+import { userMongoOptions } from "../constants/globals";
 import { userExists } from "./MongoLogin";
 
 /**
@@ -11,8 +11,9 @@ import { userExists } from "./MongoLogin";
  * 5. add item to sessiontable with empty array (which will contain str values which map sessionids to users by _id <- user_obj_id from userTable collection
  * 6. add 1 item to sessionid array being created. the sessionid will be "username" + "_#" where # is # of sessions a user has. It is preinitialized to 1
  *    automatically
+ *   @return true/false if account is created and all db collections populated
 **/
-async function createAccount(username:string, password:string, fName:string, lName:string, email:string, phone:string, bdate:string): Promise<number>
+async function createAccount(username:string, password:string, fName:string, lName:string, email:string, phone:string, bdate:string): Promise<boolean>
 {
     let client: MongoClient | null = null;
     return MongoClient.connect(userMongoOptions.uri).then((connection: MongoClient) =>
@@ -24,9 +25,9 @@ async function createAccount(username:string, password:string, fName:string, lNa
         const theCollectionKeyTable: Collection = db.collection(userMongoOptions.collections['userKey']);
         const theCollectionSessionTable: Collection = db.collection(userMongoOptions.collections['userSessions']);
 
-        return userExists(username).then((res:number)=>
+        return userExists(username).then((res:boolean)=>
         {
-            if (res == 0)
+            if (!res)
             {
 				 return theCollectionUserTable.insertOne({
                     "uname": username,
@@ -37,7 +38,7 @@ async function createAccount(username:string, password:string, fName:string, lNa
                     {
                         return theCollectionAccountTable.insertOne(
                             {
-                                "user_obj_id": res2.insertedId,
+                                "user_obj_id": res2.insertedId.toString(),
                                 "fName": fName,
                                 "lName": lName,
                                 "email": email,
@@ -51,19 +52,19 @@ async function createAccount(username:string, password:string, fName:string, lNa
                                 const originalKey = `${username  }_key`;
                                 return theCollectionKeyTable.insertOne({
                                     "key": originalKey,
-                                    "user_obj_id": res2.insertedId,
-                                    "active": 1
+                                    "user_obj_id": res2.insertedId.toString(),
+                                    "active": true
                                 }).then((res4)=>
                                 {
                                     return theCollectionSessionTable.insertOne({
-                                        "user_obj_id": res2.insertedId,
+                                        "user_obj_id": res2.insertedId.toString(),
                                         "session_ids": [ ]
                                     })
                                         .then((res5)=>
                                         {
                                             return theCollectionSessionTable.updateOne(
                                                 {
-                                                    "user_obj_id": res2.insertedId
+                                                    "user_obj_id": res2.insertedId.toString()
                                                 },
                                                 {
                                                     $push: {
@@ -72,18 +73,18 @@ async function createAccount(username:string, password:string, fName:string, lNa
                                                 },
                                             ).then((res6)=>
                                             {
-                                                return 1;
+                                                return true;
                                             });
                                         });
                                 });
                             }
-                            return 0;
+                            return false;
                         });
                     }
-                    return 0;
+                    return false;
                 });
             }
-            return 0;
+            return false;
         });
     })
         .catch((err: Error) =>

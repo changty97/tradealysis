@@ -27,6 +27,7 @@ class CreateAccountComponent extends Component<any, any>
 		   with an account.
 		   - On success: redirect to login pageX
 		   - On fail:    clears form onscreen
+		                 by reloading ./login page
 	**/
     private createAccount(): void
     {
@@ -60,21 +61,11 @@ class CreateAccountComponent extends Component<any, any>
                         })
                         .then(res =>
                         {
-                            window.location.href = ((res !== null && Number(res.data) === 1) ? "/login" : "/createaccount");
+                            window.location.href = ((res !== null && res.data) ? "/login" : "/createaccount");
                         })
                         .catch((err: Error) =>
                         {
                             return Promise.reject(err);
-                        })
-                        .finally(() =>
-                        {
-                            userName.value = '';
-                            passWord.value = '';
-                            firstName.value = '';
-                            lastName.value = '';
-                            emailAddr.value = '';
-                            phoneNum.value = '';
-                            myBdate.value = '';
                         });
                 }
             }

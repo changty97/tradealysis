@@ -1,8 +1,18 @@
 import { InsertOneResult, MongoClient, ObjectId, Db, Collection } from "mongodb";
-import { userMongoOptions } from "./constants/globals";
+import { userMongoOptions } from "../constants/globals";
 import { userExists } from "./MongoLogin";
 
-async function fnameFromKey(key:string, item:string):Promise<string>
+/**
+ *   Method returns the str value of @param item from the
+ *   account table based on @param key in browser local
+ *   storage
+ *
+ *   @param key:string  - key in browser local storage
+ *   @param item:string - item in the account collection in db
+ *
+ *   @return value of column item in account table : string
+**/
+async function accountValueFromKey(key:string, item:string):Promise<string>
 {
     let client: MongoClient | null = null;
     return MongoClient.connect(userMongoOptions.uri).then((connection: MongoClient) =>
@@ -13,10 +23,9 @@ async function fnameFromKey(key:string, item:string):Promise<string>
         const theCollectionKeyTable:  Collection = db.collection(userMongoOptions.collections['userKey']);
         const theCollectionAccountTable:  Collection = db.collection(userMongoOptions.collections['userAccount']);
 		
-        let retVal = "";
         return theCollectionKeyTable.distinct("user_obj_id", {
             "key": key
-        }).then((results : ObjectId[] ) =>
+        }).then((results) =>
         {
             if (results !== null && results.length !== 0)
             {
@@ -26,11 +35,10 @@ async function fnameFromKey(key:string, item:string):Promise<string>
                     }
                 ).then((results2 : ObjectId[] ) =>
                 {
-                    retVal = (results2 !== null) ? results2[0].toString() : retVal;
-                    return retVal;
+                    return (results2 !== null) ? results2[0].toString() : "";
                 });
             }
-            return retVal;
+            return "";
         });
     })
         .catch((err: Error) =>
@@ -46,4 +54,4 @@ async function fnameFromKey(key:string, item:string):Promise<string>
         });
 }
 
-export { fnameFromKey };
+export { accountValueFromKey };
