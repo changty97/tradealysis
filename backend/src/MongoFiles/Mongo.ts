@@ -1,4 +1,5 @@
-import { InsertOneResult, MongoClient } from "mongodb";
+import { table } from "console";
+import { InsertOneResult, MongoClient, ObjectId } from "mongodb";
 import { mongoOptions } from "../constants/globals";
 
 // Ignore this dirty typing. It's just for these examples.
@@ -93,4 +94,36 @@ function saveTable(dataArray: any): Promise<string>
         });
 }
 
-export { exampleInsertThing, exampleRetrieveThing, genericObject, saveTable };
+async function getTableData(objId: string): Promise<any>
+{
+    let tableData: Promise<any>;
+    let client: MongoClient | null = null;
+    return MongoClient.connect(mongoOptions.uri)
+        .then((connection: MongoClient) =>
+        {
+            client = connection;
+            tableData = client.db(mongoOptions.db)
+                .collection(mongoOptions.collection)
+                .find({
+                    "_id": new ObjectId(objId)
+                }).toArray();
+        })
+        .then((result) =>
+        {
+            return tableData;
+        })
+        .catch((err: Error) =>
+        {
+            return Promise.reject(err);
+        })
+        .finally(() =>
+        {
+            if (client)
+            {
+                client.close();
+            }
+        });
+}
+
+
+export { exampleInsertThing, exampleRetrieveThing, genericObject, saveTable, getTableData };

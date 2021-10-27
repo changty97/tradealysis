@@ -1,13 +1,13 @@
-import { FileParam, FormParam, GET, POST,  Path, QueryParam } from "typescript-rest";
+import { FileParam, FormParam, GET, POST,  Path, QueryParam, PathParam } from "typescript-rest";
 import { Produces, Response } from "typescript-rest-swagger";
 import { BadRequestError } from "typescript-rest/dist/server/model/errors";
 import { CSVParser } from "../CSVParser";
 import { ICSVData } from "../models/ICSVData";
-import { exampleInsertThing, exampleRetrieveThing, genericObject, saveTable } from "../MongoFiles/Mongo";
+import { exampleInsertThing, exampleRetrieveThing, genericObject, saveTable, getTableData } from "../MongoFiles/Mongo";
 import { correctLoginKey, userFromKey } from "../MongoFiles/MongoLogin";
 import { createAccount } from "../MongoFiles/MongoCreateAccount";
 import { accountValueFromKey } from "../MongoFiles/MongoAccountSettings";
-
+import { getStockData } from "../stockapi";
 
 const badRequestExampleResponse: BadRequestError = {
     name: "BadRequestError",
@@ -33,6 +33,17 @@ export class ServiceController
             [key]: value
         });
     }
+	/**
+		 * @param dataArray: any - 2d array which contains data of every cell in the spreadsheet
+		 * @returns the spreadsheet array as a JSON object
+		**/
+	@Path("/getTableDB")
+	@GET
+    public async getTableDB(@QueryParam("objId") objId: string) : Promise<any>
+    {
+        const retValue = getTableData(objId);
+        return await retValue;
+    }
 
     /**
      * @param test
@@ -41,10 +52,10 @@ export class ServiceController
      */
     @Path("/testPOST")
     @POST
-    public async testPOST(@QueryParam("test") test: number): Promise<string>
-    {
-        return await exampleInsertThing(test);
-    }
+	public async testPOST(@QueryParam("test") test: number): Promise<string>
+	{
+	    return await exampleInsertThing(test);
+	}
 
     @Path("/parseCSV")
     @POST
@@ -54,6 +65,21 @@ export class ServiceController
 
         return await parser.parse(file);
     }
+
+	/**
+     * @param ID
+     * @returns JSON object of stock API data
+     */
+	@Path("/stockapi/:ID")
+	@GET
+    public async getStock(@PathParam("ID") ID: string): Promise<any>
+    {
+        // console.log(getStockData(ID));
+        const stockData = getStockData(ID);
+        console.log(stockData);
+        return await stockData;
+    }
+
 	
     /**
       * @param dataArray: any - 2d array which contains data of every cell in the spreadsheet
@@ -61,10 +87,12 @@ export class ServiceController
     **/
     @Path("/postTableDB")
     @POST
-    public async postTableDB(dataArray: any)
-    {
-        return await saveTable(dataArray);
-    }
+	public async postTableDB(dataArray: any)
+	{
+	    // fetch stock api and insert it into the table BEFORE posting
+	    return await console.log(dataArray);
+	    // return await saveTable(dataArray);
+	}
 	
     /**
 	  * @param username:string - username entered into login page

@@ -34,6 +34,33 @@ class SheetComponent extends Component<any, ISheetComponentState>
 
     componentDidMount() : void
     {
+        const idStr = "61799fa9483a78d471171703";
+        axios.get(`http://localhost:3001/getTableDB`, {
+            params: {
+                objId: idStr
+            }
+        }).then((response) =>
+        {
+            // console.log(response.data[0]["table_data"]["dataArray"][0]["Name"]);
+            // response is an object
+            // response.data is an object property
+            // response.data[0] refers to another object
+            // response.data[0]["table_data"] refers to table_data object
+            // response.data[0]["table_data"]["dataArray"] refers to our table. it's an array where each index is an object representing a row of data
+            // access the table nested within the mongoDB document with the provided document id
+            // console.log(response.data[0]["table_data"]["dataArray"]);
+            this.setState((prevState) => ({
+                tableProps: {
+                    ...prevState.tableProps,
+                    data: response.data[0]["table_data"]["dataArray"]
+                }
+            }));
+            // console.log("Current Values:");
+            // console.log(this.state.tableProps.data);
+        }).catch(function(error)
+        {
+            console.log('Error', error);
+        });
         return;
     }
 
@@ -65,7 +92,26 @@ class SheetComponent extends Component<any, ISheetComponentState>
 
     saveTable(): void
     {
+        // fetch stock API data and insert it into table before Posting table
         const tableData = this.state.tableProps.data;
+        if (this.state.tableProps.data)
+        {
+            // console.log("Ticker Symbol: " + this.state.tableProps.data[0]["Ticker"]);
+            axios.get(`http://localhost:3001/stockapi/:ID`, {
+                params: {
+                    ID: this.state.tableProps.data[0]["Ticker"]
+                }
+            }).then((response) =>
+            {
+                console.log(`Response: ${  response.data}`);
+            }).catch(function(error)
+            {
+                console.log('Error', error);
+            });
+            
+        }
+
+        // save the displayed data to mongo
         axios.post(`http://localhost:3001/postTableDB`, {
             dataArray: tableData
         }).then(function(response)

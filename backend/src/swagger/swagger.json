@@ -91,6 +91,38 @@
 				]
 			}
 		},
+		"/getTableDB": {
+			"get": {
+				"operationId": "ServiceGetTableDB",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"type": "object"
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"schema": {
+							"$ref": "#/definitions/BadRequestError"
+						}
+					}
+				},
+				"description": "",
+				"parameters": [
+					{
+						"description": "",
+						"in": "query",
+						"name": "objId",
+						"required": true,
+						"type": "string"
+					}
+				]
+			}
+		},
 		"/testPOST": {
 			"post": {
 				"operationId": "ServiceTestPOST",
@@ -165,6 +197,38 @@
 						"name": "file",
 						"required": true,
 						"type": "file"
+					}
+				]
+			}
+		},
+		"/stockapi/{ID}": {
+			"get": {
+				"operationId": "ServiceGetStock",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"type": "object"
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"schema": {
+							"$ref": "#/definitions/BadRequestError"
+						}
+					}
+				},
+				"description": "",
+				"parameters": [
+					{
+						"description": "",
+						"in": "path",
+						"name": "ID",
+						"required": true,
+						"type": "string"
 					}
 				]
 			}
