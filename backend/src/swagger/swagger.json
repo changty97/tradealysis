@@ -5,7 +5,7 @@
 			"properties": {},
 			"type": "object"
 		},
-		"ICSVData": {
+		"ITableData": {
 			"description": "",
 			"properties": {},
 			"type": "object",
@@ -169,7 +169,10 @@
 					"200": {
 						"description": "Ok",
 						"schema": {
-							"$ref": "#/definitions/ICSVData"
+							"type": "array",
+							"items": {
+								"$ref": "#/definitions/ITableData"
+							}
 						}
 					},
 					"400": {
@@ -179,20 +182,20 @@
 						}
 					}
 				},
-				"description": "",
+				"description": "Parses a given csv file according to a predefined pattern specified by the sourceName.",
 				"consumes": [
 					"multipart/form-data"
 				],
 				"parameters": [
 					{
-						"description": "",
+						"description": "Pattern to parse by",
 						"in": "formData",
 						"name": "sourceName",
 						"required": true,
 						"type": "string"
 					},
 					{
-						"description": "",
+						"description": "csv file to parse data from.",
 						"in": "formData",
 						"name": "file",
 						"required": true,
