@@ -12,7 +12,7 @@ class LoginComponent extends Component<any, any>
     {
 	    super(props);
         this.loginKey = this.loginKey.bind(this);
-		this.signupKey = this.signupKey.bind(this);
+        this.signupKey = this.signupKey.bind(this);
     }
 
     private setLocalStorageStateKey(theKey:string) : void
@@ -65,9 +65,10 @@ class LoginComponent extends Component<any, any>
 	    }
     }
 
-	private signupKey(): void {
-		window.location.href="/createaccount";
-	}
+    private signupKey(): void
+    {
+        window.location.href = "/createaccount";
+    }
     render(): JSX.Element
     {
 	    return (

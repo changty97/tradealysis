@@ -284,8 +284,7 @@
 					"200": {
 						"description": "Ok",
 						"schema": {
-							"type": "number",
-							"format": "double"
+							"type": "boolean"
 						}
 					},
 					"400": {
