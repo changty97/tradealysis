@@ -30,11 +30,12 @@ class SheetComponent extends Component<any, ISheetComponentState>
         this.saveNewData = this.saveNewData.bind(this);
         this.createNewRow = this.createNewRow.bind(this);
         this.saveTable = this.saveTable.bind(this);
+        this.setCells = this.setCells.bind(this);
     }
 
     componentDidMount() : void
     {
-        const idStr = "61799fa9483a78d471171703";
+        const idStr = "617a01cc1c03b734633462aa";
         axios.get(`http://localhost:3001/getTableDB`, {
             params: {
                 objId: idStr
@@ -97,13 +98,13 @@ class SheetComponent extends Component<any, ISheetComponentState>
         if (this.state.tableProps.data)
         {
             // console.log("Ticker Symbol: " + this.state.tableProps.data[0]["Ticker"]);
-            axios.get(`http://localhost:3001/stockapi/:ID`, {
+            axios.get(`http://localhost:3001/stockapi/`, {
                 params: {
                     ID: this.state.tableProps.data[0]["Ticker"]
                 }
             }).then((response) =>
             {
-                console.log(`Response: ${  response.data}`);
+                console.log(response.data);
             }).catch(function(error)
             {
                 console.log('Error', error);
@@ -150,6 +151,39 @@ class SheetComponent extends Component<any, ISheetComponentState>
                 data: dataArray
             }
         }));
+    }
+
+    setCells(data: any): void
+    {
+        Promise.resolve(data).then((value) =>
+        {
+            for (const [key, val] of Object.entries(value))
+            {
+                this.state.tableProps.data?.forEach((i) =>
+                {
+                    Object.keys(i).map((keyName, keyIndex) =>
+                    {
+                        if (i.Ticker !== '' && i[keyName] === '')
+                        {
+                            switch (key)
+                            {
+                            case "Float": i.Float = val;
+                                break;
+                            case "Outstanding": i.Outstanding = val;
+                                break;
+                            case "W52H": i["52-WH"] = val;
+                                break;
+                            case "L52H": i["52-WL"] = val;
+                                break;
+                            case "Industry": i.Industry = val;
+                                break;
+                            default:
+                            }
+                        }
+                    });
+                });
+            }
+        });
     }
 
     childComponents: ChildComponents = {
@@ -221,6 +255,37 @@ class SheetComponent extends Component<any, ISheetComponentState>
                     rowKeyValue
                 };
                 console.log(this.state.tableProps.data);
+                if (this.state.tableProps.data?.length && cell.columnKey === "Ticker")
+                {
+                    this.state.tableProps.data?.forEach((i) =>
+                    {
+                        Object.keys(i).map((keyName, keyIndex) =>
+                        {
+                            if (i.Ticker !== '' && i[keyName] === '')
+                            {
+                                console.log(i.Ticker);
+                                //axios call...
+                                if (this.state.tableProps.data)
+                                {
+                                    // console.log("Ticker Symbol: " + this.state.tableProps.data[0]["Ticker"]);
+                                    axios.get(`http://localhost:3001/stockapi/`, {
+                                        params: {
+                                            ID: this.state.tableProps.data[0]["Ticker"]
+                                        }
+                                    }).then((response) =>
+                                    {
+                                        console.log(response.data);
+                                        this.setCells(response.data);
+                                    }).catch(function(error)
+                                    {
+                                        console.log('Error', error);
+                                    });
+                
+                                }
+                            }
+                        });
+                    });
+                }
                 return {
                     ref: (ref: any) => isFocused && ref?.focus(),
                     onKeyUp: (e) => e.key === "Enter" && this.dispatch(setFocused({

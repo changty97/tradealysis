@@ -18,7 +18,7 @@ const columns: Column[] = Array(23).fill(undefined).map(
   }),
 );
 
-const dataArray = Array(3).fill(undefined).map(
+const dataArray = Array(5).fill(undefined).map(
     (_, index) => columns.reduce((previousValue: any, currentValue) => {
       previousValue[currentValue.key] = ``;
       return previousValue;

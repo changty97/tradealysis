@@ -9,6 +9,7 @@ import { correctLoginKey, userFromKey } from "../MongoFiles/MongoLogin";
 import { createAccount } from "../MongoFiles/MongoCreateAccount";
 import { accountValueFromKey } from "../MongoFiles/MongoAccountSettings";
 import { getStockData } from "../stockapi";
+import { convertToTableFormat } from "../importedDataToTable";
 
 const badRequestExampleResponse: BadRequestError = {
     name: "BadRequestError",
@@ -70,13 +71,12 @@ export class ServiceController
 	 @POST
 	 public async parseCSV(@FormParam("sourceName") sourceName: string, @FileParam("file") file: Express.Multer.File): Promise<ITableData[]>
 	 {
+		 console.log(file);
 		 const parser: CSVParser = new CSVParser(sourceName);
  
 		 await parser.parse(file);
-		// TODO: Create a new table and insert each object from the parsed array into a row
-		
-		 console.log(parser.filter());
-
+        // TODO: Create a new table and insert each object from the parsed array into a row
+		 // console.log(parser.filter());
 		 return parser.filter();
 	 }
  
@@ -85,9 +85,9 @@ export class ServiceController
      * @param ID
      * @returns JSON object of stock API data
      */
-	@Path("/stockapi/:ID")
+	@Path("/stockapi/")
 	@GET
-	 public async getStock(@PathParam("ID") ID: string): Promise<any>
+	 public async getStock(@QueryParam("ID") ID: string): Promise<any>
 	 {
 	     // console.log(getStockData(ID));
 	     const stockData = getStockData(ID);
@@ -104,9 +104,11 @@ export class ServiceController
     @POST
 	public async postTableDB(dataArray: any)
 	{
-	    // fetch stock api and insert it into the table BEFORE posting
-	    return await console.log(dataArray);
-	    // return await saveTable(dataArray);
+	    // TODO: fetch stock api and insert it into the table BEFORE posting
+
+	    // uncomment below to test table contents without saving
+	    // return await console.log(dataArray);
+	    return await saveTable(dataArray);
 	}
 	
     /**

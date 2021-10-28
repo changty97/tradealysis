@@ -204,7 +204,7 @@
 				]
 			}
 		},
-		"/stockapi/{ID}": {
+		"/stockapi/": {
 			"get": {
 				"operationId": "ServiceGetStock",
 				"produces": [
@@ -228,7 +228,7 @@
 				"parameters": [
 					{
 						"description": "",
-						"in": "path",
+						"in": "query",
 						"name": "ID",
 						"required": true,
 						"type": "string"
