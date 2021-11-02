@@ -9,6 +9,6 @@ export interface IMongoOptionsMult {
     uri: string;
     db: string;
     collections: {
-      [name: string]: string;
-   };
+        [name: string]: string;
+    };
 }
