@@ -133,6 +133,6 @@ export class ServiceController
 	@GET
 	public async accountbdateFromKeyGET(@QueryParam("key") key: string):Promise<string>
 	{
-        return await accountValueFromKey(key, "bdate");
+	    return await accountValueFromKey(key, "bdate");
 	}
 }

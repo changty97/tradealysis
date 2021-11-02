@@ -21,14 +21,18 @@ class HomeImportComponent extends Component<any, IHomeImportComponentState>
 
     handleFileSelection(event: React.ChangeEvent<HTMLInputElement>): void
     {
-        if (event.target.files) {
-            this.setState({ selectedFile: event.target.files[0] });
+        if (event.target.files)
+        {
+            this.setState({
+                selectedFile: event.target.files[0]
+            });
         }
     }
     
     importFile(): void
     {
-        if (!this.state.selectedFile) {
+        if (!this.state.selectedFile)
+        {
             return;
         }
 
@@ -39,15 +43,18 @@ class HomeImportComponent extends Component<any, IHomeImportComponentState>
 
         axios({
             method: "POST",
-            url:"http://localhost:3001/parseCSV",
+            url: "http://localhost:3001/parseCSV",
             data: formData
-        }).then((response: AxiosResponse) => {
+        }).then((response: AxiosResponse) =>
+        {
             console.log(response.data);
             // TODO: Add verification of data step
             // TODO: After verifying data, upload data to database
-        }).catch((err) => {
+        }).catch((err) =>
+        {
             console.error(err);
-        }).finally(() => {
+        }).finally(() =>
+        {
             // TODO: Redirect to home.
         });
     }

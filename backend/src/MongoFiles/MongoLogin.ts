@@ -28,7 +28,7 @@ async function correctLoginKey(username: string, password: string): Promise<stri
                     }
                 ).then((results2: ObjectId[] ) =>
                 {
-                    return (results2 !== null) ? results2[0].toString(): "";
+                    return (results2 !== null) ? results2[0].toString() : "";
                 });
             }
             return "";

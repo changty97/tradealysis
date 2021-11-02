@@ -30,7 +30,7 @@ async function createAccount(username: string, password: string, fName: string, 
         {
             if (!res)
             {
-				return theCollectionUserTable.insertOne({
+                return theCollectionUserTable.insertOne({
                     "uname": username,
                     "pssd": password
                 }).then((res2)=>
