@@ -3,7 +3,7 @@ import { Produces, Response } from "typescript-rest-swagger";
 import { BadRequestError } from "typescript-rest/dist/server/model/errors";
 import { CSVParser } from "../CSVParser";
 import { ICSVData } from "../models/ICSVData";
-import { exampleInsertThing, exampleRetrieveThing, genericObject, saveTable } from "../MongoFiles/Mongo";
+import { exampleInsertThing, exampleRetrieveThing, genericObject, saveTable, retreiveYahooData } from "../MongoFiles/Mongo";
 import { correctLoginKey, userFromKey } from "../MongoFiles/MongoLogin";
 import { createAccount } from "../MongoFiles/MongoCreateAccount";
 import { accountValueFromKey } from "../MongoFiles/MongoAccountSettings";
@@ -145,4 +145,16 @@ export class ServiceController
 	 {
 		 return await accountValueFromKey(key, "bdate");
 	 }
+
+	 /**
+	  * @param ticker:string - ticker symbol for specific stock
+	  * @returns axios data
+	**/
+	@Path("/getYahooData")
+	@GET
+	 public getYahooData(@QueryParam("ticker") ticker: string): Promise<string>
+	 {
+	    return retreiveYahooData(ticker);
+	 }
+
 }

@@ -262,7 +262,7 @@
 						}
 					}
 				},
-				"description": "Get a username from a key in browser local storage\n   If the key does not match with a user, nothing is returned\n   else the user's username is returned",
+				"description": "Get a username from a key in browser local storage\r\n   If the key does not match with a user, nothing is returned\r\n   else the user's username is returned",
 				"parameters": [
 					{
 						"description": "",
@@ -497,6 +497,38 @@
 						"description": "",
 						"in": "query",
 						"name": "key",
+						"required": true,
+						"type": "string"
+					}
+				]
+			}
+		},
+		"/getYahooData": {
+			"get": {
+				"operationId": "ServiceGetYahooData",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"type": "string"
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"schema": {
+							"$ref": "#/definitions/BadRequestError"
+						}
+					}
+				},
+				"description": "",
+				"parameters": [
+					{
+						"description": ":string - ticker symbol for specific stock",
+						"in": "query",
+						"name": "ticker",
 						"required": true,
 						"type": "string"
 					}
