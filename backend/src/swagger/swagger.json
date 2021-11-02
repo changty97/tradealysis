@@ -48,9 +48,9 @@
 		"version": "1.0.0"
 	},
 	"paths": {
-		"/testGET": {
-			"get": {
-				"operationId": "ServiceTestGET",
+		"/parseCSV": {
+			"post": {
+				"operationId": "ServiceParseCSV",
 				"produces": [
 					"application/json"
 				],
@@ -58,10 +58,7 @@
 					"200": {
 						"description": "Ok",
 						"schema": {
-							"type": "array",
-							"items": {
-								"$ref": "#/definitions/genericObject"
-							}
+							"$ref": "#/definitions/ICSVData"
 						}
 					},
 					"400": {
@@ -72,28 +69,30 @@
 					}
 				},
 				"description": "",
+				"consumes": [
+					"multipart/form-data"
+				],
 				"parameters": [
 					{
 						"description": "",
-						"in": "query",
-						"name": "key",
+						"in": "formData",
+						"name": "sourceName",
 						"required": true,
 						"type": "string"
 					},
 					{
 						"description": "",
-						"in": "query",
-						"name": "value",
+						"in": "formData",
+						"name": "file",
 						"required": true,
-						"type": "number",
-						"format": "double"
+						"type": "file"
 					}
 				]
 			}
 		},
-		"/testPOST": {
+		"/postTableDB": {
 			"post": {
-				"operationId": "ServiceTestPOST",
+				"operationId": "ServicePostTableDB",
 				"produces": [
 					"application/json"
 				],
@@ -117,19 +116,20 @@
 				],
 				"parameters": [
 					{
-						"description": "",
-						"in": "query",
-						"name": "test",
+						"description": ": any - 2d array which contains data of every cell in the spreadsheet",
+						"in": "body",
+						"name": "dataArray",
 						"required": true,
-						"type": "number",
-						"format": "double"
+						"schema": {
+							"type": "object"
+						}
 					}
 				]
 			}
 		},
-		"/parseCSV": {
-			"post": {
-				"operationId": "ServiceParseCSV",
+		"/stockapi/{ID}": {
+			"get": {
+				"operationId": "ServiceGetStock",
 				"produces": [
 					"application/json"
 				],
@@ -167,20 +167,23 @@
 						"in": "formData",
 						"name": "file",
 						"required": true,
-						"type": "file"
+						"type": "string"
 					}
 				]
 			}
 		},
-		"/postTableDB": {
+		"/createAccountPost": {
 			"post": {
-				"operationId": "ServicePostTableDB",
+				"operationId": "ServiceCreateAccountPost",
 				"produces": [
 					"application/json"
 				],
 				"responses": {
-					"204": {
-						"description": "No content"
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"type": "boolean"
+						}
 					},
 					"400": {
 						"description": "Bad Request",
@@ -189,15 +192,15 @@
 						}
 					}
 				},
-				"description": "",
+				"description": "Method creates Account",
 				"consumes": [
 					"application/json"
 				],
 				"parameters": [
 					{
-						"description": ": any - 2d array which contains data of every cell in the spreadsheet",
+						"description": "",
 						"in": "body",
-						"name": "dataArray",
+						"name": "body",
 						"required": true,
 						"schema": {
 							"type": "object"
@@ -206,9 +209,9 @@
 				]
 			}
 		},
-		"/loginGet": {
+		"/accountunameFromKeyGET": {
 			"get": {
-				"operationId": "ServiceLoginGet",
+				"operationId": "ServiceAccountunameFromKeyGET",
 				"produces": [
 					"application/json"
 				],
@@ -216,8 +219,7 @@
 					"200": {
 						"description": "Ok",
 						"schema": {
-							"type": "number",
-							"format": "double"
+							"type": "string"
 						}
 					},
 					"400": {
@@ -230,16 +232,169 @@
 				"description": "",
 				"parameters": [
 					{
-						"description": ":string - username entered into login page",
+						"description": "",
 						"in": "query",
-						"name": "username",
+						"name": "key",
 						"required": true,
 						"type": "string"
+					}
+				]
+			}
+		},
+		"/accountfNameFromKeyGET": {
+			"get": {
+				"operationId": "ServiceAccountfnameFromKeyGET",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"type": "string"
+						}
 					},
+					"400": {
+						"description": "Bad Request",
+						"schema": {
+							"$ref": "#/definitions/BadRequestError"
+						}
+					}
+				},
+				"description": "",
+				"parameters": [
 					{
-						"description": ":string - password entered into login page (clear text no encryption)",
+						"description": "",
 						"in": "query",
-						"name": "password",
+						"name": "key",
+						"required": true,
+						"type": "string"
+					}
+				]
+			}
+		},
+		"/accountlNameFromKeyGET": {
+			"get": {
+				"operationId": "ServiceAccountlNameFromKeyGET",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"type": "string"
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"schema": {
+							"$ref": "#/definitions/BadRequestError"
+						}
+					}
+				},
+				"description": "",
+				"parameters": [
+					{
+						"description": "",
+						"in": "query",
+						"name": "key",
+						"required": true,
+						"type": "string"
+					}
+				]
+			}
+		},
+		"/accountemailFromKeyGET": {
+			"get": {
+				"operationId": "ServiceAccountemailFromKeyGET",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"type": "string"
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"schema": {
+							"$ref": "#/definitions/BadRequestError"
+						}
+					}
+				},
+				"description": "",
+				"parameters": [
+					{
+						"description": "",
+						"in": "query",
+						"name": "key",
+						"required": true,
+						"type": "string"
+					}
+				]
+			}
+		},
+		"/accountphoneFromKeyGET": {
+			"get": {
+				"operationId": "ServiceAccountphoneFromKeyGET",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"type": "string"
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"schema": {
+							"$ref": "#/definitions/BadRequestError"
+						}
+					}
+				},
+				"description": "",
+				"parameters": [
+					{
+						"description": "",
+						"in": "query",
+						"name": "key",
+						"required": true,
+						"type": "string"
+					}
+				]
+			}
+		},
+		"/accountbdateFromKeyGET": {
+			"get": {
+				"operationId": "ServiceAccountbdateFromKeyGET",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"type": "string"
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"schema": {
+							"$ref": "#/definitions/BadRequestError"
+						}
+					}
+				},
+				"description": "",
+				"parameters": [
+					{
+						"description": "",
+						"in": "query",
+						"name": "key",
 						"required": true,
 						"type": "string"
 					}
