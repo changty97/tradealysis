@@ -83,7 +83,7 @@ export class ServiceController
 	 **/
 	 @Path("/createAccountPost")
 	 @POST
-	 public async createAccountPost(body: any) : Promise<number>
+	 public async createAccountPost(body: any) : Promise<boolean>
 	 {
 		 return await createAccount(body.userInfo.username, body.userInfo.password, body.userInfo.fName, body.userInfo.lName, body.userInfo.email, body.userInfo.phone, body.userInfo.bdate);
 	 }
@@ -99,34 +99,34 @@ export class ServiceController
 	 @GET
 	 public async accountfnameFromKeyGET(@QueryParam("key") key: string):Promise<string>
 	 {
-		 return await fnameFromKey(key, "fName");
+		 return await accountValueFromKey(key, "fName");
 	 }
 	 
 	 @Path("/accountlNameFromKeyGET")
 	 @GET
 	 public async accountlNameFromKeyGET(@QueryParam("key") key: string):Promise<string>
 	 {
-		 return await fnameFromKey(key, "lName");
+		 return await accountValueFromKey(key, "lName");
 	 }
 	 
 	 @Path("/accountemailFromKeyGET")
 	 @GET
 	 public async accountemailFromKeyGET(@QueryParam("key") key: string):Promise<string>
 	 {
-		 return await fnameFromKey(key, "email");
+		 return await accountValueFromKey(key, "email");
 	 }
 	 
 	 @Path("/accountphoneFromKeyGET")
 	 @GET
 	 public async accountphoneFromKeyGET(@QueryParam("key") key: string):Promise<string>
 	 {
-		 return await fnameFromKey(key, "phone");
+		 return await accountValueFromKey(key, "phone");
 	 }
 	 
 	 @Path("/accountbdateFromKeyGET")
 	 @GET
 	 public async accountbdateFromKeyGET(@QueryParam("key") key: string):Promise<string>
 	 {
-		 return await fnameFromKey(key, "bdate");
+		 return await accountValueFromKey(key, "bdate");
 	 }
 }
