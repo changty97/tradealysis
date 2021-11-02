@@ -1,6 +1,5 @@
-import { InsertOneResult, MongoClient, ObjectId, Db, Collection } from "mongodb";
+import { MongoClient, ObjectId, Db, Collection } from "mongodb";
 import { userMongoOptions } from "../constants/globals";
-import { userExists } from "./MongoLogin";
 
 /**
  *   Method returns the str value of @param item from the
@@ -12,16 +11,15 @@ import { userExists } from "./MongoLogin";
  *
  *   @return value of column item in account table : string
 **/
-async function accountValueFromKey(key:string, item:string):Promise<string>
+async function accountValueFromKey(key: string, item: string):Promise<string>
 {
     let client: MongoClient | null = null;
     return MongoClient.connect(userMongoOptions.uri).then((connection: MongoClient) =>
     {
         client = connection;
         const db: Db = client.db(userMongoOptions.db);
-        const theCollectionUserTable: Collection = db.collection(userMongoOptions.collections['userTable']);
-        const theCollectionKeyTable:  Collection = db.collection(userMongoOptions.collections['userKey']);
-        const theCollectionAccountTable:  Collection = db.collection(userMongoOptions.collections['userAccount']);
+        const theCollectionKeyTable: Collection = db.collection(userMongoOptions.collections['userKey']);
+        const theCollectionAccountTable: Collection = db.collection(userMongoOptions.collections['userAccount']);
 		
         return theCollectionKeyTable.distinct("user_obj_id", {
             "key": key
@@ -33,7 +31,7 @@ async function accountValueFromKey(key:string, item:string):Promise<string>
                     item, {
                         "user_obj_id": results[0]
                     }
-                ).then((results2 : ObjectId[] ) =>
+                ).then((results2: ObjectId[] ) =>
                 {
                     return (results2 !== null) ? results2[0].toString() : "";
                 });

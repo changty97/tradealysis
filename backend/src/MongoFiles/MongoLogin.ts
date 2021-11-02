@@ -1,11 +1,11 @@
-import { InsertOneResult, MongoClient, ObjectId, Db, Collection } from "mongodb";
+import { MongoClient, ObjectId, Db, Collection } from "mongodb";
 import { userMongoOptions } from "../constants/globals";
 
 /**
  * Method returns key based on username, passwork pair
  * @return key:string associated with username, password pair or "" if username, password pair not in db
  */
-async function correctLoginKey(username:string, password:string): Promise<string>
+async function correctLoginKey(username: string, password: string): Promise<string>
 {
     let client: MongoClient | null = null;
     return MongoClient.connect(userMongoOptions.uri).then((connection: MongoClient) =>
@@ -18,7 +18,7 @@ async function correctLoginKey(username:string, password:string): Promise<string
         return theCollectionUserTable.distinct("_id", {
             "uname": username,
             "pssd": password
-        }).then((results : ObjectId[] ) =>
+        }).then((results: ObjectId[] ) =>
         {
             if (results !== null && results.length !== 0)
             {
@@ -26,9 +26,9 @@ async function correctLoginKey(username:string, password:string): Promise<string
                     "key", {
                         "user_obj_id": results[0].toString()
                     }
-                ).then((results2 : ObjectId[] ) =>
+                ).then((results2: ObjectId[] ) =>
                 {
-                    return (results2 !== null) ? results2[0].toString() : "";
+                    return (results2 !== null) ? results2[0].toString(): "";
                 });
             }
             return "";
@@ -51,7 +51,7 @@ async function correctLoginKey(username:string, password:string): Promise<string
  * Returns username from a key in local storage
  * @returns username:string if key matches with user, else empty str ""
  **/
-async function userFromKey(key:string):Promise<string>
+async function userFromKey(key: string):Promise<string>
 {
     let client: MongoClient | null = null;
     return MongoClient.connect(userMongoOptions.uri).then((connection: MongoClient) =>
@@ -59,10 +59,10 @@ async function userFromKey(key:string):Promise<string>
         client = connection;
         const db: Db = client.db(userMongoOptions.db);
         const theCollectionUserTable: Collection = db.collection(userMongoOptions.collections['userTable']);
-        const theCollectionKeyTable:  Collection = db.collection(userMongoOptions.collections['userKey']);
+        const theCollectionKeyTable: Collection = db.collection(userMongoOptions.collections['userKey']);
         return theCollectionKeyTable.distinct("user_obj_id", {
             "key": key
-        }).then((results : ObjectId[] ) =>
+        }).then((results: ObjectId[] ) =>
         {
             if (results !== null && results.length !== 0)
             {
@@ -70,7 +70,7 @@ async function userFromKey(key:string):Promise<string>
                     "uname", {
                         "_id": new ObjectId(results[0])
                     }
-                ).then((results2 : ObjectId[] ) =>
+                ).then((results2: ObjectId[] ) =>
                 {
                     return (results2 !== null) ? results2[0].toString() : "";
                 });
@@ -96,7 +96,7 @@ async function userFromKey(key:string):Promise<string>
  * does not exists, return 0
  * @return 0 if user does not exist, 1 if the user exists
  */
-async function userExists(username:string): Promise<boolean>
+async function userExists(username: string): Promise<boolean>
 {
     let client: MongoClient | null = null;
     return MongoClient.connect(userMongoOptions.uri).then((connection: MongoClient) =>

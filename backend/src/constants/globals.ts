@@ -14,9 +14,9 @@ const userMongoOptions: IMongoOptionsMult = {
     db: process.env.USER_DB,
     collections: {
         "userTable": process.env.USERTABLE_COLLECTION,
-	  "userKey": process.env.USERKEY_COLLECTION,
-	  "userAccount": process.env.USERACCOUNT_COLLECTION,
-	  "userSessions": process.env.USERSESSIONS_COLLECTION,
+	    "userKey": process.env.USERKEY_COLLECTION,
+	    "userAccount": process.env.USERACCOUNT_COLLECTION,
+	    "userSessions": process.env.USERSESSIONS_COLLECTION,
     }
   
 };

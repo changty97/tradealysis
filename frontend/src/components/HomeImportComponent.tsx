@@ -3,10 +3,9 @@ import { Link } from "react-router-dom";
 import { Home } from "../cssComponents/Home";
 import { Import } from "../cssComponents/Import";
 import axios, { AxiosResponse } from "axios";
-import { IHomeImportComponentProps } from "../models/IHomeImportComponentProps";
 import { IHomeImportComponentState } from "../models/IHomeImportComponentState";
 
-class HomeImportComponent extends Component<IHomeImportComponentProps, IHomeImportComponentState>
+class HomeImportComponent extends Component<any, IHomeImportComponentState>
 {
     constructor(props: any)
     {
