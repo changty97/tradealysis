@@ -2,13 +2,13 @@ import { FileParam, FormParam, GET, POST,  Path, QueryParam, PathParam } from "t
 import { Produces, Response } from "typescript-rest-swagger";
 import { BadRequestError } from "typescript-rest/dist/server/model/errors";
 import { CSVParser } from "../CSVParser";
-import { ICSVData } from "../models/ICSVData";
 //import { exampleInsertThing, exampleRetrieveThing, genericObject, saveTable } from "../Mongo";
-import { saveTable } from "../Mongo";
-import { correctLoginKey, userFromKey } from "../MongoLogin";
-import { createAccount } from "../MongoCreateAccount";
-import { fnameFromKey } from "../MongoAccountSettings";
+import { saveTable } from "../MongoFiles/Mongo";
+import { correctLoginKey, userFromKey } from "../MongoFiles/MongoLogin";
+import { createAccount } from "../MongoFiles/MongoCreateAccount";
 import { getStockData } from "../stockapi";
+import { ITableData } from "../models/ITableData";
+import { accountValueFromKey } from "../MongoFiles/MongoAccountSettings";
 
 
 const badRequestExampleResponse: BadRequestError = {
@@ -24,11 +24,13 @@ export class ServiceController
 {
     @Path("/parseCSV")
     @POST
-    public async parseCSV(@FormParam("sourceName") sourceName: string, @FileParam("file") file: Express.Multer.File): Promise<ICSVData>
+    public async parseCSV(@FormParam("sourceName") sourceName: string, @FileParam("file") file: Express.Multer.File): Promise<ITableData[]>
     {
         const parser: CSVParser = new CSVParser(sourceName);
 
-        return await parser.parse(file);
+        await parser.parse(file);
+
+        return parser.filter();
     }
 	
     /**

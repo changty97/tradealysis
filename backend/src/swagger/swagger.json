@@ -1,6 +1,6 @@
 {
 	"definitions": {
-		"ICSVData": {
+		"ITableData": {
 			"description": "",
 			"properties": {},
 			"type": "object",
@@ -53,7 +53,10 @@
 					"200": {
 						"description": "Ok",
 						"schema": {
-							"$ref": "#/definitions/ICSVData"
+							"type": "array",
+							"items": {
+								"$ref": "#/definitions/ITableData"
+							}
 						}
 					},
 					"400": {
