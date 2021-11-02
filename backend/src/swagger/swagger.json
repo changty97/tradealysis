@@ -1,10 +1,5 @@
 {
 	"definitions": {
-		"genericObject": {
-			"description": "",
-			"properties": {},
-			"type": "object"
-		},
 		"ITableData": {
 			"description": "",
 			"properties": {},
@@ -58,7 +53,10 @@
 					"200": {
 						"description": "Ok",
 						"schema": {
-							"$ref": "#/definitions/ICSVData"
+							"type": "array",
+							"items": {
+								"$ref": "#/definitions/ITableData"
+							}
 						}
 					},
 					"400": {
@@ -137,10 +135,7 @@
 					"200": {
 						"description": "Ok",
 						"schema": {
-							"type": "array",
-							"items": {
-								"$ref": "#/definitions/ITableData"
-							}
+							"type": "object"
 						}
 					},
 					"400": {
@@ -150,22 +145,83 @@
 						}
 					}
 				},
-				"description": "Parses a given csv file according to a predefined pattern specified by the sourceName.",
-				"consumes": [
-					"multipart/form-data"
-				],
+				"description": "",
 				"parameters": [
 					{
-						"description": "Pattern to parse by",
-						"in": "formData",
-						"name": "sourceName",
+						"description": "",
+						"in": "path",
+						"name": "ID",
+						"required": true,
+						"type": "string"
+					}
+				]
+			}
+		},
+		"/loginKeyGET": {
+			"get": {
+				"operationId": "ServiceLoginKeyGET",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"type": "string"
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"schema": {
+							"$ref": "#/definitions/BadRequestError"
+						}
+					}
+				},
+				"description": "",
+				"parameters": [
+					{
+						"description": ":string - username entered into login page",
+						"in": "query",
+						"name": "username",
 						"required": true,
 						"type": "string"
 					},
 					{
-						"description": "csv file to parse data from.",
-						"in": "formData",
-						"name": "file",
+						"description": ":string - password entered into login page (clear text no encryption)",
+						"in": "query",
+						"name": "password",
+						"required": true,
+						"type": "string"
+					}
+				]
+			}
+		},
+		"/usernameFromKeyGET": {
+			"get": {
+				"operationId": "ServiceUsernameFromKeyGET",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"type": "string"
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"schema": {
+							"$ref": "#/definitions/BadRequestError"
+						}
+					}
+				},
+				"description": "Get a username from a key in browser local storage\r\n   If the key does not match with a user, nothing is returned\r\n   else the user's username is returned",
+				"parameters": [
+					{
+						"description": "",
+						"in": "query",
+						"name": "key",
 						"required": true,
 						"type": "string"
 					}

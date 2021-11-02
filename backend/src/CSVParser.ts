@@ -115,11 +115,11 @@ class CSVParser
         {
             /**
              * Some formulas I'm using here:
-             * 
+             *
              * Average entry price = |total price spent / # of stocks bought|
              * Average exit price = |total profit made / # of stocks sold|
              * Profit or loss = total profit made - total price spent
-             * Profit or loss percentage = profit or loss / (# stocks sold * Average entry price) 
+             * Profit or loss percentage = profit or loss / (# stocks sold * Average entry price)
              */
             const avgEntryPrice: number = Math.abs(stocksInfo[symbol].buy.totalPrice / stocksInfo[symbol].buy.totalStocks);
             const avgExitPrice: number = Math.abs(stocksInfo[symbol].sell.totalPrice / stocksInfo[symbol].sell.totalStocks);
