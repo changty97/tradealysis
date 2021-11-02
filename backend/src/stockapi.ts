@@ -15,7 +15,7 @@ function timestamp(year: number, month: number, day: number, hour: number, minut
     return timestampvalue;
 }
 
-function printFetch(symbol:string, realtime:string)
+function printFetch(symbol:string, realtime:boolean)
 {
     const currentDate = new Date();
     const date = (`0${  currentDate.getDate()}`).slice(-2);
@@ -24,49 +24,40 @@ function printFetch(symbol:string, realtime:string)
     const hours = currentDate.getHours();
     const minutes = currentDate.getMinutes();
     const seconds = currentDate.getSeconds();
-    if (realtime == "y")
-    {
-        console.log(`Successfully fetched ${symbol } realtime data at ${year  }-${  month  }-${  date  } ${  hours  }:${  minutes  }:${  seconds}`);
-    }
-    else
-    {
-        console.log(`Successfully fetched ${symbol} historical data at ${year  }-${  month  }-${  date  } ${  hours  }:${  minutes  }:${  seconds}`);
-    }
-    
+    console.log(`Successfully fetched ${symbol } ${realtime ? "realtime" : "realtime and historical"} data at ${year  }-${  month  }-${  date  } ${  hours  }:${  minutes  }:${  seconds}`);
 }
 
 async function getStockData(ID: string): Promise<any>
 {
-
-    const firstCharacter = ID.substring(0, 1);
+    const firstCharacter = ID.charAt(0);    // To dertermine if date is specified in the ID string by the first character
     const currentdate = new Date();
 
     // Define varibles to store fetched data
-    let Ticker;      //Symbol
-    let Industry;     //Industry
-    let Exchange;     //Exchange
-    let Price;        //Current price
-    let W52H;         //Highest price within 52 weeks
-    let W52L;         //Lowest price within 52 weeks
-    let VolAvg;       //To be confirmed
-    let Outstanding;  //Outstanding shares
-    let Float;        //Float shares
-    let VolDOI;       //To be confirmed
-    let VolPreM;      //Premarket volume
-    let PC;           //previous close price
-    let PremHigh;      //Pre-market high price
-    let Open;          //Open price
-    let HOD;            //High of the day
-    let HODTime;        //HOD time
-    let LOD;            //Low of the day
-    let LODTime;        //LOD time
-    let Close;          //To be confirmed
-    let AH;             //The price after hours
-    let FromTimestamp;   //Starting timestamp of speficifed time range
-    let ToTimestamp;     //Ending timestamp of speficifed time range
-    let Interval;        //Time interval between two consecutive data points in the time series.
+    let Ticker:string;              //Symbol
+    let Industry:string;            //Industry
+    let Exchange:string;            //Exchange
+    let Price:number;               //Current price
+    let W52H:number;                //Highest price within 52 weeks
+    let W52L:number;                //Lowest price within 52 weeks
+    let VolAvg:number;              //Realtime volume
+    let Outstanding:number;         //Outstanding shares
+    let Float:number;               //Float shares
+    let VolDOI:number;              //Volume on the specified transaction date
+    let VolPreM:number;             //Premarket volume
+    let PC:number;                  //previous close price on the specified transaction date
+    let PremHigh:number;            //Pre-market high price on the specified transaction date
+    let Open:number;                //Open price on the specified transaction date
+    let HOD:number;                 //Highest price on the specified transaction date
+    let HODTime:string;             //HOD time
+    let LOD:number;                 //Lowest price on the specified transaction date
+    let LODTime:string;             //LOD time
+    let Close:number;               //Close price on the specified transaction date
+    let AH:number;                  //The price after hours on the specified transaction date
+    let FromTimestamp:number;       //Starting timestamp of speficifed time range
+    let ToTimestamp:number;         //Ending timestamp of speficifed time range
+    let Interval:string;            //Time interval between two consecutive data points in the time series.
 
-    if ( firstCharacter == "2" )
+    if ( firstCharacter == "2" )    // Date is specified in the string beginning with "2YYY-MM-DD..
     {
         // Store the stock symbol
         const StockSymbol = ID.substring(11).toUpperCase();
@@ -84,9 +75,9 @@ async function getStockData(ID: string): Promise<any>
 
         //Fetch fundamental data from Alpha Vantage API
         await axios(overviewurl)
-            .then(response =>
+            .then(AxiosResponse =>
             {
-                const query = response.data;
+                const query = AxiosResponse.data;
                 Industry = query['Industry'];                  //Industry
                 Exchange = query['Exchange'];                  //Exchange
                 //W52H = query['52WeekHigh'];                    //Highest price within 52 weeks
@@ -95,32 +86,14 @@ async function getStockData(ID: string): Promise<any>
                 Float = query['SharesFloat'];                  //Float
             })
             .catch(console.error);
-
-        //This API returns raw (as-traded) daily open/high/low/close/volume values, daily adjusted close values,
-        //and historical split/dividend events of the global equity specified, covering 20+ years of historical data.
-        const dailyurl = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=${StockSymbol}&outputsize=compact&apikey=${AlphaVantage_api_key}`;
     
-        /*
-    //Fetch quotes from Alpha Vantage API on the specified date
-    await axios(dailyurl)
-        .then(response =>
-        {
-            const query = response.data;
-            Open = query["Time Series (Daily)"][specifiedDate]["1. open"];             //Open Price of the specified date
-            HOD =  query["Time Series (Daily)"][specifiedDate]["2. high"];             //Highest price of the specified date
-            LOD =  query["Time Series (Daily)"][specifiedDate]["3. low"];              //Lowest price of the specified date
-            Close =  query["Time Series (Daily)"][specifiedDate]["4. close"];          //Close price of the specified date
-            VolDOI =  query["Time Series (Daily)"][specifiedDate]["6. volume"];        //Volume of the specified date
-        })
-        .catch(console.error);
-    */
 
         //Fetch current price from Finnhub API data
         const urlcurrent = `https://finnhub.io/api/v1/quote?symbol=${StockSymbol}&token=${finnhub_api_key}`;
         await axios(urlcurrent)
-            .then(response =>
+            .then(AxiosResponse =>
             {
-                const query = response.data;
+                const query = AxiosResponse.data;
                 Price = query['c'];         //Current price
             })
             .catch(console.error);
@@ -130,15 +103,15 @@ async function getStockData(ID: string): Promise<any>
         //In order to fetch Premarket volume and Pre-market high price from Finnhub premarket data
         FromTimestamp = timestamp(yy, mm, dd, 1, 0);
         ToTimestamp = timestamp(yy, mm, dd, 6, 29);
-        Interval = 1;
+        Interval = "1";
   
 
         //Fetch Premarket volume and Pre-market high price from Finnhub premarket data
         const urlpremarket = `https://finnhub.io/api/v1/stock/candle?symbol=${StockSymbol}&resolution=${Interval}&from=${FromTimestamp}&to=${ToTimestamp}&token=${finnhub_api_key}`;
         await axios(urlpremarket)
-            .then(response =>
+            .then(AxiosResponse =>
             {
-                const query = response.data;
+                const query = AxiosResponse.data;
                 VolPreM = volumsum();
                 PremHigh = Math.max(...query.h);
   
@@ -159,14 +132,14 @@ async function getStockData(ID: string): Promise<any>
         //In order to fetch Open, HOD, LOD, Close, VolDOI, HOD time, and LOD time from Finnhub intraday data on the specified date
         FromTimestamp = timestamp(yy, mm, dd, 6, 30);
         ToTimestamp = timestamp(yy, mm, dd, 13, 0);
-        Interval = 1;
+        Interval = "1";
 
         //Fetch Open, HOD, LOD, Close, VolDOI, HOD time, and LOD time from Finnhub intraday data on the specified date
         const urlintraday = `https://finnhub.io/api/v1/stock/candle?symbol=${StockSymbol}&resolution=${Interval}&from=${FromTimestamp}&to=${ToTimestamp}&token=${finnhub_api_key}`;
         await axios(urlintraday)
-            .then(response =>
+            .then(AxiosResponse =>
             {
-                const query = response.data;
+                const query = AxiosResponse.data;
                 Open = query.o[0];
                 HOD = Math.max(...query.h);
                 LOD = Math.min(...query.l);
@@ -234,14 +207,14 @@ async function getStockData(ID: string): Promise<any>
         //In order to fetch after hour price from Finnhub
         FromTimestamp = timestamp(yy, mm, dd, 13, 1);
         ToTimestamp = timestamp(yy, mm, dd, 17, 0);
-        Interval = 1;
+        Interval = "1";
    
         //Fetch after hour price from Finnhub
         const urlafterhour = `https://finnhub.io/api/v1/stock/candle?symbol=${StockSymbol}&resolution=${Interval}&from=${FromTimestamp}&to=${ToTimestamp}&token=${finnhub_api_key}`;
         await axios(urlafterhour)
-            .then(response =>
+            .then(AxiosResponse =>
             {
-                const query = response.data;
+                const query = AxiosResponse.data;
                 AH = query.c[(query.c.length - 1)];
             })
             .catch(console.error);
@@ -256,9 +229,9 @@ async function getStockData(ID: string): Promise<any>
         //Fetch previous close price from Finnhub
         const urldaily = `https://finnhub.io/api/v1/stock/candle?symbol=${StockSymbol}&resolution=D&from=${FromTimestamp}&to=${ToTimestamp}&token=${finnhub_api_key}`;
         await axios(urldaily)
-            .then(response =>
+            .then(AxiosResponse =>
             {
-                const query = response.data;
+                const query = AxiosResponse.data;
                 PC = Number(query.c);
             })
             .catch(console.error);
@@ -277,14 +250,14 @@ async function getStockData(ID: string): Promise<any>
             currentdate.getHours(),
             currentdate.getMinutes());
 
-        Interval = 1;
+        Interval = "1";
 
         //Fetch VolAvg from Finnhub intraday data on the current date
         const urlCurrentIntraday = `https://finnhub.io/api/v1/stock/candle?symbol=${StockSymbol}&resolution=${Interval}&from=${FromTimestamp}&to=${ToTimestamp}&token=${finnhub_api_key}`;
         await axios(urlCurrentIntraday)
-            .then(response =>
+            .then(AxiosResponse =>
             {
-                const query = response.data;
+                const query = AxiosResponse.data;
                 VolAvg = volumesum();
 
                 //Caculate the volume
@@ -317,9 +290,9 @@ async function getStockData(ID: string): Promise<any>
         //Fetch highest price and lowest price in the past 52 weeks from Finnhub API
         const url52W = `https://finnhub.io/api/v1/stock/candle?symbol=${StockSymbol}&resolution=${Interval}&from=${FromTimestamp}&to=${ToTimestamp}&token=${finnhub_api_key}`;
         await axios(url52W)
-            .then(response =>
+            .then(AxiosResponse =>
             {
-                const query = response.data;
+                const query = AxiosResponse.data;
                 W52H = Math.max(...query.h);
                 W52L = Math.min(...query.l);
 
@@ -327,9 +300,9 @@ async function getStockData(ID: string): Promise<any>
             })
             .catch(console.error);
 
-        printFetch(StockSymbol, "y");
+        printFetch(StockSymbol, false);
     }
-    else
+    else // ID string doesn't begin with 2, which means date is not specified. Then it parses the string as stock symbol
     {
         // Store the stock symbol
         const StockSymbol = ID.toUpperCase();
@@ -337,9 +310,9 @@ async function getStockData(ID: string): Promise<any>
         //Fetch current price from Finnhub API data
         const urlcurrent = `https://finnhub.io/api/v1/quote?symbol=${StockSymbol}&token=${finnhub_api_key}`;
         await axios(urlcurrent)
-            .then(response =>
+            .then(AxiosResponse =>
             {
-                const query = response.data;
+                const query = AxiosResponse.data;
                 Price = query['c'];         //Current price
             })
             .catch(console.error);
@@ -361,9 +334,9 @@ async function getStockData(ID: string): Promise<any>
         //Fetch highest price and lowest price in the past 52 weeks from Finnhub API
         const url52W = `https://finnhub.io/api/v1/stock/candle?symbol=${StockSymbol}&resolution=${Interval}&from=${FromTimestamp}&to=${ToTimestamp}&token=${finnhub_api_key}`;
         await axios(url52W)
-            .then(response =>
+            .then(AxiosResponse =>
             {
-                const query = response.data;
+                const query = AxiosResponse.data;
                 W52H = Math.max(...query.h);
                 W52L = Math.min(...query.l);
 
@@ -374,25 +347,34 @@ async function getStockData(ID: string): Promise<any>
         //convert intraday time to Unix timestamp on current date
         //In order to fetch VolAvg from Finnhub intraday data on the current date
         //const currentdate = new Date();
+        let currentday = currentdate.getDate();
+        if (currentdate.getDay() == 6 )         // Change the currentday to one day before if current day is Saturday
+        {
+            currentday = currentday - 1;
+        }
+        if (currentdate.getDay() == 0 )         // Change the currentday to two days before if current day is Sunday
+        {
+            currentday = currentday - 2;
+        }
 
         FromTimestamp = timestamp(currentdate.getFullYear(),
             currentdate.getMonth() + 1,
-            currentdate.getDate(), 6, 30);
+            currentday, 6, 30);
 
         ToTimestamp = timestamp(currentdate.getFullYear(),
             currentdate.getMonth() + 1,
-            currentdate.getDate(),
+            currentday,
             currentdate.getHours(),
             currentdate.getMinutes());
 
-        Interval = 1;
+        Interval = "1";
 
         //Fetch VolAvg from Finnhub intraday data on the current date
         const urlCurrentIntraday = `https://finnhub.io/api/v1/stock/candle?symbol=${StockSymbol}&resolution=${Interval}&from=${FromTimestamp}&to=${ToTimestamp}&token=${finnhub_api_key}`;
         await axios(urlCurrentIntraday)
-            .then(response =>
+            .then(AxiosResponse =>
             {
-                const query = response.data;
+                const query = AxiosResponse.data;
                 VolAvg = volumesum();
 
                 //Caculate the volume
@@ -408,7 +390,7 @@ async function getStockData(ID: string): Promise<any>
             })
             .catch(console.error);
 
-        printFetch(StockSymbol, "n");
+        printFetch(StockSymbol, true);
     }
 
     //Create a Json object to store the returned data

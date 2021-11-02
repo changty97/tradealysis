@@ -42,13 +42,14 @@ export class ServiceController
         return await saveTable(dataArray);
     }
 
+
 	@Path("/stockapi/:ID")
 	@GET
     public async getStock(@PathParam("ID") ID: string): Promise<any>
     {
         return await getStockData(ID);
     }
-	
+
 	/**
 	  * @param username:string - username entered into login page
 	  * @param password:string - password entered into login page (clear text no encryption)
