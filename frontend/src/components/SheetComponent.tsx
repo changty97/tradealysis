@@ -7,7 +7,7 @@ import { saveNewRow, showNewRow, search } from 'ka-table/actionCreators';
 import { ISheetComponentState } from "../models/ISheetComponentState";
 import { tableProps } from "../constants/tableProps";
 import { ChildComponents } from "ka-table/models";
-import { clearFocused, moveFocusedDown, moveFocusedLeft, moveFocusedRight, moveFocusedUp, openEditor,
+import { clearFocused, moveFocusedDown, moveFocusedLeft, moveFocusedRight, moveFocusedUp, openEditor, 
     setFocused, updatePageIndex, updateSortDirection } from 'ka-table/actionCreators';
 import axios from "axios";
 
@@ -78,10 +78,13 @@ class SheetComponent extends Component<any, ISheetComponentState>
 
     getTicker(cell: any): void
     {
-        if(this.state.tableProps.data) {
-            var i = this.state.tableProps.data[cell.rowKeyValue];
-            for (const [key, value] of Object.entries(i)) {
-                if (`${key}` === 'Ticker' && `${value}` !== '') {
+        if (this.state.tableProps.data)
+        {
+            const i = this.state.tableProps.data[cell.rowKeyValue];
+            for (const [key, value] of Object.entries(i))
+            {
+                if (`${key}` === 'Ticker' && `${value}` !== '')
+                {
                     const yahooData = this.getYahooData(i.Ticker);
                     this.setCells(yahooData, cell);
                 }
@@ -107,14 +110,24 @@ class SheetComponent extends Component<any, ISheetComponentState>
 
     setCells(data: any, cell: any): void
     {
+        // Promise for retrieving data from API
         Promise.resolve(data).then((value) =>
         {
-            if(this.state.tableProps.data) {
-                for (const [k, v] of Object.entries(this.state.tableProps.data[cell.rowKeyValue])) {
-                    var i = this.state.tableProps.data[cell.rowKeyValue];
-                    if (`${k}` === 'Ticker' && `${v}` !== '') {
+            // Check if data exists
+            if (this.state.tableProps.data)
+            {
+                const i = this.state.tableProps.data[cell.rowKeyValue];
+
+                // Loop through each key: value pair within the tableProps data
+                for (const [k, v] of Object.entries(i))
+                {
+                    // Check if cell is Ticker and is not empty
+                    if (`${k}` === 'Ticker' && `${v}` !== '')
+                    {
+                        // Loop through each key: value pair within the API data
                         for (const [key, val] of Object.entries(value))
                         {
+                            // Set each Real-Time data cell with corresponding data
                             switch (key)
                             {
                             case "regularMarketPrice": i.Price = val;
@@ -239,7 +252,7 @@ class SheetComponent extends Component<any, ISheetComponentState>
                 const cell = {
                     columnKey: column.key,
                     rowKeyValue
-                };                
+                };
                 return {
                     ref: (ref: any) => isFocused && ref?.focus(),
                     onKeyUp: (e) => e.key === "Enter" && this.dispatch(setFocused({
@@ -331,14 +344,14 @@ class SheetComponent extends Component<any, ISheetComponentState>
             }
         }));
 
-        if(action.columnKey === "Ticker" && action.type === "UpdateCellValue") {
+        if (action.columnKey === "Ticker" && action.type === "UpdateCellValue")
+        {
             const cell = {
                 columnKey: action.columnKey,
                 rowKeyValue: action.rowKeyValue
             };
             this.getTicker(cell);
-        }
-            
+        }            
     }
 }
 export { SheetComponent };

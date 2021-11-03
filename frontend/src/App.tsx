@@ -26,6 +26,15 @@ class App extends Component<IReportsProps, IAppState>
 	    this.state = {
 	        reportsId: null
 	    };
+
+        this.setFocus = this.setFocus.bind(this);
+    }
+
+    setFocus(id: string): void
+    {
+        this.setState({
+            reportsId: id
+        });
     }
 	
     render(): JSX.Element

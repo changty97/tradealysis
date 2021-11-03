@@ -1,4 +1,4 @@
-import { InsertOneResult, MongoClient, ObjectId, Db, Collection } from "mongodb";
+import { MongoClient, Db, Collection } from "mongodb";
 import { userMongoOptions } from "../constants/globals";
 import { userExists } from "./MongoLogin";
 
@@ -13,9 +13,10 @@ import { userExists } from "./MongoLogin";
  *    automatically
  *   @return true/false if account is created and all db collections populated
 **/
-async function createAccount(username:string, password:string, fName:string, lName:string, email:string, phone:string, bdate:string): Promise<boolean>
+async function createAccount(username: string, password: string, fName: string, lName: string, email: string, phone: string, bdate: string): Promise<boolean>
 {
     let client: MongoClient | null = null;
+    
     return MongoClient.connect(userMongoOptions.uri).then((connection: MongoClient) =>
     {
         client = connection;
@@ -25,11 +26,11 @@ async function createAccount(username:string, password:string, fName:string, lNa
         const theCollectionKeyTable: Collection = db.collection(userMongoOptions.collections['userKey']);
         const theCollectionSessionTable: Collection = db.collection(userMongoOptions.collections['userSessions']);
 
-        return userExists(username).then((res:boolean)=>
+        return userExists(username).then((res: boolean)=>
         {
             if (!res)
             {
-				 return theCollectionUserTable.insertOne({
+                return theCollectionUserTable.insertOne({
                     "uname": username,
                     "pssd": password
                 }).then((res2)=>
@@ -49,18 +50,18 @@ async function createAccount(username:string, password:string, fName:string, lNa
                         {
                             if (res3 !== null && res3.insertedId !== null)
                             {
-                                const originalKey = `${username  }_key`;
+                                const originalKey = `${username}_key`;
                                 return theCollectionKeyTable.insertOne({
                                     "key": originalKey,
                                     "user_obj_id": res2.insertedId.toString(),
                                     "active": true
-                                }).then((res4)=>
+                                }).then(()=>
                                 {
                                     return theCollectionSessionTable.insertOne({
                                         "user_obj_id": res2.insertedId.toString(),
                                         "session_ids": [ ]
                                     })
-                                        .then((res5)=>
+                                        .then(()=>
                                         {
                                             return theCollectionSessionTable.updateOne(
                                                 {
@@ -68,10 +69,10 @@ async function createAccount(username:string, password:string, fName:string, lNa
                                                 },
                                                 {
                                                     $push: {
-                                                        "session_ids": `${username  }_1`
+                                                        "session_ids": `${username}_1`
                                                     }
                                                 },
-                                            ).then((res6)=>
+                                            ).then(()=>
                                             {
                                                 return true;
                                             });
