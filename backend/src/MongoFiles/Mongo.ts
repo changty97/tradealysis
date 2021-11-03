@@ -4,23 +4,33 @@ import { mongoOptions } from "../constants/globals";
 // Ignore this dirty typing. It's just for these examples.
 type genericObject = { [key: string]: number | string | null };
 
-function saveTable(dataArray: any): Promise<string>
+async function saveTable(dataArray: any): Promise<void>
 {
     let client: MongoClient | null = null;
-
     return MongoClient.connect(mongoOptions.uri)
-        .then((connection: MongoClient) =>
+        .then(async(connection: MongoClient) =>
         {
             client = connection;
-            return client.db(mongoOptions.db)
-                .collection(mongoOptions.collection)
-                .insertOne({
-                    "table_data": dataArray
-                });
+            for (let i = 0; i < dataArray.length; i++)
+            {
+			    const valsToInsert = {
+                };
+                for (const [key, value] of Object.entries(dataArray[i]))
+                {
+                    const theKey = key;
+                    const theValue = value;
+                    Object.defineProperty(valsToInsert, theKey, {
+					   value: theValue,
+                        writable: true,
+                        enumerable: true
+                    });
+                }
+                await client.db(mongoOptions.db).collection(mongoOptions.collection).insertOne(valsToInsert);
+            }
         })
-        .then((result: InsertOneResult<genericObject>) =>
+        .then(() =>
         {
-            return result.insertedId.toString();
+            return;
         })
         .catch((err: Error) =>
         {

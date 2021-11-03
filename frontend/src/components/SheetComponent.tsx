@@ -3,18 +3,16 @@ import { Component, Fragment } from "react";
 import { kaReducer, Table } from 'ka-table';
 import { CSVLink } from 'react-csv';
 import { kaPropsUtils } from 'ka-table/utils';
-import { saveNewRow, showNewRow, search } from 'ka-table/actionCreators';
+import { /** saveNewRow, showNewRow,**/search } from 'ka-table/actionCreators';
+import { insertRow } from 'ka-table/actionCreators'; /** new **/
+import { InsertRowPosition } from 'ka-table/enums';  /** new **/
 import { ISheetComponentState } from "../models/ISheetComponentState";
-import { tableProps } from "../constants/tableProps";
+import { tableProps, initialReportItems } from "../constants/tableProps";
 import { ChildComponents } from "ka-table/models";
 import { clearFocused, moveFocusedDown, moveFocusedLeft, moveFocusedRight, moveFocusedUp, openEditor,
     setFocused, updatePageIndex, updateSortDirection } from 'ka-table/actionCreators';
 import axios from "axios";
-/*
-const api = axios.create({
-    baseURL: 'http://localhost:3001/'
-});
-*/
+
 class SheetComponent extends Component<any, ISheetComponentState>
 {
     constructor(props: any)
@@ -22,52 +20,47 @@ class SheetComponent extends Component<any, ISheetComponentState>
         super(props);
         this.state = {
             tableProps,
-            lastRowId: 3, // verify that dataArray in tableProps.ts is same size
+            lastRowId: initialReportItems
         };
         
         this.dispatch = this.dispatch.bind(this);
         this.generateNewId = this.generateNewId.bind(this);
-        this.saveNewData = this.saveNewData.bind(this);
-        this.createNewRow = this.createNewRow.bind(this);
+        /** this.saveNewData = this.saveNewData.bind(this);   **/
+        /** this.createNewRow = this.createNewRow.bind(this); **/
         this.saveTable = this.saveTable.bind(this);
     }
-
-    componentDidMount() : void
-    {
-        return;
-    }
-
+	
     generateNewId(): number
     {
         const newRowId: number = this.state.lastRowId + 1;
-
         this.setState({
             lastRowId: newRowId
         });
-
         return newRowId;
     }
-
+    /**
     saveNewData(): void
     {
         const rowKeyValue = this.generateNewId();
-
         this.dispatch(saveNewRow(rowKeyValue, {
             validate: true
         }));
     }
-
+**/
+    /**
     createNewRow(): void
     {
         this.dispatch(showNewRow());
         this.saveNewData();
     }
-
+**/
     saveTable(): void
     {
         const tableData = this.state.tableProps.data;
+        console.log(tableData);
+        console.log(tableData!.length);
         axios.post(`http://localhost:3001/postTableDB`, {
-            dataArray: tableData
+            data: tableData
         }).then(function(response)
         {
             return;
@@ -76,7 +69,7 @@ class SheetComponent extends Component<any, ISheetComponentState>
             console.log('Error', error);
         });
     }
-
+    /**
     // create new row upon updating the last existing row
     increaseRows() : void
     {
@@ -85,14 +78,7 @@ class SheetComponent extends Component<any, ISheetComponentState>
         const dataArray = Array(9).fill(undefined).map(
             (_, index) => this.state.tableProps.columns.reduce((previousValue: any, currentValue) =>
             {
-                if (previousValue[currentValue.key] !== ``)
-                {
-                    return previousValue;
-                }
-                else
-                {
-                    previousValue[currentValue.key] = ``;
-                }
+                previousValue[currentValue.key] = ((previousValue[currentValue.key] !== ``) ? previousValue[currentValue.key] : ``);
                 return previousValue;
             }, {
                 id: index
@@ -105,6 +91,7 @@ class SheetComponent extends Component<any, ISheetComponentState>
             }
         }));
     }
+**/
 
     childComponents: ChildComponents = {
         // Allows keyboard tab navigation
@@ -233,7 +220,15 @@ class SheetComponent extends Component<any, ISheetComponentState>
                 <button
                     onClick={() =>
                     {
-                        this.dispatch(showNewRow()); this.dispatch(saveNewRow(Math.random()));
+                        /** this.dispatch(showNewRow()); this.dispatch(saveNewRow(Math.random())); **/
+                        const id = this.generateNewId();
+                        const newRow = {
+                            id
+                        };
+                        this.dispatch(insertRow(newRow, {
+                            rowKeyValue: this.props.rowKeyValue,
+                            insertRowPosition: InsertRowPosition.after
+                        }));
                     }} >
                     New Row
                 </button>

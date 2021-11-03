@@ -43,9 +43,9 @@ export class ServiceController
 	 */
     @Path("/postTableDB")
     @POST
-    public async postTableDB(dataArray: any): Promise<string>
+    public async postTableDB(body: any): Promise<void>
     {
-        return await saveTable(dataArray);
+        return await saveTable(body.data);
     }
 
 

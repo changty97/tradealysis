@@ -2,6 +2,8 @@ import { ITableProps } from 'ka-table';
 import { DataType, EditingMode, SortingMode } from 'ka-table/enums';
 import { Column } from 'ka-table/models';
 
+const initialReportItems: number = 0;
+
 const columnTitles = ['DOI', 'P/L', 'Broker', 'Position', 
                       'Pattern', 'Name', 'Ticker', 'Price',
                       '52-WH', '52-WL', 'VolAvg', 'Outstanding', 
@@ -9,7 +11,7 @@ const columnTitles = ['DOI', 'P/L', 'Broker', 'Position',
                       'MC-Current', 'Vol-DOI', 'Vol-PreM', 'PC', 
                       'PreM High', 'Open', 'HOD'];
 
-const columns: Column[] = Array(23).fill(undefined).map(
+const columns: Column[] = Array(columnTitles.length).fill(undefined).map(
   (_, index) => ({
     key: columnTitles[index],
     width: 120,
@@ -18,12 +20,15 @@ const columns: Column[] = Array(23).fill(undefined).map(
   }),
 );
 
-const dataArray = Array(3).fill(undefined).map(
+console.log(columns[0]); 
+
+const dataArray = Array(initialReportItems).fill(undefined).map(
     (_, index) => columns.reduce((previousValue: any, currentValue) => {
       previousValue[currentValue.key] = ``;
       return previousValue;
     }, { id: index }),
   );
+console.log(dataArray[0]);  
   
 const tableProps: ITableProps = {
     columns,
@@ -33,6 +38,7 @@ const tableProps: ITableProps = {
     rowKeyField: 'id',
     sortingMode: SortingMode.Single
 };
+console.log(tableProps);  
 
 /*
 const tableProps: ITableProps = {
@@ -169,4 +175,4 @@ const tableProps: ITableProps = {
     sortingMode: SortingMode.Single
 };
 */
-export { tableProps };
+export { tableProps, initialReportItems, dataArray };
