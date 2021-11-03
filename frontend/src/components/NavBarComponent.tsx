@@ -5,7 +5,7 @@ import Logo from "../images/logo_2.jpg";
 import axios from "axios";
 
 const api = axios.create({
-    baseURL: 'http://localhost:3001/'
+    baseURL: 'https://api.tradealysis.cf/'
 });
 
 class NavBarComponent extends Component<any, any>

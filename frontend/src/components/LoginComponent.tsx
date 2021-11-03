@@ -3,7 +3,7 @@ import { Login } from "../cssComponents/Login";
 import axios from "axios";
 
 const api = axios.create({
-    baseURL: 'http://localhost:3001/'
+    baseURL: 'https://api.tradealysis.cf/'
 });
 
 class LoginComponent extends Component<any, any>

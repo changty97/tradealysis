@@ -3,7 +3,7 @@ import { AccountSettings } from "../cssComponents/AccountSettings";
 import axios from "axios";
 
 const api = axios.create({
-    baseURL: 'http://localhost:3001/'
+    baseURL: 'https://api.tradealysis.cf/'
 });
 
 class AccountSettingsComponent extends Component<any, any>
