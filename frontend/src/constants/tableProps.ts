@@ -1,15 +1,15 @@
 import { ITableProps } from 'ka-table';
 import { DataType, EditingMode, SortingMode } from 'ka-table/enums';
 import { Column } from 'ka-table/models';
-
+const defaultRowCount = 5;
 const columnTitles = ['DOI', 'P/L', 'Broker', 'Position', 
                       'Pattern', 'Name', 'Ticker', 'Price',
                       '52-WH', '52-WL', 'VolAvg', 'Outstanding', 
                       'Float', 'FloatR', 'FloatC', 'MC-Cat', 
                       'MC-Current', 'Vol-DOI', 'Vol-PreM', 'PC', 
-                      'PreM High', 'Open', 'HOD'];
+                      'PreM High', 'Open', 'HOD', 'HOD-Time', 'LOD', 'LOD-Time', 'Close', 'AH'];
 
-const columns: Column[] = Array(23).fill(undefined).map(
+const columns: Column[] = Array(28).fill(undefined).map(
   (_, index) => ({
     key: columnTitles[index],
     width: 120,
@@ -18,7 +18,7 @@ const columns: Column[] = Array(23).fill(undefined).map(
   }),
 );
 
-const dataArray = Array(5).fill(undefined).map(
+const dataArray = Array(defaultRowCount).fill(undefined).map(
     (_, index) => columns.reduce((previousValue: any, currentValue) => {
       previousValue[currentValue.key] = ``;
       return previousValue;
@@ -169,4 +169,4 @@ const tableProps: ITableProps = {
     sortingMode: SortingMode.Single
 };
 */
-export { tableProps };
+export { tableProps, defaultRowCount };

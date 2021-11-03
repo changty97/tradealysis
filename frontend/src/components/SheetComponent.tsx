@@ -5,7 +5,7 @@ import { CSVLink } from 'react-csv';
 import { kaPropsUtils } from 'ka-table/utils';
 import { saveNewRow, showNewRow, search } from 'ka-table/actionCreators';
 import { ISheetComponentState } from "../models/ISheetComponentState";
-import { tableProps } from "../constants/tableProps";
+import { tableProps, defaultRowCount } from "../constants/tableProps";
 import { ChildComponents } from "ka-table/models";
 import { clearFocused, moveFocusedDown, moveFocusedLeft, moveFocusedRight, moveFocusedUp, openEditor,
     setFocused, updatePageIndex, updateSortDirection } from 'ka-table/actionCreators';
@@ -22,7 +22,7 @@ class SheetComponent extends Component<any, ISheetComponentState>
         super(props);
         this.state = {
             tableProps,
-            lastRowId: 3, // verify that dataArray in tableProps.ts is same size
+            lastRowId: defaultRowCount, // verify that dataArray in tableProps.ts is same size
         };
         
         this.dispatch = this.dispatch.bind(this);
@@ -35,7 +35,7 @@ class SheetComponent extends Component<any, ISheetComponentState>
 
     componentDidMount() : void
     {
-        const idStr = "617a01cc1c03b734633462aa";
+        const idStr = "6181d5f66e3b90d069cca50c";
         axios.get(`http://localhost:3001/getTableDB`, {
             params: {
                 objId: idStr
@@ -153,35 +153,92 @@ class SheetComponent extends Component<any, ISheetComponentState>
         }));
     }
 
-    setCells(data: any): void
+    getTicker(cell: any): void
+    {
+        if (this.state.tableProps.data)
+        {
+            const i = this.state.tableProps.data[cell.rowKeyValue];
+            for (const [key, value] of Object.entries(i))
+            {
+                if (`${key}` === 'Ticker' && `${value}` !== '')
+                {
+                    const yahooData = this.getAlphaVantageData(i.Ticker);
+                    this.setCells(yahooData, cell);
+                    // const finvizData = this.getFinvizData();
+                    // this.setCells(finvizData, cell);
+                }
+            }
+        }
+    }
+
+    getAlphaVantageData(ticker: string): any
+    {
+        return axios.get(`http://localhost:3001/stockapi/`, {
+            params: {
+                ID: ticker
+            }
+        }).then((response) =>
+        {
+            return response.data;
+        }).catch(function(error)
+        {
+            console.log('Error', error);
+        });
+    }
+
+    setCells(data: any, cell: any): void
     {
         Promise.resolve(data).then((value) =>
         {
-            for (const [key, val] of Object.entries(value))
+            if (this.state.tableProps.data)
             {
-                this.state.tableProps.data?.forEach((i) =>
+                for (const [k, v] of Object.entries(this.state.tableProps.data[cell.rowKeyValue]))
                 {
-                    Object.keys(i).map((keyName, keyIndex) =>
+                    const i = this.state.tableProps.data[cell.rowKeyValue];
+                    if (`${k}` === 'Ticker' && `${v}` !== '')
                     {
-                        if (i.Ticker !== '' && i[keyName] === '')
+                        console.log(value);
+                        for (const [key, val] of Object.entries(value))
                         {
                             switch (key)
                             {
-                            case "Float": i.Float = val;
-                                break;
-                            case "Outstanding": i.Outstanding = val;
+                            case "Price": i["Price"] = val;
                                 break;
                             case "W52H": i["52-WH"] = val;
                                 break;
                             case "L52H": i["52-WL"] = val;
                                 break;
+                            case "VolAvg": i["VolAvg"] = val;
+                                break;
+                            case "Outstanding": i.Outstanding = val;
+                                break;
+                            case "Float": i.Float = val;
+                                break;
                             case "Industry": i.Industry = val;
+                                break;
+                            case "PC": i.PC = val;
+                                break; 
+                            case "PremHigh": i["PreM High"] = val;
+                                break; 
+                            case "Open": i["Open"] = val;
+                                break; 
+                            case "HOD": i["HOD"] = val;
+                                break; 
+                            case "HOD-Time": i["HOD-Time"] = val;
+                                break;
+                            case "LOD": i["LOD"] = val;
+                                break;
+                            case "LOD-Time": i["LOD-Time"] = val;
+                                break;
+                            case "Close": i["Close"] = val;
+                                break;
+                            case "AH": i["AH"] = val;
                                 break;
                             default:
                             }
                         }
-                    });
-                });
+                    }
+                }
             }
         });
     }
@@ -254,38 +311,6 @@ class SheetComponent extends Component<any, ISheetComponentState>
                     columnKey: column.key,
                     rowKeyValue
                 };
-                console.log(this.state.tableProps.data);
-                if (this.state.tableProps.data?.length && cell.columnKey === "Ticker")
-                {
-                    this.state.tableProps.data?.forEach((i) =>
-                    {
-                        Object.keys(i).map((keyName, keyIndex) =>
-                        {
-                            if (i.Ticker !== '' && i[keyName] === '')
-                            {
-                                console.log(i.Ticker);
-                                //axios call...
-                                if (this.state.tableProps.data)
-                                {
-                                    // console.log("Ticker Symbol: " + this.state.tableProps.data[0]["Ticker"]);
-                                    axios.get(`http://localhost:3001/stockapi/`, {
-                                        params: {
-                                            ID: this.state.tableProps.data[0]["Ticker"]
-                                        }
-                                    }).then((response) =>
-                                    {
-                                        console.log(response.data);
-                                        this.setCells(response.data);
-                                    }).catch(function(error)
-                                    {
-                                        console.log('Error', error);
-                                    });
-                
-                                }
-                            }
-                        });
-                    });
-                }
                 return {
                     ref: (ref: any) => isFocused && ref?.focus(),
                     onKeyUp: (e) => e.key === "Enter" && this.dispatch(setFocused({
@@ -376,6 +401,16 @@ class SheetComponent extends Component<any, ISheetComponentState>
                 tableProps: kaReducer(prevState.tableProps, action)
             }
         }));
+
+        if (action.columnKey === "Ticker" && action.type === "UpdateCellValue")
+        {
+            const cell = {
+                columnKey: action.columnKey,
+                rowKeyValue: action.rowKeyValue
+            };
+            this.getTicker(cell);
+        }
+
     }
 }
 export { SheetComponent };

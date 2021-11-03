@@ -91,7 +91,8 @@ async function getStockData(ID: string): Promise<any>
             const query = response.data;
             VolPreM = volumsum();
             PremHigh = Math.max(...query.h);
-  
+            
+            console.log(response.data);
             function volumsum()
             {
                 let sum = 0;

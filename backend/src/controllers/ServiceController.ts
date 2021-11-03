@@ -91,7 +91,6 @@ export class ServiceController
 	 {
 	     // console.log(getStockData(ID));
 	     const stockData = getStockData(ID);
-	     console.log(stockData);
 	     return await stockData;
 	 }
 
