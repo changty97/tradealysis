@@ -8,10 +8,10 @@ import { InsertRowPosition } from 'ka-table/enums';  /** new **/
 import { ISheetComponentState } from "../models/ISheetComponentState";
 import { tableProps, initialReportItems } from "../constants/tableProps";
 import { ChildComponents } from "ka-table/models";
-import { clearFocused, moveFocusedDown, moveFocusedLeft, 
-         moveFocusedRight, moveFocusedUp, openEditor,
-         setFocused, updatePageIndex, updateSortDirection,
-		 insertRow, hideLoading, showLoading, 
+import { clearFocused, moveFocusedDown, moveFocusedLeft,
+    moveFocusedRight, moveFocusedUp, openEditor,
+    setFocused, updatePageIndex, updateSortDirection,
+		 insertRow, hideLoading, showLoading,
 		 search } from 'ka-table/actionCreators';
 
 class SheetComponent extends Component<any, ISheetComponentState>
@@ -28,16 +28,16 @@ class SheetComponent extends Component<any, ISheetComponentState>
         this.saveTable = this.saveTable.bind(this);
     }
 	
-    delay(ms: number) { return new Promise( resolve => setTimeout(resolve, ms) ); }
-
-
-
+    delay(ms: number)
+    {
+        return new Promise( resolve => setTimeout(resolve, ms) );
+    }
     componentDidMount():void
     {
         this.loadSheet();
     }
 
-	/** Loads items onto reports page **/
+    /** Loads items onto reports page **/
     loadSheet(): void
     {
         this.dispatch(showLoading());
@@ -54,22 +54,22 @@ class SheetComponent extends Component<any, ISheetComponentState>
                         for (const [key, value] of Object.entries(theArr[i]))
                         {
                             const theKey = key; let theValue = value;
-                            if (theKey === '_id')
-                            {
+                            if (theKey === '_id'){
                                 continue;
-                            }                 /** DONT USE _ID ATTRIBUTE WITH KA-TABLE **/
-                            if (theKey === 'id')
-                            {
-                                theValue = Math.random();
-                            } /** THIS IS REQUIRED                     **/
+                            }
                             Object.defineProperty(valsToInsert, theKey, {
 							   value: theValue,
 							   writable: true,
 							   enumerable: true
                             });
                         }
-                        const newRow = valsToInsert;
-                        this.dispatch(insertRow(newRow, {
+						const theidDesc = Object.getOwnPropertyDescriptor(valsToInsert, 'id');
+						if(this.state.lastRowId < theidDesc!.value) {
+							this.setState({
+								lastRowId: theidDesc!.value
+							});
+						}
+                        this.dispatch(insertRow(valsToInsert, {
                             rowKeyValue: this.props.rowKeyValue,
                             insertRowPosition: InsertRowPosition.after
                         }));
@@ -234,7 +234,7 @@ class SheetComponent extends Component<any, ISheetComponentState>
                 <button
                     onClick={() =>
                     {
-                        const id = Math.random();
+                        const id = this.generateNewId();
                         const newRow = {
                             id
                         };
