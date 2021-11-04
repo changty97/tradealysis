@@ -453,6 +453,33 @@
 					}
 				]
 			}
+		},
+		"/stockdataGet": {
+			"get": {
+				"operationId": "ServiceStockdataGet",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"type": "array",
+							"items": {
+								"type": "object"
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"schema": {
+							"$ref": "#/definitions/BadRequestError"
+						}
+					}
+				},
+				"description": "Get data from default stock table *",
+				"parameters": []
+			}
 		}
 	},
 	"swagger": "2.0",

@@ -45,4 +45,64 @@ async function saveTable(dataArray: any): Promise<void>
         });
 }
 
-export { genericObject, saveTable };
+async function theSaveData(): Promise<any[]>
+{
+    let client: MongoClient | null = null;
+	
+    return MongoClient.connect(mongoOptions.uri)
+        .then(async(connection: MongoClient) =>
+        {
+            client = connection;
+            return await client.db(mongoOptions.db).collection(mongoOptions.collection)
+                .find({
+                }).toArray();
+	
+        })
+        .catch((err: Error) =>
+        {
+            return Promise.reject(err);
+        })
+        .finally(() =>
+        {
+            if (client)
+            {
+                client.close();
+            }
+        });
+}
+/**
+async function getTableData(objId: string): Promise<any>
+{
+    let tableData: Promise<any>;
+    let client: MongoClient | null = null;
+    return MongoClient.connect(mongoOptions.uri)
+        .then((connection: MongoClient) =>
+        {
+            client = connection;
+            tableData = client.db(mongoOptions.db)
+                .collection(mongoOptions.collection)
+                .find({
+                    "_id": new ObjectId(objId)
+                }).toArray();
+        })
+        .then((result) =>
+        {
+            return tableData;
+        })
+        .catch((err: Error) =>
+        {
+            return Promise.reject(err);
+        })
+        .finally(() =>
+        {
+            if (client)
+            {
+                client.close();
+            }
+        });
+}
+
+
+**/
+
+export { genericObject, saveTable, theSaveData };

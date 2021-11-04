@@ -2,7 +2,7 @@ import { FileParam, FormParam, GET, POST,  Path, QueryParam, PathParam } from "t
 import { Produces, Response } from "typescript-rest-swagger";
 import { BadRequestError } from "typescript-rest/dist/server/model/errors";
 import { CSVParser } from "../CSVParser";
-import { saveTable } from "../MongoFiles/Mongo";
+import { saveTable, theSaveData } from "../MongoFiles/Mongo";
 import { correctLoginKey, userFromKey } from "../MongoFiles/MongoLogin";
 import { createAccount } from "../MongoFiles/MongoCreateAccount";
 import { getStockData } from "../stockapi";
@@ -135,4 +135,23 @@ export class ServiceController
 	{
 	    return await accountValueFromKey(key, "bdate");
 	}
+	
+	/** Get data from default stock table **/
+	@Path("/stockdataGet")
+	@GET
+	public async stockdataGet():Promise<any[]>
+	{
+	    return await theSaveData();
+	}
+
+    /**
+	@Path("/getTableDB")
+	@GET
+    public async getTableDB(@QueryParam("objId") objId: string) : Promise<any>
+    {
+        const retValue = getTableData(objId);
+        return await retValue;
+    }
+**/
+
 }
