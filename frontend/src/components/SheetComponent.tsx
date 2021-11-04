@@ -53,8 +53,9 @@ class SheetComponent extends Component<any, ISheetComponentState>
                         };
                         for (const [key, value] of Object.entries(theArr[i]))
                         {
-                            const theKey = key; let theValue = value;
-                            if (theKey === '_id'){
+                            const theKey = key; const theValue = value;
+                            if (theKey === '_id')
+                            {
                                 continue;
                             }
                             Object.defineProperty(valsToInsert, theKey, {
@@ -63,12 +64,13 @@ class SheetComponent extends Component<any, ISheetComponentState>
 							   enumerable: true
                             });
                         }
-						const theidDesc = Object.getOwnPropertyDescriptor(valsToInsert, 'id');
-						if(this.state.lastRowId < theidDesc!.value) {
-							this.setState({
-								lastRowId: theidDesc!.value
-							});
-						}
+                        const theidDesc = Object.getOwnPropertyDescriptor(valsToInsert, 'id');
+                        if (this.state.lastRowId < theidDesc!.value)
+                        {
+                            this.setState({
+                                lastRowId: theidDesc!.value
+                            });
+                        }
                         this.dispatch(insertRow(valsToInsert, {
                             rowKeyValue: this.props.rowKeyValue,
                             insertRowPosition: InsertRowPosition.after

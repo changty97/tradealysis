@@ -1,9 +1,6 @@
 import { InsertOneResult, MongoClient } from "mongodb";
 import { mongoOptions } from "../constants/globals";
 
-// Ignore this dirty typing. It's just for these examples.
-type genericObject = { [key: string]: number | string | null };
-
 async function saveTable(dataArray: any): Promise<void>
 {
     let client: MongoClient | null = null;
@@ -25,7 +22,27 @@ async function saveTable(dataArray: any): Promise<void>
                         enumerable: true
                     });
                 }
-                await client.db(mongoOptions.db).collection(mongoOptions.collection).insertOne(valsToInsert);
+				
+                const descriptorID = Object.getOwnPropertyDescriptor(valsToInsert, 'id');
+				
+                console.log(descriptorID.value);
+                const query = {
+                    id: descriptorID.value
+                };
+                const update =
+				{
+				    "$set": valsToInsert
+				};
+				
+				
+                const options = {
+                    "upsert": true
+                };
+                
+                await client.db(mongoOptions.db).collection(mongoOptions.collection).updateOne(query, update, options);
+                
+				
+                // await client.db(mongoOptions.db).collection(mongoOptions.collection).insertOne(valsToInsert);
             }
         })
         .then(() =>
@@ -70,39 +87,5 @@ async function theSaveData(): Promise<any[]>
             }
         });
 }
-/**
-async function getTableData(objId: string): Promise<any>
-{
-    let tableData: Promise<any>;
-    let client: MongoClient | null = null;
-    return MongoClient.connect(mongoOptions.uri)
-        .then((connection: MongoClient) =>
-        {
-            client = connection;
-            tableData = client.db(mongoOptions.db)
-                .collection(mongoOptions.collection)
-                .find({
-                    "_id": new ObjectId(objId)
-                }).toArray();
-        })
-        .then((result) =>
-        {
-            return tableData;
-        })
-        .catch((err: Error) =>
-        {
-            return Promise.reject(err);
-        })
-        .finally(() =>
-        {
-            if (client)
-            {
-                client.close();
-            }
-        });
-}
 
-
-**/
-
-export { genericObject, saveTable, theSaveData };
+export { saveTable, theSaveData };
