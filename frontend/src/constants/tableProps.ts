@@ -20,15 +20,12 @@ const columns: Column[] = Array(columnTitles.length).fill(undefined).map(
   }),
 );
 
-console.log(columns[0]); 
-
 const dataArray = Array(initialReportItems).fill(undefined).map(
     (_, index) => columns.reduce((previousValue: any, currentValue) => {
       previousValue[currentValue.key] = ``;
       return previousValue;
     }, { id: index }),
   );
-console.log(dataArray[0]);  
   
 const tableProps: ITableProps = {
     columns,
@@ -38,7 +35,6 @@ const tableProps: ITableProps = {
     rowKeyField: 'id',
     sortingMode: SortingMode.Single
 };
-console.log(tableProps);  
 
 /*
 const tableProps: ITableProps = {

@@ -1,17 +1,18 @@
 import "ka-table/style.css";
 import { Component, Fragment } from "react";
+import axios from "axios";
 import { kaReducer, Table } from 'ka-table';
 import { CSVLink } from 'react-csv';
 import { kaPropsUtils } from 'ka-table/utils';
-import { /** saveNewRow, showNewRow,**/search } from 'ka-table/actionCreators';
-import { insertRow } from 'ka-table/actionCreators'; /** new **/
 import { InsertRowPosition } from 'ka-table/enums';  /** new **/
 import { ISheetComponentState } from "../models/ISheetComponentState";
 import { tableProps, initialReportItems } from "../constants/tableProps";
 import { ChildComponents } from "ka-table/models";
-import { clearFocused, moveFocusedDown, moveFocusedLeft, moveFocusedRight, moveFocusedUp, openEditor,
-    setFocused, updatePageIndex, updateSortDirection } from 'ka-table/actionCreators';
-import axios from "axios";
+import { clearFocused, moveFocusedDown, moveFocusedLeft, 
+         moveFocusedRight, moveFocusedUp, openEditor,
+         setFocused, updatePageIndex, updateSortDirection,
+		 insertRow, hideLoading, showLoading, 
+		 search } from 'ka-table/actionCreators';
 
 class SheetComponent extends Component<any, ISheetComponentState>
 {
@@ -22,14 +23,66 @@ class SheetComponent extends Component<any, ISheetComponentState>
             tableProps,
             lastRowId: initialReportItems
         };
-        
         this.dispatch = this.dispatch.bind(this);
         this.generateNewId = this.generateNewId.bind(this);
-        /** this.saveNewData = this.saveNewData.bind(this);   **/
-        /** this.createNewRow = this.createNewRow.bind(this); **/
         this.saveTable = this.saveTable.bind(this);
     }
 	
+    delay(ms: number) { return new Promise( resolve => setTimeout(resolve, ms) ); }
+
+
+
+    componentDidMount():void
+    {
+        this.loadSheet();
+    }
+
+	/** Loads items onto reports page **/
+    loadSheet(): void
+    {
+        this.dispatch(showLoading());
+        this.delay(500).then(() =>
+        {
+            axios.get('http://localhost:3001/stockdataGet')
+                .then((response) =>
+                {
+                    const theArr = response.data as Array<any>;
+                    for (let i = 0; i < theArr.length; i++)
+                    {
+                        const valsToInsert = {
+                        };
+                        for (const [key, value] of Object.entries(theArr[i]))
+                        {
+                            const theKey = key; let theValue = value;
+                            if (theKey === '_id')
+                            {
+                                continue;
+                            }                 /** DONT USE _ID ATTRIBUTE WITH KA-TABLE **/
+                            if (theKey === 'id')
+                            {
+                                theValue = Math.random();
+                            } /** THIS IS REQUIRED                     **/
+                            Object.defineProperty(valsToInsert, theKey, {
+							   value: theValue,
+							   writable: true,
+							   enumerable: true
+                            });
+                        }
+                        const newRow = valsToInsert;
+                        this.dispatch(insertRow(newRow, {
+                            rowKeyValue: this.props.rowKeyValue,
+                            insertRowPosition: InsertRowPosition.after
+                        }));
+                    }
+                    this.dispatch(hideLoading());
+                })
+                .catch(function(error)
+                {
+                    console.log('Error', error);
+                });
+        });
+    }
+
     generateNewId(): number
     {
         const newRowId: number = this.state.lastRowId + 1;
@@ -38,22 +91,7 @@ class SheetComponent extends Component<any, ISheetComponentState>
         });
         return newRowId;
     }
-    /**
-    saveNewData(): void
-    {
-        const rowKeyValue = this.generateNewId();
-        this.dispatch(saveNewRow(rowKeyValue, {
-            validate: true
-        }));
-    }
-**/
-    /**
-    createNewRow(): void
-    {
-        this.dispatch(showNewRow());
-        this.saveNewData();
-    }
-**/
+   
     saveTable(): void
     {
         const tableData = this.state.tableProps.data;
@@ -69,29 +107,6 @@ class SheetComponent extends Component<any, ISheetComponentState>
             console.log('Error', error);
         });
     }
-    /**
-    // create new row upon updating the last existing row
-    increaseRows() : void
-    {
-        // increase the number of rows when the table is updated with a new value
-        // this will be changed to increase only when the LAST row is updated
-        const dataArray = Array(9).fill(undefined).map(
-            (_, index) => this.state.tableProps.columns.reduce((previousValue: any, currentValue) =>
-            {
-                previousValue[currentValue.key] = ((previousValue[currentValue.key] !== ``) ? previousValue[currentValue.key] : ``);
-                return previousValue;
-            }, {
-                id: index
-            }),
-        );
-        this.setState((prevState) => ({
-            tableProps: {
-                ...prevState.tableProps,
-                data: dataArray
-            }
-        }));
-    }
-**/
 
     childComponents: ChildComponents = {
         // Allows keyboard tab navigation
@@ -161,7 +176,6 @@ class SheetComponent extends Component<any, ISheetComponentState>
                     columnKey: column.key,
                     rowKeyValue
                 };
-                console.log(this.state.tableProps.data);
                 return {
                     ref: (ref: any) => isFocused && ref?.focus(),
                     onKeyUp: (e) => e.key === "Enter" && this.dispatch(setFocused({
@@ -220,8 +234,7 @@ class SheetComponent extends Component<any, ISheetComponentState>
                 <button
                     onClick={() =>
                     {
-                        /** this.dispatch(showNewRow()); this.dispatch(saveNewRow(Math.random())); **/
-                        const id = this.generateNewId();
+                        const id = Math.random();
                         const newRow = {
                             id
                         };
