@@ -18,7 +18,8 @@
     "react-scripts": "4.0.3",
     "styled-components": "^5.3.1",
     "typescript-plugin-css-modules": "^3.4.0",
-    "util": "^0.11.1"
+    "util": "^0.11.1",
+    "uuid": "^8.3.2"
   },
   "scripts": {
     "prebuild": "npm run lint",
@@ -51,6 +52,7 @@
     "@types/react-csv": "^1.1.2",
     "@types/react-dom": "^17.0.9",
     "@types/styled-components": "^5.1.14",
+    "@types/uuid": "^8.3.1",
     "@typescript-eslint/eslint-plugin": "^4.31.0",
     "@typescript-eslint/parser": "^4.31.0",
     "eslint": "^7.32.0",

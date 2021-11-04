@@ -475,7 +475,7 @@
 				]
 			}
 		},
-		"/getSessionsList": {
+		"/getSessionList": {
 			"get": {
 				"operationId": "ServiceGetSessionList",
 				"produces": [
