@@ -8,7 +8,7 @@ import { CSVLink } from 'react-csv';
 import { kaPropsUtils } from 'ka-table/utils';
 import { saveNewRow, showNewRow, search } from 'ka-table/actionCreators';
 import { ISheetComponentState } from "../models/ISheetComponentState";
-import { tableProps } from "../constants/tableProps";
+import { tablePropsInit } from "../constants/tableProps";
 import { ChildComponents } from "ka-table/models";
 import { clearFocused, moveFocusedDown, moveFocusedLeft, moveFocusedRight, moveFocusedUp, openEditor,
     setFocused, updatePageIndex, updateSortDirection } from 'ka-table/actionCreators';
@@ -24,7 +24,7 @@ class SheetComponent extends Component<any, ISheetComponentState>
     {
         super(props);
         this.state = {
-            tableProps,
+            tablePropsInit,
             lastRowId: 3, // verify that dataArray in tableProps.ts is same size
         };
         
@@ -56,8 +56,8 @@ class SheetComponent extends Component<any, ISheetComponentState>
             // access the table nested within the mongoDB document with the provided document id
             // console.log(response.data[0]["table_data"]["dataArray"]);
             this.setState((prevState) => ({
-                tableProps: {
-                    ...prevState.tableProps,
+                tablePropsInit: {
+                    ...prevState.tablePropsInit,
                     data: response.data[0]["table_data"]["dataArray"]
                 }
             }));
@@ -99,13 +99,13 @@ class SheetComponent extends Component<any, ISheetComponentState>
     saveTable(): void
     {
         // TODO: fetch stock API data and insert it into table before Posting table
-        const tableData = this.state.tableProps.data;
-        if (this.state.tableProps.data)
+        const tableData = this.state.tablePropsInit.data;
+        if (this.state.tablePropsInit.data)
         {
             // console.log("Ticker Symbol: " + this.state.tableProps.data[0]["Ticker"]);
             axios.get(`http://localhost:3001/stockapi/`, {
                 params: {
-                    ID: this.state.tableProps.data[0]["Ticker"]
+                    ID: this.state.tablePropsInit.data[0]["Ticker"]
                 }
             }).then((response) =>
             {
@@ -131,9 +131,9 @@ class SheetComponent extends Component<any, ISheetComponentState>
 
     getTicker(cell: any): void
     {
-        if (this.state.tableProps.data)
+        if (this.state.tablePropsInit.data)
         {
-            const i = this.state.tableProps.data[cell.rowKeyValue];
+            const i = this.state.tablePropsInit.data[cell.rowKeyValue];
             for (const [key, value] of Object.entries(i))
             {
                 if (`${key}` === 'Ticker' && `${value}` !== '')
@@ -211,7 +211,7 @@ class SheetComponent extends Component<any, ISheetComponentState>
         // increase the number of rows when the table is updated with a new value
         // this will be changed to increase only when the LAST row is updated
         const dataArray = Array(9).fill(undefined).map(
-            (_, index) => this.state.tableProps.columns.reduce((previousValue: any, currentValue) =>
+            (_, index) => this.state.tablePropsInit.columns.reduce((previousValue: any, currentValue) =>
             {
                 if (previousValue[currentValue.key] !== ``)
                 {
@@ -376,7 +376,6 @@ class SheetComponent extends Component<any, ISheetComponentState>
                     float: 'right'
                 }}/>
                 {/* Configurable Spreadsheet */}
-        
                 <Table
                     {...this.state.tableProps}
                     childComponents = {this.childComponents}
@@ -384,6 +383,7 @@ class SheetComponent extends Component<any, ISheetComponentState>
                 />
             </Fragment>
         );
+
     }
 
     private dispatch(action: any)

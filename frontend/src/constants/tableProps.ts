@@ -25,7 +25,7 @@ const dataArray = Array(5).fill(undefined).map(
     }, { id: index }),
   );
   
-const tableProps: ITableProps = {
+const tablePropsInit: ITableProps = {
     columns,
     columnResizing: true,
     data: dataArray,
@@ -180,4 +180,4 @@ const tableProps: ITableProps = {
     sortingMode: SortingMode.Single
 };
 */
-export { tableProps };
+export { tablePropsInit };

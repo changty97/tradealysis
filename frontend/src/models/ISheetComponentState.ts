@@ -1,6 +1,6 @@
 import { ITableProps } from 'ka-table';
 
 export interface ISheetComponentState {
-    tableProps: ITableProps;
+    tablePropsInit: ITableProps;
     lastRowId: number;
 }
