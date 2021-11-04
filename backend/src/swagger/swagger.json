@@ -5,12 +5,6 @@
 			"properties": {},
 			"type": "object"
 		},
-		"ITableData": {
-			"description": "",
-			"properties": {},
-			"type": "object",
-			"additionalProperties": {}
-		},
 		"BadRequestError": {
 			"description": "Represents a BAD REQUEST error. The request could not be understood by the\nserver due to malformed syntax. The client SHOULD NOT repeat the request\nwithout modifications.",
 			"properties": {
@@ -159,52 +153,7 @@
 				]
 			}
 		},
-		"/parseCSV": {
-			"post": {
-				"operationId": "ServiceParseCSV",
-				"produces": [
-					"application/json"
-				],
-				"responses": {
-					"200": {
-						"description": "Ok",
-						"schema": {
-							"type": "array",
-							"items": {
-								"$ref": "#/definitions/ITableData"
-							}
-						}
-					},
-					"400": {
-						"description": "Bad Request",
-						"schema": {
-							"$ref": "#/definitions/BadRequestError"
-						}
-					}
-				},
-				"description": "Parses a given csv file according to a predefined pattern specified by the sourceName.",
-				"consumes": [
-					"multipart/form-data"
-				],
-				"parameters": [
-					{
-						"description": "Pattern to parse by",
-						"in": "formData",
-						"name": "sourceName",
-						"required": true,
-						"type": "string"
-					},
-					{
-						"description": "csv file to parse data from.",
-						"in": "formData",
-						"name": "file",
-						"required": true,
-						"type": "file"
-					}
-				]
-			}
-		},
-		"/stockapi/": {
+		"/stockapi/{ID}": {
 			"get": {
 				"operationId": "ServiceGetStock",
 				"produces": [
@@ -228,7 +177,7 @@
 				"parameters": [
 					{
 						"description": "",
-						"in": "query",
+						"in": "path",
 						"name": "ID",
 						"required": true,
 						"type": "string"
@@ -329,7 +278,7 @@
 						}
 					}
 				},
-				"description": "Get a username from a key in browser local storage\n   If the key does not match with a user, nothing is returned\n   else the user's username is returned",
+				"description": "Get a username from a key in browser local storage\r\n   If the key does not match with a user, nothing is returned\r\n   else the user's username is returned",
 				"parameters": [
 					{
 						"description": "",

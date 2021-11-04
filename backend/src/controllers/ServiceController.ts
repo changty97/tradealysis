@@ -3,13 +3,11 @@ import { Produces, Response } from "typescript-rest-swagger";
 import { BadRequestError } from "typescript-rest/dist/server/model/errors";
 import { CSVParser } from "../CSVParser";
 import { ICSVData } from "../models/ICSVData";
-import { ITableData } from "../models/ITableData";
 import { exampleInsertThing, exampleRetrieveThing, genericObject, saveTable, getTableData } from "../MongoFiles/Mongo";
 import { correctLoginKey, userFromKey } from "../MongoFiles/MongoLogin";
 import { createAccount } from "../MongoFiles/MongoCreateAccount";
 import { accountValueFromKey } from "../MongoFiles/MongoAccountSettings";
 import { getStockData } from "../stockapi";
-import { convertToTableFormat } from "../importedDataToTable";
 
 const badRequestExampleResponse: BadRequestError = {
     name: "BadRequestError",
@@ -59,41 +57,28 @@ export class ServiceController
 	    return await exampleInsertThing(test);
 	}
 
-    /**
-     * Parses a given csv file according to a predefined pattern specified by the sourceName.
-     *
-     * @param sourceName Pattern to parse by
-     * @param file csv file to parse data from.
-     *
-     * @returns Currently this returns an array of objects containing the DOI, ticker, position, P/L, P/L%, Avg. entry price and Avg. exit price.
-     */
-	 @Path("/parseCSV")
-	 @POST
-	 public async parseCSV(@FormParam("sourceName") sourceName: string, @FileParam("file") file: Express.Multer.File): Promise<ITableData[]>
-	 {
-		 console.log(file);
-		 const parser: CSVParser = new CSVParser(sourceName);
- 
-		 await parser.parse(file);
-        // TODO: Create a new table and insert each object from the parsed array into a row
-		 // console.log(parser.filter());
-		 return parser.filter();
-	 }
- 
+    /*@Path("/parseCSV")
+    @POST
+    public async parseCSV(@FormParam("sourceName") sourceName: string, @FileParam("file") file: Express.Multer.File): Promise<ICSVData>
+    {
+        const parser: CSVParser = new CSVParser(sourceName);
+
+        return await parser.parse(file);
+    }*/
 
 	/**
      * @param ID
      * @returns JSON object of stock API data
      */
-	@Path("/stockapi/")
+	@Path("/stockapi/:ID")
 	@GET
-	 public async getStock(@QueryParam("ID") ID: string): Promise<any>
-	 {
-	     // console.log(getStockData(ID));
-	     const stockData = getStockData(ID);
-	     console.log(stockData);
-	     return await stockData;
-	 }
+    public async getStock(@PathParam("ID") ID: string): Promise<any>
+    {
+        // console.log(getStockData(ID));
+        const stockData = getStockData(ID);
+        console.log(stockData);
+        return await stockData;
+    }
 
 	
     /**
@@ -104,11 +89,9 @@ export class ServiceController
     @POST
 	public async postTableDB(dataArray: any)
 	{
-	    // TODO: fetch stock api and insert it into the table BEFORE posting
-
-	    // uncomment below to test table contents without saving
-	    // return await console.log(dataArray);
-	    return await saveTable(dataArray);
+	    // fetch stock api and insert it into the table BEFORE posting
+	    return await console.log(dataArray);
+	    // return await saveTable(dataArray);
 	}
 	
     /**
@@ -190,4 +173,16 @@ export class ServiceController
 	 {
 		 return await accountValueFromKey(key, "bdate");
 	 }
+
+	 	 /**
+	  * @param ticker:string - ticker symbol for specific stock
+	  * @returns axios data
+	**/
+    /*@Path("/getYahooData")
+	@GET
+	 public getYahooData(@QueryParam("ticker") ticker: string): Promise<string>
+	 {
+	    return retreiveYahooData(ticker);
+	 }*/
+
 }

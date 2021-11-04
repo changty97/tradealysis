@@ -1,6 +1,9 @@
 import "ka-table/style.css";
+//import React, { useState } from 'react'; //Import for keyboard nav
+//import { DataType, EditingMode, SortingMode } from 'ka-table/enums'; //Import for keyboard nav
+//import { DispatchFunc } from "ka-table/types"; //Import for keyboard nav
+import { /*ITableProps,*/ kaReducer, Table } from 'ka-table'; //add ITableProps for keyboard nav
 import { Component, Fragment } from "react";
-import { kaReducer, Table } from 'ka-table';
 import { CSVLink } from 'react-csv';
 import { kaPropsUtils } from 'ka-table/utils';
 import { saveNewRow, showNewRow, search } from 'ka-table/actionCreators';
@@ -30,12 +33,14 @@ class SheetComponent extends Component<any, ISheetComponentState>
         this.saveNewData = this.saveNewData.bind(this);
         this.createNewRow = this.createNewRow.bind(this);
         this.saveTable = this.saveTable.bind(this);
+        this.getTicker = this.getTicker.bind(this);
+        this.getYahooData = this.getYahooData.bind(this);
         this.setCells = this.setCells.bind(this);
     }
 
     componentDidMount() : void
     {
-        const idStr = "617a01cc1c03b734633462aa";
+        const idStr = "618342666e7ef8dff406b909";
         axios.get(`http://localhost:3001/getTableDB`, {
             params: {
                 objId: idStr
@@ -124,6 +129,82 @@ class SheetComponent extends Component<any, ISheetComponentState>
         });
     }
 
+    getTicker(cell: any): void
+    {
+        if (this.state.tableProps.data)
+        {
+            const i = this.state.tableProps.data[cell.rowKeyValue];
+            for (const [key, value] of Object.entries(i))
+            {
+                if (`${key}` === 'Ticker' && `${value}` !== '')
+                {
+                    const yahooData = this.getYahooData(i.Ticker);
+                    this.setCells(yahooData, cell);
+                }
+            }
+        }
+    }
+
+
+    getYahooData(ticker: string): any
+    {
+        return axios.get(`http://localhost:3001/stockapi/`, {
+            params: {
+                ticker: ticker
+            }
+        })
+            .then((response) =>
+            {
+                return response.data;
+            }, (error) =>
+            {
+                return error;
+            });
+    }
+
+
+    setCells(data: any, cell: any): void
+    {
+        Promise.resolve(data).then((value) =>
+        {
+            if (this.state.tableProps.data)
+            {
+                for (const [k, v] of Object.entries(this.state.tableProps.data[cell.rowKeyValue]))
+                {
+                    const i = this.state.tableProps.data[cell.rowKeyValue];
+                    if (`${k}` === 'Ticker' && `${v}` !== '')
+                    {
+                        for (const [key, val] of Object.entries(value))
+                        {
+                            switch (key)
+                            {
+                            case "regularMarketPrice": i.Price = val;
+                                break;
+                            case "longName": i.Name = val;
+                                break;
+                            case "fiftyTwoWeekHigh": i["52-WH"] = val;
+                                break;
+                            case "fiftyTwoWeekLow": i["52-WL"] = val;
+                                break;
+                            case "averageDailyVolume3Month": i.VolAvg = val;
+                                break;
+                            case "sharesOutstanding": i.Outstanding = val;
+                                break;
+                            case "regularMarketVolume": i["Vol-DOI"] = val;
+                                break;
+                            case "regularMarketOpen": i.Open = val;
+                                break;
+                            case "regularMarketDayHigh": i.HOD = val;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+
     // create new row upon updating the last existing row
     increaseRows() : void
     {
@@ -153,39 +234,6 @@ class SheetComponent extends Component<any, ISheetComponentState>
         }));
     }
 
-    setCells(data: any): void
-    {
-        Promise.resolve(data).then((value) =>
-        {
-            for (const [key, val] of Object.entries(value))
-            {
-                this.state.tableProps.data?.forEach((i) =>
-                {
-                    Object.keys(i).map((keyName, keyIndex) =>
-                    {
-                        if (i.Ticker !== '' && i[keyName] === '')
-                        {
-                            switch (key)
-                            {
-                            case "Float": i.Float = val;
-                                break;
-                            case "Outstanding": i.Outstanding = val;
-                                break;
-                            case "W52H": i["52-WH"] = val;
-                                break;
-                            case "L52H": i["52-WL"] = val;
-                                break;
-                            case "Industry": i.Industry = val;
-                                break;
-                            default:
-                            }
-                        }
-                    });
-                });
-            }
-        });
-    }
-
     childComponents: ChildComponents = {
         // Allows keyboard tab navigation
         cell: {
@@ -203,7 +251,7 @@ class SheetComponent extends Component<any, ISheetComponentState>
                     rowKeyValue
                 };
                 const isFocused = cell.columnKey === tableProps.focused?.cell?.columnKey &&
-              cell.rowKeyValue === tableProps.focused?.cell?.rowKeyValue;
+                cell.rowKeyValue === tableProps.focused?.cell?.rowKeyValue;
                 return {
                     tabIndex: 0,
                     ref: (ref: any) => isFocused && ref?.focus(),
@@ -254,38 +302,6 @@ class SheetComponent extends Component<any, ISheetComponentState>
                     columnKey: column.key,
                     rowKeyValue
                 };
-                console.log(this.state.tableProps.data);
-                if (this.state.tableProps.data?.length && cell.columnKey === "Ticker")
-                {
-                    this.state.tableProps.data?.forEach((i) =>
-                    {
-                        Object.keys(i).map((keyName, keyIndex) =>
-                        {
-                            if (i.Ticker !== '' && i[keyName] === '')
-                            {
-                                console.log(i.Ticker);
-                                //axios call...
-                                if (this.state.tableProps.data)
-                                {
-                                    // console.log("Ticker Symbol: " + this.state.tableProps.data[0]["Ticker"]);
-                                    axios.get(`http://localhost:3001/stockapi/`, {
-                                        params: {
-                                            ID: this.state.tableProps.data[0]["Ticker"]
-                                        }
-                                    }).then((response) =>
-                                    {
-                                        console.log(response.data);
-                                        this.setCells(response.data);
-                                    }).catch(function(error)
-                                    {
-                                        console.log('Error', error);
-                                    });
-                
-                                }
-                            }
-                        });
-                    });
-                }
                 return {
                     ref: (ref: any) => isFocused && ref?.focus(),
                     onKeyUp: (e) => e.key === "Enter" && this.dispatch(setFocused({
@@ -320,6 +336,7 @@ class SheetComponent extends Component<any, ISheetComponentState>
             }),
         },
     };
+
     
     public render() : JSX.Element
     {
@@ -359,6 +376,7 @@ class SheetComponent extends Component<any, ISheetComponentState>
                     float: 'right'
                 }}/>
                 {/* Configurable Spreadsheet */}
+        
                 <Table
                     {...this.state.tableProps}
                     childComponents = {this.childComponents}

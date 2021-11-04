@@ -31,7 +31,18 @@ const tableProps: ITableProps = {
     data: dataArray,
     editingMode: EditingMode.Cell,
     rowKeyField: 'id',
-    sortingMode: SortingMode.Single
+    sortingMode: SortingMode.Single,
+    paging: {
+        enabled: true,
+        pageIndex: 0,
+        pageSize: 10,
+    },
+    focused: {
+        cell: {
+            columnKey: columnTitles[0],
+            rowKeyValue: 1
+        }
+    }
 };
 
 /*
