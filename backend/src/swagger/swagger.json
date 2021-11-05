@@ -482,7 +482,7 @@
 			}
 		},
 		"/removeTheItemGet": {
-			"get": {
+			"post": {
 				"operationId": "ServiceRemoveTheItemGet",
 				"produces": [
 					"application/json"
@@ -498,15 +498,19 @@
 						}
 					}
 				},
-				"description": "Whatever *",
+				"description": "Remove data item based on id *",
+				"consumes": [
+					"application/json"
+				],
 				"parameters": [
 					{
 						"description": "",
-						"in": "query",
-						"name": "item",
+						"in": "body",
+						"name": "body",
 						"required": true,
-						"type": "number",
-						"format": "double"
+						"schema": {
+							"type": "object"
+						}
 					}
 				]
 			}

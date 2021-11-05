@@ -144,13 +144,11 @@ export class ServiceController
 	    return await theSaveData();
 	}
 	
-	/** Remove item specified by int id from (Frontend) SheetComponent.tsx **/
+	/** Remove data item based on id **/
 	@Path("/removeTheItemGet")
-	@GET
-	public async removeTheItemGet(@QueryParam("item") item: number): Promise<void>
+	@POST
+	public async removeTheItemGet(body: any): Promise<void>
 	{
-	    console.log(`removeTheItemGet${  item}`);
-	    return await removeItem(item);
+	    return await removeItem(body.data.item);
 	}
-
 }

@@ -225,7 +225,19 @@ class SheetComponent extends Component<any, ISheetComponentState>
     private deleteItemFromDB(val:number): void
     {
         this.dispatch(deleteRow(val));
-        axios.get('http://localhost:3001/removeTheItemGet', {
+        axios.post('http://localhost:3001/removeTheItemGet',
+            {
+                data: {
+                    item: val,
+                }
+	    })
+            .catch((err: Error) =>
+            {
+                return Promise.reject(err);
+            });
+			
+        /**
+		axios.get('http://localhost:3001/removeTheItemGet', {
             params: {
                 item: `${val}`
             }
@@ -234,6 +246,7 @@ class SheetComponent extends Component<any, ISheetComponentState>
             {
                 return Promise.reject(err);
             });
+**/
     }
 	
     public render() : JSX.Element
