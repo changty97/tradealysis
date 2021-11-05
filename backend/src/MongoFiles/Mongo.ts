@@ -2,7 +2,14 @@ import { Document, InsertOneResult, MongoClient } from "mongodb";
 import { mongoOptions } from "../constants/globals";
 import { ISession } from "../models/ISession";
 
-
+/**
+	Temp Function to remove item from db_kevin.stock_data
+	Will be updated in the future or removed if need be
+	
+	Function removes an item from stock_data based on
+	id:number in collection stock_data
+	(not _id:ObjectId)
+**/
 async function removeItem(idVal:number):Promise<void>
 {
     let client: MongoClient | null = null;
@@ -27,6 +34,11 @@ async function removeItem(idVal:number):Promise<void>
         });
 		
 }
+
+/**
+	If data id already exists in db, it updates value in db
+	Otherwise, updateOne has the capacity to InsertOne
+**/
 
 async function saveTable(dataArray: any): Promise<void>
 {
@@ -99,7 +111,6 @@ async function theSaveData(): Promise<any[]>
         return Promise.reject(err);
     }
 }
-
 
 function getAllSessions(): Promise<ISession[]>
 {

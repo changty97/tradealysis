@@ -2,7 +2,7 @@ import { FileParam, FormParam, GET, POST,  Path, QueryParam, PathParam } from "t
 import { Produces, Response } from "typescript-rest-swagger";
 import { BadRequestError } from "typescript-rest/dist/server/model/errors";
 import { CSVParser } from "../CSVParser";
-import { removeItem, saveTable, theSaveData } from "../MongoFiles/Mongo";
+import { removeItem, getAllSessions, saveTable, theSaveData } from "../MongoFiles/Mongo";
 import { correctLoginKey, userFromKey } from "../MongoFiles/MongoLogin";
 import { createAccount } from "../MongoFiles/MongoCreateAccount";
 import { getStockData } from "../stockapi";
@@ -44,9 +44,9 @@ export class ServiceController
 	 */
     @Path("/postTableDB")
     @POST
-    public async postTableDB(dataArray: any): Promise<string>
+    public async postTableDB(body: any): Promise<void>
     {
-        return await saveTable(dataArray);
+        return await saveTable(body.data);
     }
 
 
@@ -136,7 +136,7 @@ export class ServiceController
 	{
 	    return await accountValueFromKey(key, "bdate");
 	}
-
+	
 	@Path("/getSessionList")
 	@GET
 	public async getSessionList(): Promise<ISession[]>

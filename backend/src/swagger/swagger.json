@@ -6,6 +6,24 @@
 			"type": "object",
 			"additionalProperties": {}
 		},
+		"ISession": {
+			"description": "",
+			"properties": {
+				"name": {
+					"type": "string",
+					"description": ""
+				},
+				"sessionId": {
+					"type": "string",
+					"description": ""
+				}
+			},
+			"type": "object",
+			"required": [
+				"name",
+				"sessionId"
+			]
+		},
 		"BadRequestError": {
 			"description": "Represents a BAD REQUEST error. The request could not be understood by the\nserver due to malformed syntax. The client SHOULD NOT repeat the request\nwithout modifications.",
 			"properties": {
@@ -452,6 +470,33 @@
 						"type": "string"
 					}
 				]
+			}
+		},
+		"/getSessionList": {
+			"get": {
+				"operationId": "ServiceGetSessionList",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"type": "array",
+							"items": {
+								"$ref": "#/definitions/ISession"
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"schema": {
+							"$ref": "#/definitions/BadRequestError"
+						}
+					}
+				},
+				"description": "",
+				"parameters": []
 			}
 		},
 		"/stockdataGet": {
