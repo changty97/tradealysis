@@ -5,23 +5,16 @@ import { ISession } from "../models/ISession";
 // Ignore this dirty typing. It's just for these examples.
 type genericObject = { [key: string]: number | string | null };
 
-function saveTable(dataArray: any): Promise<string>
+async function removeItem(idVal:number):Promise<void>
 {
     let client: MongoClient | null = null;
-
     return MongoClient.connect(mongoOptions.uri)
-        .then((connection: MongoClient) =>
+        .then(async(connection: MongoClient) =>
         {
             client = connection;
-            return client.db(mongoOptions.db)
-                .collection(mongoOptions.collection)
-                .insertOne({
-                    "table_data": dataArray
-                });
-        })
-        .then((result: InsertOneResult<genericObject>) =>
-        {
-            return result.insertedId.toString();
+            await client.db(mongoOptions.db).collection(mongoOptions.collection).deleteOne({
+                id: idVal
+            });
         })
         .catch((err: Error) =>
         {
@@ -34,6 +27,76 @@ function saveTable(dataArray: any): Promise<string>
                 client.close();
             }
         });
+		
+}
+
+async function saveTable(dataArray: any): Promise<void>
+{
+    let client: MongoClient | null = null;
+    try
+    {
+        client = await MongoClient.connect(mongoOptions.uri);
+
+        for (let i = 0; i < dataArray.length; i++)
+        {
+            const valsToInsert = {
+            };
+            for (const [key, value] of Object.entries(dataArray[i]))
+            {
+                const theKey = key;
+                const theValue = value;
+                Object.defineProperty(valsToInsert, theKey, {
+                    value: theValue,
+                    writable: true,
+                    enumerable: true
+                });
+            }
+            const descriptorID = Object.getOwnPropertyDescriptor(valsToInsert, 'id');
+            await client.db(mongoOptions.db).collection(mongoOptions.collection).updateOne(
+                {
+                    id: descriptorID.value
+                },
+                {
+                    "$set": valsToInsert
+                },
+                {
+                    "upsert": true
+                }
+            );
+        }
+    }
+    catch (err)
+    {
+        Promise.reject(err);
+    }
+
+    if (client)
+    {
+        await client.close();
+    }
+
+    return;
+}
+
+async function theSaveData(): Promise<any[]>
+{
+    let client: MongoClient | null = null;
+	
+    try
+    {
+        client = await MongoClient.connect(mongoOptions.uri);
+        const x = await client.db(mongoOptions.db).collection(mongoOptions.collection).find({
+        }).toArray();
+        if (client)
+        {
+            client.close();
+        }
+        return x;
+    }
+    catch (err)
+    {
+        return Promise.reject(err);
+    }
 }
 
 function getAllSessions(): Promise<ISession[]>
@@ -72,4 +135,4 @@ function getAllSessions(): Promise<ISession[]>
         });
 }
 
-export { genericObject, saveTable, getAllSessions };
+export { genericObject, removeItem, saveTable, theSaveData, getAllSessions };
