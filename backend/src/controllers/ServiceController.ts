@@ -2,7 +2,7 @@ import { FileParam, FormParam, GET, POST,  Path, QueryParam, PathParam } from "t
 import { Produces, Response } from "typescript-rest-swagger";
 import { BadRequestError } from "typescript-rest/dist/server/model/errors";
 import { CSVParser } from "../CSVParser";
-import { getAllSessions, saveTable } from "../MongoFiles/Mongo";
+import { removeItem, saveTable, theSaveData } from "../MongoFiles/Mongo";
 import { correctLoginKey, userFromKey } from "../MongoFiles/MongoLogin";
 import { createAccount } from "../MongoFiles/MongoCreateAccount";
 import { getStockData } from "../stockapi";
@@ -142,5 +142,21 @@ export class ServiceController
 	public async getSessionList(): Promise<ISession[]>
 	{
 	    return await getAllSessions();
+	}
+	
+	/** Get data from default stock table **/
+	@Path("/stockdataGet")
+	@GET
+	public async stockdataGet():Promise<any[]>
+	{
+	    return await theSaveData();
+	}
+	
+	/** Remove data item based on id **/
+	@Path("/removeTheItemGet")
+	@POST
+	public async removeTheItemGet(body: any): Promise<void>
+	{
+	    return await removeItem(body.data.item);
 	}
 }
