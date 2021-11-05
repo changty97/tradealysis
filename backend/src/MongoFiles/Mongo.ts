@@ -1,6 +1,43 @@
 import { InsertOneResult, MongoClient } from "mongodb";
 import { mongoOptions } from "../constants/globals";
 
+/**
+	Temp Function to remove item from db_kevin.stock_data
+	Will be updated in the future or removed if need be
+	
+	Function removes an item from stock_data based on
+	id:number in collection stock_data
+	(not _id:ObjectId)
+**/
+async function removeItem(idVal:number):Promise<void>
+{
+    let client: MongoClient | null = null;
+    return MongoClient.connect(mongoOptions.uri)
+        .then(async(connection: MongoClient) =>
+        {
+            client = connection;
+            await client.db(mongoOptions.db).collection(mongoOptions.collection).deleteOne({
+                id: idVal
+            });
+        })
+        .catch((err: Error) =>
+        {
+            return Promise.reject(err);
+        })
+        .finally(() =>
+        {
+            if (client)
+            {
+                client.close();
+            }
+        });
+		
+}
+
+/**
+	If data id already exists in db, it updates value in db
+	Otherwise, updateOne has the capacity to InsertOne
+**/
 async function saveTable(dataArray: any): Promise<void>
 {
     let client: MongoClient | null = null;
@@ -22,27 +59,18 @@ async function saveTable(dataArray: any): Promise<void>
                         enumerable: true
                     });
                 }
-				
                 const descriptorID = Object.getOwnPropertyDescriptor(valsToInsert, 'id');
-				
-                console.log(descriptorID.value);
-                const query = {
-                    id: descriptorID.value
-                };
-                const update =
-				{
-				    "$set": valsToInsert
-				};
-				
-				
-                const options = {
-                    "upsert": true
-                };
-                
-                await client.db(mongoOptions.db).collection(mongoOptions.collection).updateOne(query, update, options);
-                
-				
-                // await client.db(mongoOptions.db).collection(mongoOptions.collection).insertOne(valsToInsert);
+                await client.db(mongoOptions.db).collection(mongoOptions.collection).updateOne(
+                    {
+                        id: descriptorID.value
+                    },
+                    {
+                        "$set": valsToInsert
+                    },
+                    {
+                        "upsert": true
+                    }
+                );
             }
         })
         .then(() =>
@@ -62,10 +90,12 @@ async function saveTable(dataArray: any): Promise<void>
         });
 }
 
+/**
+	Returns data from db to front end Sheet Component
+**/
 async function theSaveData(): Promise<any[]>
 {
     let client: MongoClient | null = null;
-	
     return MongoClient.connect(mongoOptions.uri)
         .then(async(connection: MongoClient) =>
         {
@@ -73,7 +103,6 @@ async function theSaveData(): Promise<any[]>
             return await client.db(mongoOptions.db).collection(mongoOptions.collection)
                 .find({
                 }).toArray();
-	
         })
         .catch((err: Error) =>
         {
@@ -88,4 +117,4 @@ async function theSaveData(): Promise<any[]>
         });
 }
 
-export { saveTable, theSaveData };
+export { removeItem, saveTable, theSaveData };

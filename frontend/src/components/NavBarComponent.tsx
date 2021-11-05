@@ -4,10 +4,6 @@ import { Header } from "../cssComponents/Header";
 import Logo from "../images/logo_2.jpg";
 import axios from "axios";
 
-const api = axios.create({
-    baseURL: 'http://localhost:3001/'
-});
-
 class NavBarComponent extends Component<any, any>
 {
     constructor(props: any)
@@ -25,7 +21,7 @@ class NavBarComponent extends Component<any, any>
 	        this.logout();
 	        return;
 	    }
-	    api.get('usernameFromKeyGET', {
+	    axios.get('http://localhost:3001/usernameFromKeyGET', {
 	        params: {
 	            key: `${theKey}`,
 	            }

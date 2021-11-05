@@ -12,7 +12,8 @@ import { clearFocused, moveFocusedDown, moveFocusedLeft,
     moveFocusedRight, moveFocusedUp, openEditor,
     setFocused, updatePageIndex, updateSortDirection,
 		 insertRow, hideLoading, showLoading,
-		 search } from 'ka-table/actionCreators';
+		 search, deleteRow } from 'ka-table/actionCreators';
+import DeleteIcon from "../images/deleteImg.svg";
 
 class SheetComponent extends Component<any, ISheetComponentState>
 {
@@ -26,22 +27,20 @@ class SheetComponent extends Component<any, ISheetComponentState>
         this.dispatch = this.dispatch.bind(this);
         this.generateNewId = this.generateNewId.bind(this);
         this.saveTable = this.saveTable.bind(this);
+        //this.deleteItemFromDB = this.deleteItemFromDB.bind(this);
     }
 	
-    delay(ms: number)
-    {
-        return new Promise( resolve => setTimeout(resolve, ms) );
-    }
     componentDidMount():void
     {
         this.loadSheet();
     }
 
     /** Loads items onto reports page **/
-    loadSheet(): void
+    private loadSheet(): void
     {
         this.dispatch(showLoading());
-        this.delay(500).then(() =>
+        const delay = ((ms:number) => new Promise( resolve => setTimeout(resolve, ms) ));
+        delay(300).then(() =>
         {
             axios.get('http://localhost:3001/stockdataGet')
                 .then((response) =>
@@ -85,7 +84,7 @@ class SheetComponent extends Component<any, ISheetComponentState>
         });
     }
 
-    generateNewId(): number
+    private generateNewId(): number
     {
         const newRowId: number = this.state.lastRowId + 1;
         this.setState({
@@ -94,7 +93,7 @@ class SheetComponent extends Component<any, ISheetComponentState>
         return newRowId;
     }
    
-    saveTable(): void
+    private saveTable(): void
     {
         const tableData = this.state.tableProps.data;
         console.log(tableData);
@@ -111,6 +110,17 @@ class SheetComponent extends Component<any, ISheetComponentState>
     }
 
     childComponents: ChildComponents = {
+        // Delete column icon (on far right)
+        cellText: {
+            content: props =>
+            {
+                if (props.column.key === ':delete')
+                {
+                    return ( <img src={DeleteIcon} onClick={() => this.deleteItemFromDB(props.rowKeyValue)} alt="Del" /> );
+                }
+                return;
+            }
+        },
         // Allows keyboard tab navigation
         cell: {
             elementAttributes: ({
@@ -121,7 +131,6 @@ class SheetComponent extends Component<any, ISheetComponentState>
                 {
                     return undefined;
                 }
-      
                 const cell = {
                     columnKey: column.key,
                     rowKeyValue
@@ -212,7 +221,21 @@ class SheetComponent extends Component<any, ISheetComponentState>
             }),
         },
     };
-    
+
+    private deleteItemFromDB(val:number): void
+    {
+        this.dispatch(deleteRow(val));
+        axios.get('http://localhost:3001/removeTheItemGet', {
+            params: {
+                item: `${val}`
+            }
+	    })
+            .catch((err: Error) =>
+            {
+                return Promise.reject(err);
+            });
+    }
+	
     public render() : JSX.Element
     {
         return (

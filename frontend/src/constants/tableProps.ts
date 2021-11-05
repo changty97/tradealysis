@@ -9,14 +9,14 @@ const columnTitles = ['DOI', 'P/L', 'Broker', 'Position',
                       '52-WH', '52-WL', 'VolAvg', 'Outstanding', 
                       'Float', 'FloatR', 'FloatC', 'MC-Cat', 
                       'MC-Current', 'Vol-DOI', 'Vol-PreM', 'PC', 
-                      'PreM High', 'Open', 'HOD'];
+                      'PreM High', 'Open', 'HOD', ':delete'];
 
 const columns: Column[] = Array(columnTitles.length).fill(undefined).map(
   (_, index) => ({
     key: columnTitles[index],
-    width: 120,
-    title: columnTitles[index],
-    type: DataType.String,
+    width: ((columnTitles[index] === ':delete')? 60 : 120),
+    title: ((columnTitles[index] === ':delete')? "":columnTitles[index]),
+    type: ((columnTitles[index] === ':delete')? null: DataType.String),
   }),
 );
 
