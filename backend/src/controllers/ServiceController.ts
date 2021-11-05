@@ -2,12 +2,13 @@ import { FileParam, FormParam, GET, POST,  Path, QueryParam, PathParam } from "t
 import { Produces, Response } from "typescript-rest-swagger";
 import { BadRequestError } from "typescript-rest/dist/server/model/errors";
 import { CSVParser } from "../CSVParser";
-import { removeItem, saveTable, theSaveData } from "../MongoFiles/Mongo";
+import { getAllSessions, saveTable } from "../MongoFiles/Mongo";
 import { correctLoginKey, userFromKey } from "../MongoFiles/MongoLogin";
 import { createAccount } from "../MongoFiles/MongoCreateAccount";
 import { getStockData } from "../stockapi";
 import { ITableData } from "../models/ITableData";
 import { accountValueFromKey } from "../MongoFiles/MongoAccountSettings";
+import { ISession } from "../models/ISession";
 
 const badRequestExampleResponse: BadRequestError = {
     name: "BadRequestError",
@@ -43,9 +44,9 @@ export class ServiceController
 	 */
     @Path("/postTableDB")
     @POST
-    public async postTableDB(body: any): Promise<void>
+    public async postTableDB(dataArray: any): Promise<string>
     {
-        return await saveTable(body.data);
+        return await saveTable(dataArray);
     }
 
 
@@ -135,20 +136,11 @@ export class ServiceController
 	{
 	    return await accountValueFromKey(key, "bdate");
 	}
-	
-	/** Get data from default stock table **/
-	@Path("/stockdataGet")
+
+	@Path("/getSessionList")
 	@GET
-	public async stockdataGet():Promise<any[]>
+	public async getSessionList(): Promise<ISession[]>
 	{
-	    return await theSaveData();
-	}
-	
-	/** Remove data item based on id **/
-	@Path("/removeTheItemGet")
-	@POST
-	public async removeTheItemGet(body: any): Promise<void>
-	{
-	    return await removeItem(body.data.item);
+	    return await getAllSessions();
 	}
 }
