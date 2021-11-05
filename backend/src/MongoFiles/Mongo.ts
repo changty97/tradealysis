@@ -87,7 +87,6 @@ async function saveTable(dataArray: any): Promise<void>
     return;
 }
 
-
 /**
 	Returns data from db to front end Sheet Component
 **/
