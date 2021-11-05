@@ -14,12 +14,15 @@ class HomeComponent extends Component<any, IHomeComponent>
         super(props);
 
         this.state = {
-            sessionList: []
+            sessionList: [],
+            loading: true
         };
     }
 
     componentDidMount(): void
     {
+        this.setState({ loading: true });
+
         axios({
             method: "GET",
             url: "http://localhost:3001/getSessionList",
@@ -31,6 +34,8 @@ class HomeComponent extends Component<any, IHomeComponent>
         }).catch((err) =>
         {
             console.error(err);
+        }).finally(() => {
+            this.setState({ loading: false })
         });
     }
 
@@ -50,6 +55,9 @@ class HomeComponent extends Component<any, IHomeComponent>
                         </Home.LEFT_HOME_MAIN_LIST_DIV_NOWRAP>
                     </Home.LEFT_HOME>
                     <Home.RIGHT_HOME>
+                        {this.state.loading ?
+                        <div>LOADING</div> // TODO: Replace with an actual loading gif or image later
+                        : null}
                         {this.state.sessionList.map((session: ISession) =>
                         {
                             return (
