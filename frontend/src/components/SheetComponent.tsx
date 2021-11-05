@@ -1,20 +1,20 @@
 import "ka-table/style.css";
 import { Component, Fragment } from "react";
+import axios from "axios";
 import { kaReducer, Table } from 'ka-table';
 import { CSVLink } from 'react-csv';
 import { kaPropsUtils } from 'ka-table/utils';
-import { saveNewRow, showNewRow, search } from 'ka-table/actionCreators';
+import { InsertRowPosition } from 'ka-table/enums';  /** new **/
 import { ISheetComponentState } from "../models/ISheetComponentState";
-import { tableProps } from "../constants/tableProps";
+import { tableProps, initialReportItems } from "../constants/tableProps";
 import { ChildComponents } from "ka-table/models";
-import { clearFocused, moveFocusedDown, moveFocusedLeft, moveFocusedRight, moveFocusedUp, openEditor,
-    setFocused, updatePageIndex, updateSortDirection } from 'ka-table/actionCreators';
-import axios from "axios";
-/*
-const api = axios.create({
-    baseURL: 'http://localhost:3001/'
-});
-*/
+import { clearFocused, moveFocusedDown, moveFocusedLeft,
+    moveFocusedRight, moveFocusedUp, openEditor,
+    setFocused, updatePageIndex, updateSortDirection,
+		 insertRow, hideLoading, showLoading,
+		 search, deleteRow } from 'ka-table/actionCreators';
+import DeleteIcon from "../images/deleteImg.svg";
+
 class SheetComponent extends Component<any, ISheetComponentState>
 {
     constructor(props: any)
@@ -22,52 +22,84 @@ class SheetComponent extends Component<any, ISheetComponentState>
         super(props);
         this.state = {
             tableProps,
-            lastRowId: 3, // verify that dataArray in tableProps.ts is same size
+            lastRowId: initialReportItems
         };
-        
         this.dispatch = this.dispatch.bind(this);
         this.generateNewId = this.generateNewId.bind(this);
-        this.saveNewData = this.saveNewData.bind(this);
-        this.createNewRow = this.createNewRow.bind(this);
         this.saveTable = this.saveTable.bind(this);
+        //this.deleteItemFromDB = this.deleteItemFromDB.bind(this);
     }
-
-    componentDidMount() : void
+	
+    componentDidMount():void
     {
-        return;
+        this.loadSheet();
     }
 
-    generateNewId(): number
+    /** Loads items onto reports page **/
+    private loadSheet(): void
+    {
+        this.dispatch(showLoading());
+        const delay = ((ms:number) => new Promise( resolve => setTimeout(resolve, ms) ));
+        delay(300).then(() =>
+        {
+            axios.get('http://localhost:3001/stockdataGet')
+                .then((response) =>
+                {
+                    const theArr = response.data as Array<any>;
+                    for (let i = 0; i < theArr.length; i++)
+                    {
+                        const valsToInsert = {
+                        };
+                        for (const [key, value] of Object.entries(theArr[i]))
+                        {
+                            const theKey = key; const theValue = value;
+                            if (theKey === '_id')
+                            {
+                                continue;
+                            }
+                            Object.defineProperty(valsToInsert, theKey, {
+							   value: theValue,
+							   writable: true,
+							   enumerable: true
+                            });
+                        }
+                        const theidDesc = Object.getOwnPropertyDescriptor(valsToInsert, 'id');
+                        if (this.state.lastRowId < theidDesc!.value)
+                        {
+                            this.setState({
+                                lastRowId: theidDesc!.value
+                            });
+                        }
+                        this.dispatch(insertRow(valsToInsert, {
+                            rowKeyValue: this.props.rowKeyValue,
+                            insertRowPosition: InsertRowPosition.after
+                        }));
+                    }
+                    this.dispatch(hideLoading());
+                })
+                .catch(function(error)
+                {
+                    console.log('Error', error);
+                });
+        });
+    }
+
+    private generateNewId(): number
     {
         const newRowId: number = this.state.lastRowId + 1;
-
         this.setState({
             lastRowId: newRowId
         });
-
         return newRowId;
     }
-
-    saveNewData(): void
-    {
-        const rowKeyValue = this.generateNewId();
-
-        this.dispatch(saveNewRow(rowKeyValue, {
-            validate: true
-        }));
-    }
-
-    createNewRow(): void
-    {
-        this.dispatch(showNewRow());
-        this.saveNewData();
-    }
-
-    saveTable(): void
+   
+    private saveTable(): void
     {
         const tableData = this.state.tableProps.data;
+        console.log(tableData);
+        console.log(tableData!.length);
         axios.post(`http://localhost:3001/postTableDB`, {
-            dataArray: tableData
+            data: tableData
         }).then(function(response)
         {
             return;
@@ -77,36 +109,18 @@ class SheetComponent extends Component<any, ISheetComponentState>
         });
     }
 
-    // create new row upon updating the last existing row
-    increaseRows() : void
-    {
-        // increase the number of rows when the table is updated with a new value
-        // this will be changed to increase only when the LAST row is updated
-        const dataArray = Array(9).fill(undefined).map(
-            (_, index) => this.state.tableProps.columns.reduce((previousValue: any, currentValue) =>
-            {
-                if (previousValue[currentValue.key] !== ``)
-                {
-                    return previousValue;
-                }
-                else
-                {
-                    previousValue[currentValue.key] = ``;
-                }
-                return previousValue;
-            }, {
-                id: index
-            }),
-        );
-        this.setState((prevState) => ({
-            tableProps: {
-                ...prevState.tableProps,
-                data: dataArray
-            }
-        }));
-    }
-
     childComponents: ChildComponents = {
+        // Delete column icon (on far right)
+        cellText: {
+            content: props =>
+            {
+                if (props.column.key === ':delete')
+                {
+                    return ( <img src={DeleteIcon} onClick={() => this.deleteItemFromDB(props.rowKeyValue)} alt="Del" /> );
+                }
+                return;
+            }
+        },
         // Allows keyboard tab navigation
         cell: {
             elementAttributes: ({
@@ -117,7 +131,6 @@ class SheetComponent extends Component<any, ISheetComponentState>
                 {
                     return undefined;
                 }
-      
                 const cell = {
                     columnKey: column.key,
                     rowKeyValue
@@ -174,7 +187,6 @@ class SheetComponent extends Component<any, ISheetComponentState>
                     columnKey: column.key,
                     rowKeyValue
                 };
-                console.log(this.state.tableProps.data);
                 return {
                     ref: (ref: any) => isFocused && ref?.focus(),
                     onKeyUp: (e) => e.key === "Enter" && this.dispatch(setFocused({
@@ -209,7 +221,34 @@ class SheetComponent extends Component<any, ISheetComponentState>
             }),
         },
     };
-    
+
+    private deleteItemFromDB(val:number): void
+    {
+        this.dispatch(deleteRow(val));
+        axios.post('http://localhost:3001/removeTheItemGet',
+            {
+                data: {
+                    item: val,
+                }
+	    })
+            .catch((err: Error) =>
+            {
+                return Promise.reject(err);
+            });
+			
+        /**
+		axios.get('http://localhost:3001/removeTheItemGet', {
+            params: {
+                item: `${val}`
+            }
+	    })
+            .catch((err: Error) =>
+            {
+                return Promise.reject(err);
+            });
+**/
+    }
+	
     public render() : JSX.Element
     {
         return (
@@ -233,7 +272,14 @@ class SheetComponent extends Component<any, ISheetComponentState>
                 <button
                     onClick={() =>
                     {
-                        this.dispatch(showNewRow()); this.dispatch(saveNewRow(Math.random()));
+                        const id = this.generateNewId();
+                        const newRow = {
+                            id
+                        };
+                        this.dispatch(insertRow(newRow, {
+                            rowKeyValue: this.props.rowKeyValue,
+                            insertRowPosition: InsertRowPosition.after
+                        }));
                     }} >
                     New Row
                 </button>

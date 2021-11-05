@@ -26,7 +26,6 @@ class App extends Component<IReportsProps, IAppState>
 	    this.state = {
 	        reportsId: null
 	    };
-
         this.setFocus = this.setFocus.bind(this);
     }
 

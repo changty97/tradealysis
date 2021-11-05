@@ -113,11 +113,8 @@
 					"application/json"
 				],
 				"responses": {
-					"200": {
-						"description": "Ok",
-						"schema": {
-							"type": "string"
-						}
+					"204": {
+						"description": "No content"
 					},
 					"400": {
 						"description": "Bad Request",
@@ -132,9 +129,9 @@
 				],
 				"parameters": [
 					{
-						"description": ": any - 2d array which contains data of every cell in the spreadsheet",
+						"description": "",
 						"in": "body",
-						"name": "dataArray",
+						"name": "body",
 						"required": true,
 						"schema": {
 							"type": "object"
@@ -500,6 +497,67 @@
 				},
 				"description": "",
 				"parameters": []
+			}
+		},
+		"/stockdataGet": {
+			"get": {
+				"operationId": "ServiceStockdataGet",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"type": "array",
+							"items": {
+								"type": "object"
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"schema": {
+							"$ref": "#/definitions/BadRequestError"
+						}
+					}
+				},
+				"description": "Get data from default stock table *",
+				"parameters": []
+			}
+		},
+		"/removeTheItemGet": {
+			"post": {
+				"operationId": "ServiceRemoveTheItemGet",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"400": {
+						"description": "Bad Request",
+						"schema": {
+							"$ref": "#/definitions/BadRequestError"
+						}
+					}
+				},
+				"description": "Remove data item based on id *",
+				"consumes": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"description": "",
+						"in": "body",
+						"name": "body",
+						"required": true,
+						"schema": {
+							"type": "object"
+						}
+					}
+				]
 			}
 		}
 	},
