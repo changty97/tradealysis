@@ -29,81 +29,39 @@ class AccountSettingsComponent extends Component<any, any>
 	        this.logout();
 	        return;
 	    }
-        api.get('accountunameFromKeyGET', {
+		api.get('/accountData', {
 	        params: {
 	            key: `${theKey}`,
 	            }
 	        }
 	    )
-	    .then((res) =>
-	    {
-		    api.get('accountfNameFromKeyGET', {
-                    params: {
-                        key: `${theKey}`,
-                    }
-                }
-                )
-                    .then((res2)=>
-                    {
-                        api.get('accountlNameFromKeyGET', {
-                            params: {
-                                key: `${theKey}`,
-                            }
-                        }
-                        )
-                            .then((res3)=>
-                            {
-                                api.get('accountemailFromKeyGET', {
-                                    params: {
-                                        key: `${theKey}`,
-                                    }
-                                }
-                                )
-                                    .then((res4)=>
-                                    {
-                                        api.get('accountphoneFromKeyGET', {
-                                            params: {
-                                                key: `${theKey}`,
-                                            }
-                                        }
-                                        )
-                                            .then((res5)=>
-                                            {
-                                                api.get('accountbdateFromKeyGET', {
-                                                    params: {
-                                                        key: `${theKey}`,
-                                                    }
-                                                }
-                                                )
-                                                    .then((res6) =>
-                                                    {
-                                                        console.log("test");
-                                                        this.initalizeTextFields();
-                                                        this.setState({
-                                                            uname: res.data,
-                                                            pssd: "",
-                                                            fName: res2.data,
-                                                            lName: res3.data,
-                                                            email: res4.data,
-                                                            phone: res5.data,
-                                                            date: res6.data
-                                                        });
-                                                        this.initalizeTextFields();
-                                                    });
-                                            });
-                                    });
-					
-					
-                            });
-                    });
-	    })
-            .catch((err: Error) =>
-            {
-                return Promise.reject(err);
-            });
-
+		.then((res) => {
+			api.get('/usernameFromKeyGet', {
+				params: {
+					key: `${theKey}`,
+					}
+				}
+			)
+			.then((res2) => {
+				const unameVal = res2.data;
+				const val = Object.values(res.data);
+				this.setState((val === null) ? {
+					uname: "", pssd:  "", fName: "", lName: "",
+					email: "", phone: "", date:  ""
+				} : {
+					uname: (unameVal != null) ? unameVal: "", 
+					pssd:  (val[1] != null)   ? "" : "", 
+					fName: (val[0] != null)   ? val[0]: "",
+					lName: (val[1] != null)   ? val[1]: "", 
+					email: (val[2] != null)   ? val[2]: "", 
+					phone: (val[3] != null)   ? val[3]: "",
+					date:  (val[4] != null)   ? val[4]: ""
+				});
+				this.initalizeTextFields();
+			});
+        });										
     }
-	
+
     private initalizeTextFields(): void
     {
         if (document !== null)
@@ -114,9 +72,7 @@ class AccountSettingsComponent extends Component<any, any>
             const theEmail = (document.getElementById(`myEmail`) as HTMLInputElement);
             const thePhone = (document.getElementById(`myPhone`) as HTMLInputElement);
             const theBdate = (document.getElementById(`myDate`) as HTMLInputElement);
-			
-            if (userName !== null && theFName !== null && theLName !== null &&
-			   theEmail !== null && thePhone !== null && theBdate !== null)
+            if (userName !== null && theFName !== null && theLName !== null && theEmail !== null && thePhone !== null && theBdate !== null)
             {
                 userName.value = this.state.uname;
                 theFName.value = this.state.fName;
