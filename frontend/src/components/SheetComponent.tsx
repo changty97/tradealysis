@@ -5,7 +5,7 @@ import { CSVLink } from 'react-csv';
 import { kaPropsUtils } from 'ka-table/utils';
 import { saveNewRow, showNewRow, search } from 'ka-table/actionCreators';
 import { ISheetComponentState } from "../models/ISheetComponentState";
-import { tableProps, defaultRowCount } from "../constants/tableProps";
+import { defaultRowCount, tableProps } from "../constants/tableProps";
 import { ChildComponents } from "ka-table/models";
 import { clearFocused, moveFocusedDown, moveFocusedLeft, moveFocusedRight, moveFocusedUp, openEditor,
     setFocused, updatePageIndex, updateSortDirection } from 'ka-table/actionCreators';
@@ -35,33 +35,41 @@ class SheetComponent extends Component<any, ISheetComponentState>
 
     componentDidMount() : void
     {
-        const idStr = "6181d5f66e3b90d069cca50c";
+        
+        const idStr = "61899b90ae96a2c2244713a9";
         axios.get(`http://localhost:3001/getTableDB`, {
             params: {
                 objId: idStr
             }
         }).then((response) =>
         {
-            // console.log(response.data[0]["table_data"]["dataArray"][0]["Name"]);
-            // response is an object
-            // response.data is an object property
-            // response.data[0] refers to another object
-            // response.data[0]["table_data"] refers to table_data object
-            // response.data[0]["table_data"]["dataArray"] refers to our table. it's an array where each index is an object representing a row of data
-            // access the table nested within the mongoDB document with the provided document id
-            // console.log(response.data[0]["table_data"]["dataArray"]);
             this.setState((prevState) => ({
                 tableProps: {
                     ...prevState.tableProps,
                     data: response.data[0]["table_data"]["dataArray"]
                 }
             }));
-            // console.log("Current Values:");
-            // console.log(this.state.tableProps.data);
+            // when data is imported, fetch the other stock api data for each row
+            if (this.state.tableProps.data) {
+                for (let i=0; i < this.state.tableProps.data.length - 1; i++) {
+                    console.log(this.state.tableProps.data[i]["DOI"]);
+                    const cells = {
+                        columnKey: "Ticker",
+                        rowKeyValue: i
+                    }
+                    console.log(cells);
+                    // if a row is already filled, only fetch real-time data by excluding the date
+                    // TODO: update condition to check all columns are filled
+                    if (this.state.tableProps.data[i]["Price"] === '')
+                        this.getTicker(cells);
+                }
+            }
         }).catch(function(error)
         {
             console.log('Error', error);
         });
+        
+        
         return;
     }
 
@@ -160,15 +168,38 @@ class SheetComponent extends Component<any, ISheetComponentState>
             const i = this.state.tableProps.data[cell.rowKeyValue];
             for (const [key, value] of Object.entries(i))
             {
-                if (`${key}` === 'Ticker' && `${value}` !== '')
+                // if valid DOI and ticker provided, retrieve historical and real-time data
+                if (`${key}` === 'Ticker' && `${value}` !== '' && this.isValidDate(i.DOI))
+                {
+                    const datedTicker = i.DOI + "-" + i.Ticker;
+                    console.log(datedTicker);
+                    const yahooData = this.getAlphaVantageData(datedTicker);
+                    this.setCells(yahooData, cell);
+                    console.log(yahooData);
+                    // const finvizData = this.getFinvizData();
+                    // this.setCells(finvizData, cell);
+                }
+                // if DOI is empty, only retrieve real-time data
+                else if (`${key}` === 'Ticker' && `${value}` !== '')
                 {
                     const yahooData = this.getAlphaVantageData(i.Ticker);
                     this.setCells(yahooData, cell);
+                    console.log(yahooData);
                     // const finvizData = this.getFinvizData();
                     // this.setCells(finvizData, cell);
                 }
             }
         }
+    }
+
+    isValidDate(doi: any): boolean
+    {
+        var regEx = /^\d{4}-\d{2}-\d{2}$/;
+        if(!doi.match(regEx)) return false;  // Invalid format
+        var d = new Date(doi);
+        var dNum = d.getTime();
+        if(!dNum && dNum !== 0) return false; // NaN value, Invalid date
+        return d.toISOString().slice(0,10) === doi;
     }
 
     getAlphaVantageData(ticker: string): any
@@ -206,7 +237,7 @@ class SheetComponent extends Component<any, ISheetComponentState>
                                 break;
                             case "W52H": i["52-WH"] = val;
                                 break;
-                            case "L52H": i["52-WL"] = val;
+                            case "W52L": i["52-WL"] = val;
                                 break;
                             case "VolAvg": i["VolAvg"] = val;
                                 break;
@@ -217,27 +248,80 @@ class SheetComponent extends Component<any, ISheetComponentState>
                             case "Industry": i.Industry = val;
                                 break;
                             case "PC": i.PC = val;
-                                break; 
+                                break;
                             case "PremHigh": i["PreM High"] = val;
-                                break; 
+                                break;
                             case "Open": i["Open"] = val;
-                                break; 
+                                break;
                             case "HOD": i["HOD"] = val;
-                                break; 
-                            case "HOD-Time": i["HOD-Time"] = val;
+                                break;
+                            case "HODTime": i["HOD-Time"] = val;
                                 break;
                             case "LOD": i["LOD"] = val;
                                 break;
-                            case "LOD-Time": i["LOD-Time"] = val;
+                            case "LODTime": i["LOD-Time"] = val;
                                 break;
                             case "Close": i["Close"] = val;
                                 break;
                             case "AH": i["AH"] = val;
                                 break;
+                            case "VolDOI": i["Vol-DOI"] = val;
+                                break;
+                            case "VolPreM": i["Vol-PreM"] = val;
+                                break;
                             default:
                             }
                         }
                     }
+                    // perform calculations now that we have historical data
+                    // Float Category is defined by size of float
+                    console.log(i.Float);
+                    if ( i.Float > 0 && i.Float <= 1000000)
+                    {
+                        i["FloatC"] = "NANO";
+                    }
+                    else if ( i.Float > 1000000 && i.Float <= 2000000)
+                    {
+                        i["FloatC"] = "MICRO";
+                    }
+                    else if ( i.Float > 2000000 && i.Float <= 10000000)
+                    {
+                        i["FloatC"] = "LOW";
+                    }
+                    else if ( i.Float > 10000000 && i.Float <= 20000000)
+                    {
+                        i["FloatC"] = "MEDIUM";
+                    }
+                    else if ( i.Float > 20000000)
+                    {
+                        i["FloatC"] = "HIGH";
+                    }
+
+                    // MarketCap = price * outstanding
+                    i["MC-Current"] = i["Price"] * i["Outstanding"];
+                    // MarketCap Category
+                    if ( i["MC-Current"] <= 50000000)
+                    {
+                        i["MC-Cat"] = "NANO";
+                    }
+                    else if ( i["MC-Current"] > 50000000 && i["MC-Current"] <= 300000000)
+                    {
+                        i["MC-Cat"] = "MICRO";
+                    }
+                    else if ( i["MC-Current"] > 300000000 && i["MC-Current"] <= 20000000000)
+                    {
+                        i["MC-Cat"] = "SMALL";
+                    }
+                    else if ( i["MC-Current"] > 20000000000 && i["MC-Current"] <= 100000000000)
+                    {
+                        i["MC-Cat"] = "MID";
+                    }
+                    else if ( i["MC-Current"] > 100000000000)
+                    {
+                        i["MC-Cat"] = "LARGE";
+                    }
+
+
                 }
             }
         });
@@ -408,8 +492,11 @@ class SheetComponent extends Component<any, ISheetComponentState>
                 columnKey: action.columnKey,
                 rowKeyValue: action.rowKeyValue
             };
+            console.log("Cell: ");
+            console.log(cell);
             this.getTicker(cell);
         }
+        
 
     }
 }
