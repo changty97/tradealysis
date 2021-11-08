@@ -2,25 +2,14 @@ import { Component, Fragment } from "react";
 import { AccountSettings } from "../cssComponents/AccountSettings";
 import axios from "axios";
 
-const api = axios.create({
-    baseURL: 'http://localhost:3001/'
-});
-
 class AccountSettingsComponent extends Component<any, any>
 {
     constructor(props: any)
     {
 	    super(props);
-	    this.state = {
-	        uname: "User",
-            pssd: "",
-            fName: "",
-            lName: "",
-            email: "",
-            phone: "",
-            date: ""
-	    };
+	    this.state = { uname: "User", pssd: "", fName: "", lName: "", email: "", phone: "", date: "" };
     }
+	
     componentDidMount(): void
     {
         const theKey = localStorage.getItem("Key");
@@ -29,37 +18,44 @@ class AccountSettingsComponent extends Component<any, any>
 	        this.logout();
 	        return;
 	    }
-		api.get('/accountData', {
+        axios.get('http://localhost:3001/accountData', {
 	        params: {
 	            key: `${theKey}`,
 	            }
 	        }
 	    )
-		.then((res) => {
-			api.get('/usernameFromKeyGet', {
-				params: {
-					key: `${theKey}`,
-					}
-				}
-			)
-			.then((res2) => {
-				const unameVal = res2.data;
-				const val = Object.values(res.data);
-				this.setState((val === null) ? {
-					uname: "", pssd:  "", fName: "", lName: "",
-					email: "", phone: "", date:  ""
-				} : {
-					uname: (unameVal != null) ? unameVal: "", 
-					pssd:  (val[1] != null)   ? "" : "", 
-					fName: (val[0] != null)   ? val[0]: "",
-					lName: (val[1] != null)   ? val[1]: "", 
-					email: (val[2] != null)   ? val[2]: "", 
-					phone: (val[3] != null)   ? val[3]: "",
-					date:  (val[4] != null)   ? val[4]: ""
-				});
-				this.initalizeTextFields();
-			});
-        });										
+            .then((res) =>
+            {
+                axios.get('http://localhost:3001/usernameFromKeyGet', {
+                    params: {
+                        key: `${theKey}`,
+                    }
+                }
+                )
+                    .then((res2) =>
+                    {
+                        const unameVal = res2.data;
+                        const val = Object.values(res.data);
+                        this.setState((val === null) ? {
+                            uname: "",
+                            pssd: "",
+                            fName: "",
+                            lName: "",
+                            email: "",
+                            phone: "",
+                            date: ""
+                        } : {
+                            uname: (unameVal != null) ? unameVal : "",
+                            pssd: (val[1] != null)   ? "" : "",
+                            fName: (val[0] != null)   ? val[0] : "",
+                            lName: (val[1] != null)   ? val[1] : "",
+                            email: (val[2] != null)   ? val[2] : "",
+                            phone: (val[3] != null)   ? val[3] : "",
+                            date: (val[4] != null)   ? val[4] : ""
+                        });
+                        this.initalizeTextFields();
+                    });
+            });
     }
 
     private initalizeTextFields(): void
