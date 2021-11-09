@@ -7,7 +7,7 @@ export interface IStockData {
     W52H?: number;
     W52L?: number;
     VolAvg?: number;
-    Outstanding?: number
+    Outstanding?: number;
     Float?: number;
     VolDOI?: number;
     VolPreM?: number;
