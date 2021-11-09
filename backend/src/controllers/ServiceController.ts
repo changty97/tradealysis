@@ -37,18 +37,6 @@ export class ServiceController
 
         return parser.filter();
     }
-	
-    /**
-	 * @param dataArray: any - 2d array which contains data of every cell in the spreadsheet
-	 * @returns the spreadsheet array as a JSON object
-	 */
-    @Path("/postTableDB")
-    @POST
-    public async postTableDB(body: any): Promise<void>
-    {
-        return await saveTable(body.data);
-    }
-
 
 	@Path("/stockapi/:ID")
 	@GET
@@ -137,6 +125,16 @@ export class ServiceController
 	    return await accountValueFromKey(key, "bdate");
 	}
 	
+	
+
+	/** Remove data item based on id **/
+	@Path("/removeTheItemGet")
+	@POST
+	public async removeTheItemGet(body: any): Promise<void>
+	{
+	    return await removeItem(body.data.item, body.data.coll);
+	}
+	
 	@Path("/getSessionList")
 	@GET
 	public async getSessionList(): Promise<ISession[]>
@@ -144,19 +142,22 @@ export class ServiceController
 	    return await getAllSessions();
 	}
 	
+	 /**
+	 * @param dataArray: any - 2d array which contains data of every cell in the spreadsheet
+	 * @returns the spreadsheet array as a JSON object
+	 */
+    @Path("/postTableDB")
+    @POST
+	public async postTableDB(body: any): Promise<void>
+	{
+	    return await saveTable(body.data.table, body.data.coll);
+	}
+	
 	/** Get data from default stock table **/
 	@Path("/stockdataGet")
 	@GET
-	public async stockdataGet():Promise<any[]>
-	{
-	    return await theSaveData();
-	}
-	
-	/** Remove data item based on id **/
-	@Path("/removeTheItemGet")
-	@POST
-	public async removeTheItemGet(body: any): Promise<void>
-	{
-	    return await removeItem(body.data.item);
-	}
+    public async stockdataGet(@QueryParam("coll") coll:string):Promise<any[]>
+    {
+	    return await theSaveData(coll);
+    }
 }

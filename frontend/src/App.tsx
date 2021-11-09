@@ -17,6 +17,7 @@ import { NavBarLoginComponent } from "./components/NavBarLoginComponent";
 import { FooterComponent } from "./components/FooterComponent";
 import { FooterLoginComponent } from "./components/FooterLoginComponent";
 import { IAppState } from './models/IAppState';
+import axios from "axios";
 
 class App extends Component<IReportsProps, IAppState>
 {
@@ -26,10 +27,32 @@ class App extends Component<IReportsProps, IAppState>
 	    this.state = {
 	        reportsId: null
 	    };
+        this.componentIsMounting();
         this.setFocus = this.setFocus.bind(this);
     }
+	
+    async componentIsMounting() : Promise<void>
+    {
+        const theKey = localStorage.getItem("Key");
+        if (theKey)
+        {
+            return await axios.get('http://localhost:3001/usernameFromKeyGET', {
+                params: {
+                    key: `${theKey}`,
+                }
+            })
+                .then((res) =>
+                {
+                    this.setFocus(res.data);
+                })
+                .catch((err: Error) =>
+                {
+                    return Promise.reject(err);
+                });
+        }
+    }
 
-    setFocus(id: string): void
+    private setFocus(id: string): void
     {
         this.setState({
             reportsId: id
@@ -38,17 +61,17 @@ class App extends Component<IReportsProps, IAppState>
 	
     render(): JSX.Element
     {
+        const theKey = localStorage.getItem("Key");
 	    let elements: JSX.Element;
-		
-	    if (localStorage.getItem("Key") != null )
+	    if (theKey !== null )
 	    {
-	        if (localStorage.getItem("Key") !== "")
+	        if (theKey !== "")
 	        {
 	            elements =
 				(
 				    <React.Fragment>
 				        <BrowserRouter>
-						   <NavBarComponent/>
+						   <NavBarComponent user={this.state.reportsId}/>
 				            <Switch>
 				                <Route path="/report"><ReportsComponent reportsId={this.state.reportsId}/></Route>
 				                <Route path="/strategies"><StrategiesComponent /></Route>
