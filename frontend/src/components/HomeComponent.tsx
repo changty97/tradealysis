@@ -2,7 +2,7 @@ import axios, { AxiosResponse } from "axios";
 import { Component, Fragment } from "react";
 import { Link } from "react-router-dom";
 import { Home } from "../cssComponents/Home";
-import DataIcon from "../images/dataIcon.jpg";
+import DataIcon from "../images/dataIcon3.jpg";
 import { IHomeComponent } from "../models/IHomeComponent";
 import { ISession } from "../models/ISession";
 import { v4 as uuid } from "uuid";
@@ -58,7 +58,7 @@ class HomeComponent extends Component<any, IHomeComponent>
                                     onClick={() => localStorage.setItem("focusedSessionId", session.sessionId)}
                                 >
                                     <Link to="/report">
-                                        <Home.DATA_ICON src={DataIcon} alt={session.name}/>
+                                        <Home.DATA_ICON src={DataIcon} alt={session.name} height="50%"/>
                                         <div>{session.sessionId}</div>
                                     </Link>
                                 </Home.DATA_ICON_DIV>

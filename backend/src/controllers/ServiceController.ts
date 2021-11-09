@@ -7,7 +7,7 @@ import { correctLoginKey, userFromKey } from "../MongoFiles/MongoLogin";
 import { createAccount } from "../MongoFiles/MongoCreateAccount";
 import { getStockData } from "../stockapi";
 import { ITableData } from "../models/ITableData";
-import { accountValueFromKey } from "../MongoFiles/MongoAccountSettings";
+import { accountValueFromKey, accountValuesFromKey } from "../MongoFiles/MongoAccountSettings";
 import { ISession } from "../models/ISession";
 
 const badRequestExampleResponse: BadRequestError = {
@@ -37,18 +37,6 @@ export class ServiceController
 
         return parser.filter();
     }
-	
-    /**
-	 * @param dataArray: any - 2d array which contains data of every cell in the spreadsheet
-	 * @returns the spreadsheet array as a JSON object
-	 */
-    @Path("/postTableDB")
-    @POST
-    public async postTableDB(body: any): Promise<void>
-    {
-        return await saveTable(body.data);
-    }
-
 
 	@Path("/stockapi/:ID")
 	@GET
@@ -95,46 +83,21 @@ export class ServiceController
 	    return await createAccount(body.userInfo.username, body.userInfo.password, body.userInfo.fName, body.userInfo.lName, body.userInfo.email, body.userInfo.phone, body.userInfo.bdate);
 	}
 	
-	@Path("/accountunameFromKeyGET")
+	@Path("/accountData")
 	@GET
-	public async accountunameFromKeyGET(@QueryParam("key") key: string):Promise<string>
+	public async accountData(@QueryParam("key") key: string):Promise<any>
 	{
-	    return await this.usernameFromKeyGET(key);
+	    return await accountValuesFromKey(key);
 	}
 	
-	@Path("/accountfNameFromKeyGET")
-	@GET
-	public async accountfnameFromKeyGET(@QueryParam("key") key: string):Promise<string>
-	{
-	    return await accountValueFromKey(key, "fName");
-	}
 	
-	@Path("/accountlNameFromKeyGET")
-	@GET
-	public async accountlNameFromKeyGET(@QueryParam("key") key: string):Promise<string>
+
+	/** Remove data item based on id **/
+	@Path("/removeTheItemGet")
+	@POST
+	public async removeTheItemGet(body: any): Promise<void>
 	{
-	    return await accountValueFromKey(key, "lName");
-	}
-	
-	@Path("/accountemailFromKeyGET")
-	@GET
-	public async accountemailFromKeyGET(@QueryParam("key") key: string):Promise<string>
-	{
-	    return await accountValueFromKey(key, "email");
-	}
-	
-	@Path("/accountphoneFromKeyGET")
-	@GET
-	public async accountphoneFromKeyGET(@QueryParam("key") key: string):Promise<string>
-	{
-	    return await accountValueFromKey(key, "phone");
-	}
-	
-	@Path("/accountbdateFromKeyGET")
-	@GET
-	public async accountbdateFromKeyGET(@QueryParam("key") key: string):Promise<string>
-	{
-	    return await accountValueFromKey(key, "bdate");
+	    return await removeItem(body.data.item, body.data.coll);
 	}
 	
 	@Path("/getSessionList")
@@ -144,19 +107,22 @@ export class ServiceController
 	    return await getAllSessions();
 	}
 	
+	 /**
+	 * @param dataArray: any - 2d array which contains data of every cell in the spreadsheet
+	 * @returns the spreadsheet array as a JSON object
+	 */
+    @Path("/postTableDB")
+    @POST
+	public async postTableDB(body: any): Promise<void>
+	{
+	    return await saveTable(body.data.table, body.data.coll);
+	}
+	
 	/** Get data from default stock table **/
 	@Path("/stockdataGet")
 	@GET
-	public async stockdataGet():Promise<any[]>
-	{
-	    return await theSaveData();
-	}
-	
-	/** Remove data item based on id **/
-	@Path("/removeTheItemGet")
-	@POST
-	public async removeTheItemGet(body: any): Promise<void>
-	{
-	    return await removeItem(body.data.item);
-	}
+    public async stockdataGet(@QueryParam("coll") coll:string):Promise<any[]>
+    {
+	    return await theSaveData(coll);
+    }
 }

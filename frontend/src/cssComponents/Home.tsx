@@ -61,9 +61,9 @@ class Home extends Component
 	`;
 	public static readonly IMPORT_BUTTON = sty.button `
 		text-decoration: none;
-		font-size: 1.2vw;
-		width: 15vw;
-		height: 4vh;
+		font-size: 1.15vw;
+		width: 18vw auto;
+		height: 7vh auto;
 	`;
 	public static readonly IMPORT_INPUT = sty.input `
 		display: none; 

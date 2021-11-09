@@ -1,26 +1,22 @@
 import { Component, Fragment } from "react";
 import { Link } from "react-router-dom";
 import { Header } from "../cssComponents/Header";
+import { NavBarComponentProps } from "../models/NavBarComponentProps";
+import { NavBarComponentState } from "../models/NavBarComponentState";
 import Logo from "../images/logo_2.jpg";
 import axios from "axios";
 
-class NavBarComponent extends Component<any, any>
+class NavBarComponent extends Component<NavBarComponentProps, NavBarComponentState>
 {
-    constructor(props: any)
+    constructor(props: NavBarComponentProps)
     {
-	    super(props);
-	    this.state = {
-	        user: "User"
-	    };
+        super(props);
+        this.logout = this.logout.bind(this);
     }
+	
     componentDidMount(): void
     {
 	    const theKey = localStorage.getItem("Key");
-	    if (theKey == null)
-	    {
-	        this.logout();
-	        return;
-	    }
 	    axios.get('http://localhost:3001/usernameFromKeyGET', {
 	        params: {
 	            key: `${theKey}`,
@@ -29,9 +25,13 @@ class NavBarComponent extends Component<any, any>
 	    )
 	    .then((res) =>
 	    {
-		   this.setState({
+                this.setState({
                     user: res.data
                 });
+                if (!theKey || !res || res.data === "")
+                {
+                    this.logout();
+                }
 	    });
     }
 	
@@ -61,7 +61,7 @@ class NavBarComponent extends Component<any, any>
 	                    <Header.USER_AND_SETTINGS_BUTTONS>
 	                        <Header.HEADER_BUTTONS_LIST>
 	                            <Header.HEADER_BUTTONS_LIST_LI>
-	                                <Header.LINK_1 to="/login">{this.state.user}</Header.LINK_1>
+	                                <Header.LINK_1 to="/login">{this.props.user}</Header.LINK_1>
 	                            </Header.HEADER_BUTTONS_LIST_LI>
 	                            <Header.HEADER_BUTTONS_LIST_LI>
 	                                <Header.LINK_1 to="/account">Settings</Header.LINK_1>
