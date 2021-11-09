@@ -44,11 +44,11 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
             window.location.href = "/";
             return;
         }
-        axios.get('http://localhost:3001/stockdataGet',{
-			params:{
-				coll: this.props.reportsId + "_stock_data",
-			}
-		})
+        axios.get('http://localhost:3001/stockdataGet', {
+            params: {
+                coll: `${this.props.reportsId  }_stock_data`,
+            }
+        })
             .then((response) =>
             {
                 const allArrVals = [];
@@ -113,9 +113,9 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
         console.log(tableData!.length);
         axios.post(`http://localhost:3001/postTableDB`, {
             data: {
-				table:tableData,
-				coll: this.props.reportsId + "_stock_data",
-			}
+                table: tableData,
+                coll: `${this.props.reportsId  }_stock_data`,
+            }
         }).then(function(response)
         {
             return;
@@ -244,7 +244,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
         axios.post('http://localhost:3001/removeTheItemGet', {
             data: {
                 item: val,
-				coll: this.props.reportsId + "_stock_data",
+                coll: `${this.props.reportsId  }_stock_data`,
             }
 	    })
             .catch((err: Error) =>
