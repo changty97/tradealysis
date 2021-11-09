@@ -3,9 +3,9 @@ import { DataType, EditingMode, SortingMode } from 'ka-table/enums';
 import { Column } from 'ka-table/models';
 //import React, { useState } from 'react';
 
-import { ITableProps } from 'ka-table';
+import { ITableProps/*, kaReducer, Table*/ } from 'ka-table';
 //import { clearFocused, moveFocusedDown, moveFocusedLeft, moveFocusedRight, moveFocusedUp, openEditor, setFocused, updatePageIndex, updateSortDirection } from 'ka-table/actionCreators';
-//import { DispatchFunc } from 'ka-table/types';
+////import { DispatchFunc } from 'ka-table/types';
 //import React from 'react';
 
 const defaultRowCount = 5;

@@ -1,15 +1,15 @@
 import "ka-table/style.css";
-import React, { useState } from 'react'; //Import for keyboard nav
+//import React, { useState } from 'react'; //Import for keyboard nav
 //import { DataType, EditingMode, SortingMode } from 'ka-table/enums'; //Import for keyboard nav
-import { DispatchFunc } from "ka-table/types"; //Import for keyboard nav
-import { ITableProps, kaReducer, Table } from 'ka-table'; //add ITableProps for keyboard nav
+//import { DispatchFunc } from "ka-table/types"; //Import for keyboard nav
+import { /*ITableProps,*/ kaReducer, Table } from 'ka-table'; //add ITableProps for keyboard nav
 import { Component, Fragment } from "react";
 import { CSVLink } from 'react-csv';
 import { kaPropsUtils } from 'ka-table/utils';
 import { saveNewRow, showNewRow, search } from 'ka-table/actionCreators';
 import { ISheetComponentState } from "../models/ISheetComponentState";
 import { tableProps } from "../constants/tableProps";
-//import { ChildComponents } from "ka-table/models";
+import { ChildComponents } from "ka-table/models";
 import { clearFocused, moveFocusedDown, moveFocusedLeft, moveFocusedRight, moveFocusedUp, openEditor,
     setFocused, updatePageIndex, updateSortDirection } from 'ka-table/actionCreators';
 import axios from "axios";
@@ -245,7 +245,7 @@ class SheetComponent extends Component<any, ISheetComponentState>
         }));
     }
 
-    /*childComponents: ChildComponents = {
+    childComponents: ChildComponents = {
         // Allows keyboard tab navigation
         cell: {
             elementAttributes: ({
@@ -260,30 +260,30 @@ class SheetComponent extends Component<any, ISheetComponentState>
                 const cell = {
                     columnKey: column.key,
                     rowKeyValue
-                };
-                const isFocused = cell.columnKey === tableProps.focused?.cell?.columnKey &&
-                cell.rowKeyValue === tableProps.focused?.cell?.rowKeyValue;
+                }
+                const isFocused = cell.columnKey === this.state.tableProps.focused?.cell?.columnKey &&
+                cell.rowKeyValue === this.state.tableProps.focused?.cell?.rowKeyValue;
                 return {
                     tabIndex: 0,
                     ref: (ref: any) => isFocused && ref?.focus(),
                     onKeyUp: (e) =>
                     {
-                        switch (e.key)
+                        switch (e.keyCode)
                         {
-                        case "ArrowRight": this.dispatch(moveFocusedRight({
+                        case 39: this.dispatch(moveFocusedRight({
                             end: e.ctrlKey
                         })); break;
-                        case "ArrowLeft": this.dispatch(moveFocusedLeft({
+                        case 37: this.dispatch(moveFocusedLeft({
                             end: e.ctrlKey
                         })); break;
-                        case "ArrowUp": this.dispatch(moveFocusedUp({
+                        case 38: this.dispatch(moveFocusedUp({
                             end: e.ctrlKey
                         })); break;
-                        case "ArrowDown": this.dispatch(moveFocusedDown({
+                        case 40: this.dispatch(moveFocusedDown({
                             end: e.ctrlKey
                         })); break;
                             // opens the editor for the selected cell
-                        case "Enter":
+                        case 13:
                             this.dispatch(openEditor(cell.rowKeyValue, cell.columnKey));
                             this.dispatch(setFocused({
                                 cellEditorInput: cell
@@ -297,9 +297,9 @@ class SheetComponent extends Component<any, ISheetComponentState>
                             rowKeyValue
                         }
                     })),
-                    onKeyDown: (e) => e.key !== "Tab" && e.preventDefault(),
+                    onKeyDown: (e) => e.keyCode !== 9 && e.preventDefault(),
                     onBlur: () => isFocused && this.dispatch(clearFocused())
-                };
+                }
             },
         },
         cellEditorInput: {
@@ -307,15 +307,15 @@ class SheetComponent extends Component<any, ISheetComponentState>
                 column, rowKeyValue
             }) =>
             {
-                const isFocused = column.key === tableProps.focused?.cellEditorInput?.columnKey &&
-                rowKeyValue === tableProps.focused?.cellEditorInput?.rowKeyValue;
+                const isFocused = column.key === this.state.tableProps.focused?.cellEditorInput?.columnKey &&
+                rowKeyValue === this.state.tableProps.focused?.cellEditorInput?.rowKeyValue;
                 const cell = {
                     columnKey: column.key,
                     rowKeyValue
                 };
                 return {
                     ref: (ref: any) => isFocused && ref?.focus(),
-                    onKeyUp: (e) => e.key === "Enter" && this.dispatch(setFocused({
+                    onKeyUp: (e) => e.keyCode === 13 && this.dispatch(setFocused({
                         cell
                     })),
                     onBlur: (e, {
@@ -323,7 +323,7 @@ class SheetComponent extends Component<any, ISheetComponentState>
                     }) =>
                     {
                         baseFunc();
-                        this.dispatch(clearFocused());
+                        this.dispatch(clearFocused())
                     },
                     onFocus: () => !isFocused && this.dispatch(setFocused({
                         cell: {
@@ -331,23 +331,22 @@ class SheetComponent extends Component<any, ISheetComponentState>
                             rowKeyValue
                         }
                     })),
-                };
+                }
             },
         },
         pagingIndex: {
             elementAttributes: (props) => ({
                 tabIndex: 0,
-                onKeyUp: (e) => e.key === "Enter" && this.dispatch(updatePageIndex(props.pageIndex))
+                onKeyUp: (e) => e.keyCode === 13 && this.dispatch(updatePageIndex(props.pageIndex))
             }),
         },
         headCell: {
             elementAttributes: (props) => ({
                 tabIndex: 0,
-                onKeyUp: (e) => e.key === "Enter" && this.dispatch(updateSortDirection(props.column.key))
+                onKeyUp: (e) => e.keyCode === 13 && this.dispatch(updateSortDirection(props.column.key))
             }),
         },
-    };*/
-
+    };
     
     public render() : JSX.Element
     {
@@ -387,7 +386,11 @@ class SheetComponent extends Component<any, ISheetComponentState>
                     float: 'right'
                 }}/>
                 {/* Configurable Spreadsheet */}
-                <KeyboardNav
+                <Table
+                    {...this.state.tableProps}
+                    childComponents = {this.childComponents}
+                    dispatch={this.dispatch}
+
                 />
             </Fragment>
         );
@@ -418,7 +421,7 @@ class SheetComponent extends Component<any, ISheetComponentState>
     }
 }
 
-const KeyboardNav: React.FC = () =>
+/*const KeyboardNav: React.FC = () =>
 {
     const [tablePropsInit, changeTableProps] = useState(tableProps);
     const dispatch: DispatchFunc = (action) =>
@@ -533,5 +536,5 @@ const KeyboardNav: React.FC = () =>
             />
         </div>
     );
-};
+};*/
 export { SheetComponent };
