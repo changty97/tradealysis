@@ -1,15 +1,15 @@
 import "ka-table/style.css";
-//import React, { useState } from 'react'; //Import for keyboard nav
+import React, { useState } from 'react'; //Import for keyboard nav
 //import { DataType, EditingMode, SortingMode } from 'ka-table/enums'; //Import for keyboard nav
-//import { DispatchFunc } from "ka-table/types"; //Import for keyboard nav
-import { /*ITableProps,*/ kaReducer, Table } from 'ka-table'; //add ITableProps for keyboard nav
+import { DispatchFunc } from "ka-table/types"; //Import for keyboard nav
+import { ITableProps, kaReducer, Table } from 'ka-table'; //add ITableProps for keyboard nav
 import { Component, Fragment } from "react";
 import { CSVLink } from 'react-csv';
 import { kaPropsUtils } from 'ka-table/utils';
 import { saveNewRow, showNewRow, search } from 'ka-table/actionCreators';
 import { ISheetComponentState } from "../models/ISheetComponentState";
-import { tablePropsInit } from "../constants/tableProps";
-import { ChildComponents } from "ka-table/models";
+import { tableProps } from "../constants/tableProps";
+//import { ChildComponents } from "ka-table/models";
 import { clearFocused, moveFocusedDown, moveFocusedLeft, moveFocusedRight, moveFocusedUp, openEditor,
     setFocused, updatePageIndex, updateSortDirection } from 'ka-table/actionCreators';
 import axios from "axios";
@@ -24,7 +24,7 @@ class SheetComponent extends Component<any, ISheetComponentState>
     {
         super(props);
         this.state = {
-            tablePropsInit,
+            tableProps,
             lastRowId: 3, // verify that dataArray in tableProps.ts is same size
         };
         
@@ -40,33 +40,44 @@ class SheetComponent extends Component<any, ISheetComponentState>
 
     componentDidMount() : void
     {
-        const idStr = "618342666e7ef8dff406b909";
+        const idStr = "61899b90ae96a2c2244713a9";
         axios.get(`http://localhost:3001/getTableDB`, {
             params: {
                 objId: idStr
             }
         }).then((response) =>
         {
-            // console.log(response.data[0]["table_data"]["dataArray"][0]["Name"]);
-            // response is an object
-            // response.data is an object property
-            // response.data[0] refers to another object
-            // response.data[0]["table_data"] refers to table_data object
-            // response.data[0]["table_data"]["dataArray"] refers to our table. it's an array where each index is an object representing a row of data
-            // access the table nested within the mongoDB document with the provided document id
-            // console.log(response.data[0]["table_data"]["dataArray"]);
             this.setState((prevState) => ({
-                tablePropsInit: {
-                    ...prevState.tablePropsInit,
+                tableProps: {
+                    ...prevState.tableProps,
                     data: response.data[0]["table_data"]["dataArray"]
                 }
             }));
-            // console.log("Current Values:");
-            // console.log(this.state.tableProps.data);
+            // when data is imported, fetch the other stock api data for each row
+            if (this.state.tableProps.data)
+            {
+                for (let i = 0; i < this.state.tableProps.data.length - 1; i++)
+                {
+                    console.log(this.state.tableProps.data[i]["DOI"]);
+                    const cells = {
+                        columnKey: "Ticker",
+                        rowKeyValue: i
+                    };
+                    console.log(cells);
+                    // if a row is already filled, only fetch real-time data by excluding the date
+                    // TODO: update condition to check all columns are filled
+                    if (this.state.tableProps.data[i]["Price"] === '')
+                    {
+                        this.getTicker(cells);
+                    }
+                }
+            }
         }).catch(function(error)
         {
             console.log('Error', error);
         });
+        
+        
         return;
     }
 
@@ -99,13 +110,13 @@ class SheetComponent extends Component<any, ISheetComponentState>
     saveTable(): void
     {
         // TODO: fetch stock API data and insert it into table before Posting table
-        const tableData = this.state.tablePropsInit.data;
-        if (this.state.tablePropsInit.data)
+        const tableData = this.state.tableProps.data;
+        if (this.state.tableProps.data)
         {
             // console.log("Ticker Symbol: " + this.state.tableProps.data[0]["Ticker"]);
             axios.get(`http://localhost:3001/stockapi/`, {
                 params: {
-                    ID: this.state.tablePropsInit.data[0]["Ticker"]
+                    ID: this.state.tableProps.data[0]["Ticker"]
                 }
             }).then((response) =>
             {
@@ -131,9 +142,9 @@ class SheetComponent extends Component<any, ISheetComponentState>
 
     getTicker(cell: any): void
     {
-        if (this.state.tablePropsInit.data)
+        if (this.state.tableProps.data)
         {
-            const i = this.state.tablePropsInit.data[cell.rowKeyValue];
+            const i = this.state.tableProps.data[cell.rowKeyValue];
             for (const [key, value] of Object.entries(i))
             {
                 if (`${key}` === 'Ticker' && `${value}` !== '')
@@ -211,7 +222,7 @@ class SheetComponent extends Component<any, ISheetComponentState>
         // increase the number of rows when the table is updated with a new value
         // this will be changed to increase only when the LAST row is updated
         const dataArray = Array(9).fill(undefined).map(
-            (_, index) => this.state.tablePropsInit.columns.reduce((previousValue: any, currentValue) =>
+            (_, index) => this.state.tableProps.columns.reduce((previousValue: any, currentValue) =>
             {
                 if (previousValue[currentValue.key] !== ``)
                 {
@@ -234,7 +245,7 @@ class SheetComponent extends Component<any, ISheetComponentState>
         }));
     }
 
-    childComponents: ChildComponents = {
+    /*childComponents: ChildComponents = {
         // Allows keyboard tab navigation
         cell: {
             elementAttributes: ({
@@ -335,7 +346,7 @@ class SheetComponent extends Component<any, ISheetComponentState>
                 onKeyUp: (e) => e.key === "Enter" && this.dispatch(updateSortDirection(props.column.key))
             }),
         },
-    };
+    };*/
 
     
     public render() : JSX.Element
@@ -376,10 +387,7 @@ class SheetComponent extends Component<any, ISheetComponentState>
                     float: 'right'
                 }}/>
                 {/* Configurable Spreadsheet */}
-                <Table
-                    {...this.state.tableProps}
-                    childComponents = {this.childComponents}
-                    dispatch={this.dispatch}
+                <KeyboardNav
                 />
             </Fragment>
         );
@@ -394,6 +402,136 @@ class SheetComponent extends Component<any, ISheetComponentState>
                 tableProps: kaReducer(prevState.tableProps, action)
             }
         }));
+
+        if (action.columnKey === "Ticker" && action.type === "UpdateCellValue")
+        {
+            const cell = {
+                columnKey: action.columnKey,
+                rowKeyValue: action.rowKeyValue
+            };
+            console.log("Cell: ");
+            console.log(cell);
+            this.getTicker(cell);
+        }
+        
+
     }
 }
+
+const KeyboardNav: React.FC = () =>
+{
+    const [tablePropsInit, changeTableProps] = useState(tableProps);
+    const dispatch: DispatchFunc = (action) =>
+    {
+        changeTableProps((prevState: ITableProps) => kaReducer(prevState, action));
+    };
+    return (
+        <div className='keyboard-navigation-demo'>
+            <Table
+                {...tablePropsInit}
+                childComponents={{
+                    cell: {
+                        elementAttributes: ({
+                            column, rowKeyValue, isEditableCell
+                        }) =>
+                        {
+                            if (isEditableCell)
+                            {
+                                return undefined;
+                            }
+  
+                            const cell = {
+                                columnKey: column.key,
+                                rowKeyValue
+                            };
+                            const isFocused = cell.columnKey === tablePropsInit.focused?.cell?.columnKey &&
+                  cell.rowKeyValue === tablePropsInit.focused?.cell?.rowKeyValue;
+                            return {
+                                tabIndex: 0,
+                                ref: (ref: any) => isFocused && ref?.focus(),
+                                onKeyUp: (e) =>
+                                {
+                                    switch (e.keyCode)
+                                    {
+                                    case 39: dispatch(moveFocusedRight({
+                                        end: e.ctrlKey
+                                    })); break;
+                                    case 37: dispatch(moveFocusedLeft({
+                                        end: e.ctrlKey
+                                    })); break;
+                                    case 38: dispatch(moveFocusedUp({
+                                        end: e.ctrlKey
+                                    })); break;
+                                    case 40: dispatch(moveFocusedDown({
+                                        end: e.ctrlKey
+                                    })); break;
+                                    case 13:
+                                        dispatch(openEditor(cell.rowKeyValue, cell.columnKey));
+                                        dispatch(setFocused({
+                                            cellEditorInput: cell
+                                        }));
+                                        break;
+                                    }
+                                },
+                                onFocus: () => !isFocused &&  dispatch(setFocused({
+                                    cell: {
+                                        columnKey: column.key,
+                                        rowKeyValue
+                                    }
+                                })),
+                                onKeyDown: (e) => e.keyCode !== 9 && e.preventDefault(),
+                                onBlur: () => isFocused && dispatch(clearFocused())
+                            };
+                        },
+                    },
+                    cellEditorInput: {
+                        elementAttributes: ({
+                            column, rowKeyValue
+                        }) =>
+                        {
+                            const isFocused = column.key === tablePropsInit.focused?.cellEditorInput?.columnKey &&
+                  rowKeyValue === tablePropsInit.focused?.cellEditorInput?.rowKeyValue;
+                            const cell = {
+                                columnKey: column.key,
+                                rowKeyValue
+                            };
+                            return {
+                                ref: (ref: any) => isFocused && ref?.focus(),
+                                onKeyUp: (e) => e.keyCode === 13 && dispatch(setFocused({
+                                    cell
+                                })),
+                                onBlur: (e, {
+                                    baseFunc
+                                }) =>
+                                {
+                                    baseFunc();
+                                    dispatch(clearFocused());
+                                },
+                                onFocus: () => !isFocused && dispatch(setFocused({
+                                    cell: {
+                                        columnKey: column.key,
+                                        rowKeyValue
+                                    }
+                                })),
+                            };
+                        },
+                    },
+                    pagingIndex: {
+                        elementAttributes: (props) => ({
+                            tabIndex: 0,
+                            onKeyUp: (e) => e.keyCode === 13 && dispatch(updatePageIndex(props.pageIndex))
+                        }),
+                    },
+                    headCell: {
+                        elementAttributes: (props) => ({
+                            tabIndex: 0,
+                            onKeyUp: (e) => e.keyCode === 13 && dispatch(updateSortDirection(props.column.key))
+                        }),
+                    },
+                }}
+                dispatch={dispatch}
+            />
+        </div>
+    );
+};
 export { SheetComponent };
