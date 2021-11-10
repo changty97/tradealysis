@@ -135,5 +135,4 @@ async function theSaveData(coll:string): Promise<any[]>
     }
 }
 
-
 export { genericObject, removeItem, getAllSessions, saveTable, theSaveData };

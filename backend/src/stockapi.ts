@@ -1,4 +1,7 @@
 import axios from "axios";
+import { IStockData } from "./models/IStockData";
+
+/* Harry's API stuff */
 
 const finnhub_api_key = process.env.FINNHUB_API_KEY;
 const AlphaVantage_api_key = process.env.AlphaVantage_API_KEY;
@@ -27,9 +30,9 @@ function printFetch(symbol:string, realtime:boolean)
     console.log(`Successfully fetched ${symbol } ${realtime ? "realtime" : "realtime and historical"} data at ${year  }-${  month  }-${  date  } ${  hours  }:${  minutes  }:${  seconds}`);
 }
 
-async function getStockData(ID: string): Promise<any>
+async function getStockData(dateAndTicker: string): Promise<any>
 {
-    const firstCharacter = ID.charAt(0);    // To dertermine if date is specified in the ID string by the first character
+    const firstCharacter = dateAndTicker.charAt(0);    // To dertermine if date is specified in the ID string by the first character
     const currentdate = new Date();
 
     // Define varibles to store fetched data
@@ -41,7 +44,6 @@ async function getStockData(ID: string): Promise<any>
     let W52L:number;                //Lowest price within 52 weeks
     let VolAvg:number;              //Realtime volume
     let Outstanding:number;         //Outstanding shares
-    let Float:number;               //Float shares
     let VolDOI:number;              //Volume on the specified transaction date
     let VolPreM:number;             //Premarket volume
     let PC:number;                  //previous close price on the specified transaction date
@@ -60,13 +62,13 @@ async function getStockData(ID: string): Promise<any>
     if ( firstCharacter == "2" )    // Date is specified in the string beginning with "2YYY-MM-DD..
     {
         // Store the stock symbol
-        const StockSymbol = ID.substring(11).toUpperCase();
+        const StockSymbol = dateAndTicker.substring(11).toUpperCase();
         Ticker = StockSymbol;
         // Store the speficied year, month, and day input in ID with format "YYYY-MM-DD-StockSymbol"
-        const yy = Number(ID.substring(0, 4));
-        const mm = Number(ID.substring(5, 7));
-        const dd = Number(ID.substring(8, 10));
-        const specifiedDate = ID.substring(0, 10);
+        const yy = Number(dateAndTicker.substring(0, 4));
+        const mm = Number(dateAndTicker.substring(5, 7));
+        const dd = Number(dateAndTicker.substring(8, 10));
+        const specifiedDate = dateAndTicker.substring(0, 10);
 
         //Company Overview API URL provided by Alpha Vantage.
         //This API returns the company information, financial ratios, and other key metrics for the equity specified.
@@ -82,8 +84,7 @@ async function getStockData(ID: string): Promise<any>
                 Exchange = query['Exchange'];                  //Exchange
                 //W52H = query['52WeekHigh'];                    //Highest price within 52 weeks
                 //W52L = query['52WeekLow'];                     //Lowest price within 52 weeks
-                Outstanding = query['SharesOutstanding'];      //Outstanding shares
-                Float = query['SharesFloat'];                  //Float
+                Outstanding = parseInt(query['SharesOutstanding']);      //Outstanding shares
             })
             .catch(console.error);
     
@@ -305,7 +306,7 @@ async function getStockData(ID: string): Promise<any>
     else // ID string doesn't begin with 2, which means date is not specified. Then it parses the string as stock symbol
     {
         // Store the stock symbol
-        const StockSymbol = ID.toUpperCase();
+        const StockSymbol = dateAndTicker.toUpperCase();
         Ticker = StockSymbol;
         //Fetch current price from Finnhub API data
         const urlcurrent = `https://finnhub.io/api/v1/quote?symbol=${StockSymbol}&token=${finnhub_api_key}`;
@@ -394,7 +395,7 @@ async function getStockData(ID: string): Promise<any>
     }
 
     //Create a Json object to store the returned data
-    const apidata = {
+    const apidata: IStockData = {
         Ticker: Ticker,            //Symbol
         Industry: Industry,        //Industry
         Exchange: Exchange,        //Exchange
@@ -403,7 +404,6 @@ async function getStockData(ID: string): Promise<any>
         W52L: W52L,                //Lowest price within 52 weeks
         VolAvg: VolAvg,            //To be confirmed
         Outstanding: Outstanding,  //Outstanding shares
-        Float: Float,              //Float shares
         VolDOI: VolDOI,            //To be confirmed
         VolPreM: VolPreM,          //Premarket volume
         PC: PC,                    //previous close price
@@ -421,4 +421,87 @@ async function getStockData(ID: string): Promise<any>
 
 }
 
-export { getStockData };
+/* Tyler's API stuff */
+
+function retrieveYahooData(ticker: string): Promise<IStockData>
+{
+    const stockData: IStockData = {
+    };
+
+    return axios.get(`https://query1.finance.yahoo.com/v7/finance/quote?lang=en-US&region=US&corsDomain=finance.yahoo.com&symbols=${ticker}`)
+        .then((response) =>
+        {
+            const data = response.data.quoteResponse.result[0];
+            Object.entries(data).map(([key, value]: [string, string]) =>
+            {
+                switch (`${key}`)
+                {
+                case "longName":
+                    stockData.LongName = `${value}`;
+                    break;
+                case "regularMarketPrice":
+                    stockData.Price = parseFloat(value);
+                    break;
+                case "fiftyTwoWeekHigh":
+                    stockData.W52H = parseFloat(value);
+                    break;
+                case "fiftyTwoWeekLow":
+                    stockData.W52L = parseFloat(value);
+                    break;
+                case "averageDailyVolume3Month":
+                    stockData.VolAvg = parseInt(value);
+                    break;
+                case "sharesOutstanding":
+                    stockData.Outstanding = parseInt(value);
+                    break;
+                case "regularMarketVolume":
+                    stockData.VolDOI = parseInt(value);
+                    break;
+                case "regularMarketOpen":
+                    stockData.Open = parseFloat(value);
+                    break;
+                case "regularMarketDayHigh":
+                    stockData.HOD = parseFloat(value);
+                    break;
+                default: break;
+                }
+            });
+
+            return retrieveFloatYahooData(ticker);
+        })
+        .then((response: number) =>
+        {
+            stockData.Float = response;
+
+            return stockData;
+        })
+        .catch(function(error: any)
+        {
+            return Promise.reject(error);
+        });
+}
+
+function retrieveFloatYahooData(ticker: string): Promise<number>
+{
+    return axios.get(`https://query1.finance.yahoo.com/v10/finance/quoteSummary/${ticker}?modules=defaultKeyStatistics`)
+        .then((response) =>
+        {
+            const data = response.data.quoteSummary.result[0].defaultKeyStatistics.floatShares;
+            let floatShares: number;
+            Object.entries(data).map(([key, value]: [string, string]) =>
+            {
+                if (`${key}` === "raw") // I'm choosing "raw" instead of "fmt" because Harry's API requests give the raw number.
+                {
+                    floatShares = parseInt(value);
+                }
+            });
+
+            return floatShares;
+        })
+        .catch(function(error: any)
+        {
+            return Promise.reject(error);
+        });
+}
+
+export { getStockData, retrieveYahooData };

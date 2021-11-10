@@ -5,10 +5,11 @@ import { CSVParser } from "../CSVParser";
 import { removeItem, getAllSessions, saveTable, theSaveData } from "../MongoFiles/Mongo";
 import { correctLoginKey, userFromKey } from "../MongoFiles/MongoLogin";
 import { createAccount } from "../MongoFiles/MongoCreateAccount";
-import { getStockData } from "../stockapi";
+import { getStockData, retrieveYahooData } from "../stockapi";
 import { ITableData } from "../models/ITableData";
 import { accountValueFromKey, accountValuesFromKey } from "../MongoFiles/MongoAccountSettings";
 import { ISession } from "../models/ISession";
+import { IStockData } from "../models/IStockData";
 
 const badRequestExampleResponse: BadRequestError = {
     name: "BadRequestError",
@@ -40,10 +41,24 @@ export class ServiceController
 
 	@Path("/stockapi/:ID")
 	@GET
-    public async getStock(@PathParam("ID") ID: string): Promise<any>
+    public async getStockNow(@PathParam("ID") ticker: string): Promise<any>
     {
-        return await getStockData(ID);
+        const date: Date = new Date();
+        return await this.getStockThen(ticker, date.toISOString().split('T')[0]);
     }
+
+	@Path("/stockapi/:ID/:date")
+	@GET
+	public async getStockThen(@PathParam("ID") ticker: string, @PathParam("date") date: string): Promise<IStockData>
+	{
+	    const alphaFinData: IStockData = await getStockData(`${date}-${ticker}`);
+	    const yahooData: IStockData = await retrieveYahooData(ticker);
+	    
+	    return {
+	        ...yahooData,
+	        ...alphaFinData
+	    };
+	}
 
 	/**
 	 * @param username:string - username entered into login page

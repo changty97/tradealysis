@@ -108,7 +108,7 @@
 		},
 		"/stockapi/{ID}": {
 			"get": {
-				"operationId": "ServiceGetStock",
+				"operationId": "ServiceGetStockNow",
 				"produces": [
 					"application/json"
 				],
@@ -132,6 +132,45 @@
 						"description": "",
 						"in": "path",
 						"name": "ID",
+						"required": true,
+						"type": "string"
+					}
+				]
+			}
+		},
+		"/stockapi/{ID}/{date}": {
+			"get": {
+				"operationId": "ServiceGetStockThen",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"type": "object"
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"schema": {
+							"$ref": "#/definitions/BadRequestError"
+						}
+					}
+				},
+				"description": "",
+				"parameters": [
+					{
+						"description": "",
+						"in": "path",
+						"name": "ID",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"description": "",
+						"in": "path",
+						"name": "date",
 						"required": true,
 						"type": "string"
 					}
