@@ -6,6 +6,111 @@
 			"type": "object",
 			"additionalProperties": {}
 		},
+		"IStockData": {
+			"description": "",
+			"properties": {
+				"LongName": {
+					"type": "string",
+					"description": ""
+				},
+				"Ticker": {
+					"type": "string",
+					"description": ""
+				},
+				"Industry": {
+					"type": "string",
+					"description": ""
+				},
+				"Exchange": {
+					"type": "string",
+					"description": ""
+				},
+				"Price": {
+					"type": "number",
+					"format": "double",
+					"description": ""
+				},
+				"W52H": {
+					"type": "number",
+					"format": "double",
+					"description": ""
+				},
+				"W52L": {
+					"type": "number",
+					"format": "double",
+					"description": ""
+				},
+				"VolAvg": {
+					"type": "number",
+					"format": "double",
+					"description": ""
+				},
+				"Outstanding": {
+					"type": "number",
+					"format": "double",
+					"description": ""
+				},
+				"Float": {
+					"type": "number",
+					"format": "double",
+					"description": ""
+				},
+				"VolDOI": {
+					"type": "number",
+					"format": "double",
+					"description": ""
+				},
+				"VolPreM": {
+					"type": "number",
+					"format": "double",
+					"description": ""
+				},
+				"PC": {
+					"type": "number",
+					"format": "double",
+					"description": ""
+				},
+				"PremHigh": {
+					"type": "number",
+					"format": "double",
+					"description": ""
+				},
+				"Open": {
+					"type": "number",
+					"format": "double",
+					"description": ""
+				},
+				"HOD": {
+					"type": "number",
+					"format": "double",
+					"description": ""
+				},
+				"HODTime": {
+					"type": "string",
+					"description": ""
+				},
+				"LOD": {
+					"type": "number",
+					"format": "double",
+					"description": ""
+				},
+				"LODTime": {
+					"type": "string",
+					"description": ""
+				},
+				"Close": {
+					"type": "number",
+					"format": "double",
+					"description": ""
+				},
+				"AH": {
+					"type": "number",
+					"format": "double",
+					"description": ""
+				}
+			},
+			"type": "object"
+		},
 		"ISession": {
 			"description": "",
 			"properties": {
@@ -148,7 +253,7 @@
 					"200": {
 						"description": "Ok",
 						"schema": {
-							"type": "object"
+							"$ref": "#/definitions/IStockData"
 						}
 					},
 					"400": {
