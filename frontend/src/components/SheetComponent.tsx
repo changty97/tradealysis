@@ -4,7 +4,7 @@ import axios from "axios";
 import { kaReducer, Table } from 'ka-table';
 import { CSVLink } from 'react-csv';
 import { kaPropsUtils } from 'ka-table/utils';
-import { InsertRowPosition } from 'ka-table/enums';  /** new **/ //ISheetComponentProps
+import { InsertRowPosition } from 'ka-table/enums';
 import { ISheetComponentProps } from "../models/ISheetComponentProps";
 import { ISheetComponentState } from "../models/ISheetComponentState";
 import { tableProps, initialReportItems } from "../constants/tableProps";

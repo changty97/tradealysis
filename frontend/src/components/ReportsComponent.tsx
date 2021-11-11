@@ -34,7 +34,7 @@ class ReportsComponent extends Component<IReportsProps, IReportsState>
                     <Link to="/report"><button>Trade Report</button></Link>
                     <Link to="/overview"><button>Overview</button></Link>
                     <Link to="/strategies"><button>Strategies</button></Link>
-                    <SheetComponent/>{/* Search bar & Export button moved within SheetComponent*/}
+                    <SheetComponent/>
                 </Reports.SECTION>
             </Fragment>
         );

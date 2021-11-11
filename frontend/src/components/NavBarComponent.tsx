@@ -21,6 +21,7 @@ class NavBarComponent extends Component<NavBarComponentProps, NavBarComponentSta
 
     render(): JSX.Element
     {
+        const theUser = (this.props.user) ? this.props.user : "User";
 	    return (
 	        <Fragment>
 	            <header id="allHeader">
@@ -38,9 +39,9 @@ class NavBarComponent extends Component<NavBarComponentProps, NavBarComponentSta
 	                    </div>
 	                    <Header.USER_AND_SETTINGS_BUTTONS>
 	                        <Header.HEADER_BUTTONS_LIST>
-	                            <Header.HEADER_BUTTONS_LIST_LI>
-	                                <Header.LINK_1 to="/login">{this.props.user}</Header.LINK_1>
-	                            </Header.HEADER_BUTTONS_LIST_LI>
+	                            <Header.HEADER_BUTTONS_LIST_LI_NOHOVER>
+	                                {theUser}
+	                            </Header.HEADER_BUTTONS_LIST_LI_NOHOVER>
 	                            <Header.HEADER_BUTTONS_LIST_LI>
 	                                <Header.LINK_1 to="/account">Settings</Header.LINK_1>
 	                            </Header.HEADER_BUTTONS_LIST_LI>

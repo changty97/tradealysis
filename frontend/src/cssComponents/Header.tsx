@@ -36,6 +36,16 @@ class Header extends Component
 			background-color: rgb(120,120,120); 
 		}
 	`;
+	
+	public static readonly HEADER_BUTTONS_LIST_LI_NOHOVER = sty.li `
+		list-style-type: none;
+		border: 1px solid black;
+		background-color: rgb(100,100,100);
+		margin-left: 5%;
+		padding: 9px 60px 9px 60px;
+		color: white;
+	`;
+
 	public static readonly USER_AND_SETTINGS_BUTTONS = sty.div `
 		margin-left: auto; 
 		margin-right: 0;
