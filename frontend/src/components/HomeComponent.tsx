@@ -3,8 +3,8 @@ import { Component, Fragment } from "react";
 import { Link } from "react-router-dom";
 import { Home } from "../cssComponents/Home";
 import DataIcon from "../images/dataIcon3.jpg";
+import DataIcon_S from "../images/dataIcon3_Selected.jpg";
 import { IHomeComponent } from "../models/IHomeComponent";
-import { ISession } from "../models/ISession";
 import { v4 as uuid } from "uuid";
 
 class HomeComponent extends Component<any, IHomeComponent>
@@ -12,18 +12,22 @@ class HomeComponent extends Component<any, IHomeComponent>
     constructor(props: any)
     {
         super(props);
-
         this.state = {
+            reportsId: null,
             sessionList: []
         };
     }
 
     componentDidMount(): void
     {
-        axios({
+        const theKey = localStorage.getItem("Key");
+		 axios({
             method: "GET",
-            url: "http://localhost:3001/getSessionList",
-        }).then((response: AxiosResponse<ISession[]>) =>
+            url: "http://localhost:3001/userSessionsGet",
+            params: {
+                key: `${theKey}`,
+            }
+        }).then((response: AxiosResponse<string[]>) =>
         {
             this.setState({
                 sessionList: response.data
@@ -50,16 +54,21 @@ class HomeComponent extends Component<any, IHomeComponent>
                         </Home.LEFT_HOME_MAIN_LIST_DIV_NOWRAP>
                     </Home.LEFT_HOME>
                     <Home.RIGHT_HOME>
-                        {this.state.sessionList.map((session: ISession) =>
+                        {this.state.sessionList.map((session: string) =>
                         {
+                            let icon = DataIcon;
+                            if (localStorage.getItem("reportsId") === session)
+                            {
+                                icon = DataIcon_S;
+                            }
                             return (
                                 <Home.DATA_ICON_DIV
-                                    key={uuid()}
-                                    onClick={() => localStorage.setItem("focusedSessionId", session.sessionId)}
+								 key={uuid()}
+								 onClick={() => localStorage.setItem("reportsId", session)}
                                 >
                                     <Link to="/report">
-                                        <Home.DATA_ICON src={DataIcon} alt={session.name} height="50%"/>
-                                        <div>{session.sessionId}</div>
+                                        <Home.DATA_ICON src={icon} alt={session}/>
+                                        <Home.DATA_ICON_TEXT_DIV>{session}</Home.DATA_ICON_TEXT_DIV>
                                     </Link>
                                 </Home.DATA_ICON_DIV>
                             );

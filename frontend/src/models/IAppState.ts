@@ -1,3 +1,3 @@
 export interface IAppState {
-  reportsId: string | null
+  username: string | null
 }

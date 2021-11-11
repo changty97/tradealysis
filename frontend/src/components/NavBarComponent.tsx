@@ -4,7 +4,6 @@ import { Header } from "../cssComponents/Header";
 import { NavBarComponentProps } from "../models/NavBarComponentProps";
 import { NavBarComponentState } from "../models/NavBarComponentState";
 import Logo from "../images/logo_2.jpg";
-import axios from "axios";
 
 class NavBarComponent extends Component<NavBarComponentProps, NavBarComponentState>
 {
@@ -12,27 +11,6 @@ class NavBarComponent extends Component<NavBarComponentProps, NavBarComponentSta
     {
         super(props);
         this.logout = this.logout.bind(this);
-    }
-	
-    componentDidMount(): void
-    {
-	    const theKey = localStorage.getItem("Key");
-	    axios.get('http://localhost:3001/usernameFromKeyGET', {
-	        params: {
-	            key: `${theKey}`,
-	            }
-	        }
-	    )
-	    .then((res) =>
-	    {
-                this.setState({
-                    user: res.data
-                });
-                if (!theKey || !res || res.data === "")
-                {
-                    this.logout();
-                }
-	    });
     }
 	
     private logout() : void

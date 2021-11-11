@@ -1,5 +1,4 @@
-import { ISession } from "./ISession";
-
 export interface IHomeComponent {
-    sessionList: ISession[]
+	reportsId: string | null,
+    sessionList: string[]
 }

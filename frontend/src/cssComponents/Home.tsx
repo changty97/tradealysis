@@ -87,6 +87,13 @@ class Home extends Component
 		align-items: flex-start;
 		margin: 2.5%;
 	`;
+	
+	public static readonly DATA_ICON_TEXT_DIV = sty.div `
+		text-align: center;
+		font-size: 2.2vh;
+		text-decoration: none;
+	`;
+	
 	public static readonly DATA_ICON = sty.img `
 		width: 8vw;
 		height: auto; 
