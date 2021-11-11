@@ -6,23 +6,110 @@
 			"type": "object",
 			"additionalProperties": {}
 		},
-		"ISession": {
+		"IStockData": {
 			"description": "",
 			"properties": {
-				"name": {
+				"LongName": {
 					"type": "string",
 					"description": ""
 				},
-				"sessionId": {
+				"Ticker": {
 					"type": "string",
+					"description": ""
+				},
+				"Industry": {
+					"type": "string",
+					"description": ""
+				},
+				"Exchange": {
+					"type": "string",
+					"description": ""
+				},
+				"Price": {
+					"type": "number",
+					"format": "double",
+					"description": ""
+				},
+				"W52H": {
+					"type": "number",
+					"format": "double",
+					"description": ""
+				},
+				"W52L": {
+					"type": "number",
+					"format": "double",
+					"description": ""
+				},
+				"VolAvg": {
+					"type": "number",
+					"format": "double",
+					"description": ""
+				},
+				"Outstanding": {
+					"type": "number",
+					"format": "double",
+					"description": ""
+				},
+				"Float": {
+					"type": "number",
+					"format": "double",
+					"description": ""
+				},
+				"VolDOI": {
+					"type": "number",
+					"format": "double",
+					"description": ""
+				},
+				"VolPreM": {
+					"type": "number",
+					"format": "double",
+					"description": ""
+				},
+				"PC": {
+					"type": "number",
+					"format": "double",
+					"description": ""
+				},
+				"PremHigh": {
+					"type": "number",
+					"format": "double",
+					"description": ""
+				},
+				"Open": {
+					"type": "number",
+					"format": "double",
+					"description": ""
+				},
+				"HOD": {
+					"type": "number",
+					"format": "double",
+					"description": ""
+				},
+				"HODTime": {
+					"type": "string",
+					"description": ""
+				},
+				"LOD": {
+					"type": "number",
+					"format": "double",
+					"description": ""
+				},
+				"LODTime": {
+					"type": "string",
+					"description": ""
+				},
+				"Close": {
+					"type": "number",
+					"format": "double",
+					"description": ""
+				},
+				"AH": {
+					"type": "number",
+					"format": "double",
 					"description": ""
 				}
 			},
-			"type": "object",
-			"required": [
-				"name",
-				"sessionId"
-			]
+			"type": "object"
 		},
 		"BadRequestError": {
 			"description": "Represents a BAD REQUEST error. The request could not be understood by the\nserver due to malformed syntax. The client SHOULD NOT repeat the request\nwithout modifications.",
@@ -148,7 +235,7 @@
 					"200": {
 						"description": "Ok",
 						"schema": {
-							"type": "object"
+							"$ref": "#/definitions/IStockData"
 						}
 					},
 					"400": {
@@ -351,33 +438,6 @@
 				]
 			}
 		},
-		"/getSessionList": {
-			"get": {
-				"operationId": "ServiceGetSessionList",
-				"produces": [
-					"application/json"
-				],
-				"responses": {
-					"200": {
-						"description": "Ok",
-						"schema": {
-							"type": "array",
-							"items": {
-								"$ref": "#/definitions/ISession"
-							}
-						}
-					},
-					"400": {
-						"description": "Bad Request",
-						"schema": {
-							"$ref": "#/definitions/BadRequestError"
-						}
-					}
-				},
-				"description": "",
-				"parameters": []
-			}
-		},
 		"/postTableDB": {
 			"post": {
 				"operationId": "ServicePostTableDB",
@@ -441,6 +501,41 @@
 						"description": "",
 						"in": "query",
 						"name": "coll",
+						"required": true,
+						"type": "string"
+					}
+				]
+			}
+		},
+		"/userSessionsGet": {
+			"get": {
+				"operationId": "ServiceUserSessionsGet",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"type": "array",
+							"items": {
+								"type": "string"
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"schema": {
+							"$ref": "#/definitions/BadRequestError"
+						}
+					}
+				},
+				"description": "Get all user Sessions *",
+				"parameters": [
+					{
+						"description": "",
+						"in": "query",
+						"name": "key",
 						"required": true,
 						"type": "string"
 					}

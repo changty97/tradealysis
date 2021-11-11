@@ -25,25 +25,30 @@ class App extends Component<IReportsProps, IAppState>
     {
 	    super(props);
 	    this.state = {
-	        reportsId: null
+            username: null
 	    };
-        this.componentIsMounting();
-        this.setFocus = this.setFocus.bind(this);
+        this.logout = this.logout.bind(this);
     }
 	
-    async componentIsMounting() : Promise<void>
+    componentDidMount() : void
     {
         const theKey = localStorage.getItem("Key");
         if (theKey)
         {
-            return await axios.get('http://localhost:3001/usernameFromKeyGET', {
+            axios.get('http://localhost:3001/usernameFromKeyGET', {
                 params: {
                     key: `${theKey}`,
                 }
             })
                 .then((res) =>
                 {
-                    this.setFocus(res.data);
+                    if (!res || !res.data || res.data === "")
+                    {
+                        this.logout();
+                    }
+                    this.setState({
+                        username: res.data
+                    });
                 })
                 .catch((err: Error) =>
                 {
@@ -51,19 +56,18 @@ class App extends Component<IReportsProps, IAppState>
                 });
         }
     }
-
-    private setFocus(id: string): void
+	
+    private logout() : void
     {
-        this.setState({
-            reportsId: id
-        });
+	    localStorage.clear();
+	    window.location.href = "/login";
     }
 	
     render(): JSX.Element
     {
         const theKey = localStorage.getItem("Key");
 	    let elements: JSX.Element;
-	    if (theKey !== null )
+	    if (theKey)
 	    {
 	        if (theKey !== "")
 	        {
@@ -71,9 +75,9 @@ class App extends Component<IReportsProps, IAppState>
 				(
 				    <React.Fragment>
 				        <BrowserRouter>
-						   <NavBarComponent user={this.state.reportsId}/>
+						   <NavBarComponent user={this.state.username}/>
 				            <Switch>
-				                <Route path="/report"><ReportsComponent reportsId={this.state.reportsId}/></Route>
+				                <Route path="/report"><ReportsComponent/></Route>
 				                <Route path="/strategies"><StrategiesComponent /></Route>
 				                <Route path="/overview"> <Overview /></Route>
 				                <Route path="/support"><SupportComponent/></Route>
