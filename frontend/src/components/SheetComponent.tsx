@@ -260,7 +260,7 @@ class SheetComponent extends Component<any, ISheetComponentState>
                 const cell = {
                     columnKey: column.key,
                     rowKeyValue
-                }
+                };
                 const isFocused = cell.columnKey === this.state.tableProps.focused?.cell?.columnKey &&
                 cell.rowKeyValue === this.state.tableProps.focused?.cell?.rowKeyValue;
                 return {
@@ -285,9 +285,8 @@ class SheetComponent extends Component<any, ISheetComponentState>
                             // opens the editor for the selected cell
                         case 13:
                             this.dispatch(openEditor(cell.rowKeyValue, cell.columnKey));
-                            this.dispatch(setFocused({
-                                cellEditorInput: cell
-                            }));
+                            this.dispatch(setFocused({cellEditorInput: cell}));
+                            console.log("dispatched");
                             break;
                         }
                     },
@@ -323,7 +322,7 @@ class SheetComponent extends Component<any, ISheetComponentState>
                     }) =>
                     {
                         baseFunc();
-                        this.dispatch(clearFocused())
+                        this.dispatch(clearFocused());
                     },
                     onFocus: () => !isFocused && this.dispatch(setFocused({
                         cell: {
@@ -346,7 +345,7 @@ class SheetComponent extends Component<any, ISheetComponentState>
                 onKeyUp: (e) => e.keyCode === 13 && this.dispatch(updateSortDirection(props.column.key))
             }),
         },
-    };
+    }
     
     public render() : JSX.Element
     {
