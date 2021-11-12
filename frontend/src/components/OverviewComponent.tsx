@@ -14,7 +14,8 @@ class OverviewComponent extends Component<any, IOverviewComponentState>
 
         this.state = {
             year: "2021",
-            month: 1
+            month: 1,
+            data: []
         };
 
         this.getData = this.getData.bind(this);
@@ -120,10 +121,10 @@ class OverviewComponent extends Component<any, IOverviewComponentState>
                                 >
                                     <Line 
                                         data={{
-                                            labels: months,
+                                            labels: months, // Array of all DOI
                                             datasets: [{
                                                 label: "Accumulated Profit",
-                                                data: [1500, 1566, 1841, 2111, 1211, 100],
+                                                data: [1500, 1566, 1841, 2111, 1211, 100], // Sum of profits up to each date
                                                 fill: false
                                             }]
                                         }} 
@@ -136,7 +137,7 @@ class OverviewComponent extends Component<any, IOverviewComponentState>
                                             labels: ["Long", "Short"],
                                             datasets: [{
                                                 label: "Long / Short",
-                                                data: [1500, 1566]
+                                                data: [1500, 1566] // Count of L and S of the position column.
                                             }]
                                         }}
                                     />
@@ -145,10 +146,10 @@ class OverviewComponent extends Component<any, IOverviewComponentState>
                             <Row>
                                 <Bar 
                                     data={{
-                                        labels: months,
+                                        labels: months, // Array of all DOI
                                         datasets: [{
                                             label: "Daily P/L",
-                                            data: [1500, -1566, 1841, 2111, 1211, -100]
+                                            data: [1500, -1566, 1841, 2111, 1211, -100] // Profit / Loss at each date
                                         }]
                                     }}
                                 />
