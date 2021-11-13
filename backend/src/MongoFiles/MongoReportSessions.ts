@@ -76,7 +76,7 @@ async function createNewSession(key:string, newCollectionName:string):Promise<st
                         "user_obj_id": userObjIDArr[0]
                     }
                 )).length + 1;
-                theNewCollectionName = userName + sessions;
+                theNewCollectionName = userName + "_" + sessions;
             }
             await theCollectionSessionsTable.updateOne(
                 {
