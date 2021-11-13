@@ -61,7 +61,7 @@ class HomeComponent extends Component<any, IHomeComponent>
                             {
                                 icon = DataIcon_S;
                             }
-							const theKey = uuid();
+                            const theKey = uuid();
                             return (
                                 <Home.DATA_ICON_DIV key={theKey} onClick={() => localStorage.setItem("reportsId", session)}>
                                     <Link to="/report">

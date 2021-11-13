@@ -8,7 +8,7 @@ import { createAccount } from "../MongoFiles/MongoCreateAccount";
 import { getStockData, retrieveYahooData } from "../stockapi";
 import { ITableData } from "../models/ITableData";
 import { accountValuesFromKey } from "../MongoFiles/MongoAccountSettings";
-import { allUserSessions } from "../MongoFiles/MongoReportSessions";
+import { allUserSessions, createNewSession } from "../MongoFiles/MongoReportSessions";
 import { ISession } from "../models/ISession";
 import { IStockData } from "../models/IStockData";
 
@@ -142,4 +142,23 @@ export class ServiceController
 	{
 	    return await allUserSessions(key);
 	}
+
+
+	/** Create a new session for a user. This adds a session for a user **/
+	@Path("/createNewSessionForUser")
+	@GET
+	public async createNewSessionForUser(@QueryParam("key") key:string, @QueryParam("collectionName") collectionName:string): Promise<string>
+	{
+	    return await createNewSession(key, collectionName);
+	}
 }
+
+
+
+
+
+
+
+
+
+
