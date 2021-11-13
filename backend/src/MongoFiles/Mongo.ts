@@ -1,6 +1,5 @@
-import { Document, InsertOneResult, MongoClient } from "mongodb";
+import { MongoClient } from "mongodb";
 import { mongoOptions } from "../constants/globals";
-import { ISession } from "../models/ISession";
 
 async function removeItem(idVal:number, coll:string):Promise<void>
 {
@@ -96,4 +95,28 @@ async function theSaveData(coll:string): Promise<any[]>
     }
 }
 
-export { removeItem, saveTable, theSaveData };
+async function getTradesByYear(coll: string, year: string): Promise<Object[]> {
+    let client: MongoClient | null = null;
+    let result = [];
+
+    try {
+        client = await MongoClient.connect(mongoOptions.uri)
+        result = await client.db(mongoOptions.db).collection(coll).find({
+            DOI: {
+                $regex: `.*year.*`,
+                $options: 'i'
+            }
+        }).toArray();
+    } catch (err) {
+        return Promise.reject(err);
+    }
+
+    if (client)
+    {
+        client.close();
+    }
+
+    return result;
+}
+
+export { removeItem, saveTable, theSaveData, getTradesByYear };

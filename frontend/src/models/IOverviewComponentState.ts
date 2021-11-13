@@ -1,11 +1,6 @@
 export interface IOverviewComponentState {
+    collection: string;
     year: string;
     month: number;
-    data: ITradeBrief[];
+    data: any;
 };
-
-interface ITradeBrief {
-    Position: string;
-    "P/L": number;
-    // Shares: number;
-}

@@ -4,6 +4,7 @@ import { Col, Input, Row, Table } from "reactstrap";
 import { Reports } from "../cssComponents/Reports";
 import { IOverviewComponentState } from "../models/IOverviewComponentState";
 import { Bar, Line, Pie } from "react-chartjs-2";
+import axios, { AxiosResponse } from "axios";
 
 const months: string[] = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dev"];
 
@@ -13,6 +14,7 @@ class OverviewComponent extends Component<any, IOverviewComponentState>
         super(props);
 
         this.state = {
+            collection: "",
             year: "2021",
             month: 1,
             data: []
@@ -23,13 +25,24 @@ class OverviewComponent extends Component<any, IOverviewComponentState>
 
     componentDidMount(): void
     {
+        this.setState({
+            collection:  `${localStorage.getItem('reportsId')}_stock_data`
+        });
+        
         this.getData();
     }
 
     getData(): void {
-        // TODO: Make request to backend for aggregated data
-        // TODO: Do calculations and reformat data to put into charts
-        console.log(this.state.year, this.state.month)
+        axios.get("http://localhost:3001/getTradesByYear", {
+            params: {
+                coll: this.state.collection,
+                year: this.state.year
+            }
+        }).then((response: AxiosResponse<Object[]>) => {
+            this.setState({ data: response.data });
+        }).catch((err: Error) => {
+            console.error(err);
+        })
     }
 
     // TODO: None of this will style properly unless we import bootstrap, but then that breaks all other styles everywhere...
