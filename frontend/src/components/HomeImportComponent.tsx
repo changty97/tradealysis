@@ -47,15 +47,20 @@ class HomeImportComponent extends Component<any, IHomeImportComponentState>
             data: formData
         }).then((response: AxiosResponse) =>
         {
-            console.log(response.data);
-            // TODO: Add verification of data step
-            // TODO: After verifying data, upload data to database
+            return axios.post("http://localhost:3001/postTableDB", {
+                data: {
+                    table: response.data,
+                    coll: "new_stock_data"
+                }
+            });
         }).catch((err) =>
         {
             console.error(err);
         }).finally(() =>
         {
             // TODO: Redirect to home.
+            console.log("Saved");
+            window.location.href = "/reports";
         });
     }
 

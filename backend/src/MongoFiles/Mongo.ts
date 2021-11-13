@@ -51,7 +51,7 @@ async function saveTable(dataArray: any, coll:string): Promise<void>
             const descriptorID = Object.getOwnPropertyDescriptor(valsToInsert, 'id');
             await client.db(mongoOptions.db).collection(coll).updateOne(
                 {
-                    id: descriptorID.value
+                    id: descriptorID ? descriptorID.value : i
                 },
                 {
                     "$set": valsToInsert
