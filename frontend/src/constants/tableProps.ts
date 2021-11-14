@@ -1,6 +1,7 @@
 import { ITableProps } from 'ka-table';
 import { DataType, EditingMode, SortingMode } from 'ka-table/enums';
 import { Column } from 'ka-table/models';
+import {openAllEditors}  from 'ka-table/actionCreators';
 
 const initialReportItems: number = 0;
 
@@ -33,7 +34,8 @@ const tableProps: ITableProps = {
     data: dataArray,
     editingMode: EditingMode.Cell,
     rowKeyField: 'id',
-    sortingMode: SortingMode.Single
+    sortingMode: SortingMode.Single,
+	singleAction: openAllEditors()
 };
 
 /*

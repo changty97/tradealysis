@@ -142,6 +142,15 @@ export class ServiceController
 	    return await allUserSessions(key);
 	}
 
+
+	/** Create a new session for a user. This adds a session for a user **/
+	@Path("/createNewSessionForUser")
+	@GET
+	public async createNewSessionForUser(@QueryParam("key") key:string, @QueryParam("collectionName") collectionName:string): Promise<string>
+	{
+	    return await createNewSession(key, collectionName);
+	}
+
 	@Path("/getTradesByYear")
 	@GET
 	public async getTradesByYear(@QueryParam("coll") coll: string, @QueryParam("year") year: string): Promise<Object[]>
@@ -149,3 +158,13 @@ export class ServiceController
 	    return await getTradesByYear(coll, year);
 	}
 }
+
+
+
+
+
+
+
+
+
+

@@ -2,7 +2,7 @@ import { Component, Fragment } from "react";
 import { Link } from "react-router-dom";
 import { Home } from "../cssComponents/Home";
 import { Import } from "../cssComponents/Import";
-import axios, { AxiosResponse } from "axios";
+import axios from "axios";
 import { IHomeImportComponentState } from "../models/IHomeImportComponentState";
 
 class HomeImportComponent extends Component<any, IHomeImportComponentState>
@@ -29,7 +29,7 @@ class HomeImportComponent extends Component<any, IHomeImportComponentState>
         }
     }
     
-    importFile(): void
+    async importFile(): Promise<void>
     {
         if (!this.state.selectedFile)
         {
@@ -41,22 +41,42 @@ class HomeImportComponent extends Component<any, IHomeImportComponentState>
         formData.append("sourceName", "TDAmeritrade");
         formData.append("file", this.state.selectedFile);
 
-        axios({
-            method: "POST",
-            url: "http://localhost:3001/parseCSV",
-            data: formData
-        }).then((response: AxiosResponse) =>
+        try
         {
-            console.log(response.data);
-            // TODO: Add verification of data step
-            // TODO: After verifying data, upload data to database
-        }).catch((err) =>
+            const parsedData = (await axios({
+                method: "POST",
+                url: "http://localhost:3001/parseCSV",
+                data: formData
+            })).data;
+
+            const newCollName: string = (await axios({
+                method: "GET",
+                url: "http://localhost:3001/createNewSessionForUser",
+                params: {
+                    key: localStorage.getItem("Key"),
+                    collectionName: this.state.selectedFile.name
+                }
+            })).data;
+
+            await axios({
+                method: "POST",
+                url: "http://localhost:3001/postTableDB",
+                data: {
+                    data: {
+                        table: parsedData,
+                        coll: `${newCollName}_stock_data`
+                    }
+                }
+            });
+
+            localStorage.setItem("reportsId", newCollName);
+        }
+        catch (err)
         {
             console.error(err);
-        }).finally(() =>
-        {
-            // TODO: Redirect to home.
-        });
+        }
+
+        window.location.href = "/report";
     }
 
     render(): JSX.Element
