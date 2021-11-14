@@ -8,7 +8,7 @@ import { createAccount } from "../MongoFiles/MongoCreateAccount";
 import { getStockData, retrieveYahooData } from "../stockapi";
 import { ITableData } from "../models/ITableData";
 import { accountValuesFromKey } from "../MongoFiles/MongoAccountSettings";
-import { allUserSessions } from "../MongoFiles/MongoReportSessions";
+import { allUserSessions, createNewSession } from "../MongoFiles/MongoReportSessions";
 import { IStockData } from "../models/IStockData";
 
 const badRequestExampleResponse: BadRequestError = {
@@ -153,7 +153,7 @@ export class ServiceController
 
 	@Path("/getTradesByYear")
 	@GET
-	public async getTradesByYear(@QueryParam("coll") coll: string, @QueryParam("year") year: string): Promise<Object[]>
+	public async getTradesByYear(@QueryParam("coll") coll: string, @QueryParam("year") year: string): Promise<any>
 	{
 	    return await getTradesByYear(coll, year);
 	}

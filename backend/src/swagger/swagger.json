@@ -580,6 +580,45 @@
 					}
 				]
 			}
+		},
+		"/getTradesByYear": {
+			"get": {
+				"operationId": "ServiceGetTradesByYear",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"type": "object"
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"schema": {
+							"$ref": "#/definitions/BadRequestError"
+						}
+					}
+				},
+				"description": "",
+				"parameters": [
+					{
+						"description": "",
+						"in": "query",
+						"name": "coll",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"description": "",
+						"in": "query",
+						"name": "year",
+						"required": true,
+						"type": "string"
+					}
+				]
+			}
 		}
 	},
 	"swagger": "2.0",

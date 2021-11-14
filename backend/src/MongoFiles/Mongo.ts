@@ -95,19 +95,23 @@ async function theSaveData(coll:string): Promise<any[]>
     }
 }
 
-async function getTradesByYear(coll: string, year: string): Promise<Object[]> {
+async function getTradesByYear(coll: string, year: string): Promise<any>
+{
     let client: MongoClient | null = null;
     let result = [];
 
-    try {
-        client = await MongoClient.connect(mongoOptions.uri)
+    try
+    {
+        client = await MongoClient.connect(mongoOptions.uri);
         result = await client.db(mongoOptions.db).collection(coll).find({
             DOI: {
-                $regex: `.*year.*`,
+                $regex: `[0-9]+/[0-9]+/${year}`,
                 $options: 'i'
             }
         }).toArray();
-    } catch (err) {
+    }
+    catch (err)
+    {
         return Promise.reject(err);
     }
 
