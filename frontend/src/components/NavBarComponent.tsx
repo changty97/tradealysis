@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { Header } from "../cssComponents/Header";
 import Logo from "../images/logo_2.jpg";
 import axios from "axios";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUserCircle } from '@fortawesome/free-solid-svg-icons';
 
 const api = axios.create({
     baseURL: 'http://localhost:3001/'
@@ -64,13 +66,21 @@ class NavBarComponent extends Component<any, any>
 	                    </div>
 	                    <Header.USER_AND_SETTINGS_BUTTONS>
 	                        <Header.HEADER_BUTTONS_LIST>
-	                            <Header.HEADER_BUTTONS_LIST_LI>
-	                                <Header.LINK_1 to="/login">{this.state.user}</Header.LINK_1>
-	                            </Header.HEADER_BUTTONS_LIST_LI>
-	                            <Header.HEADER_BUTTONS_LIST_LI>
-	                                <Header.LINK_1 to="/account">Settings</Header.LINK_1>
-	                            </Header.HEADER_BUTTONS_LIST_LI>
-										 <Header.LOGOUT_BUTTON onClick={this.logout}>Logout</Header.LOGOUT_BUTTON>
+								<Header.HEADER_BUTTONS_LIST_LI>
+									<Header.LINK_1 to="/login">Hi, {this.state.user}!</Header.LINK_1>
+								</Header.HEADER_BUTTONS_LIST_LI>
+								<Header.USER_DROP_DOWN>
+									<FontAwesomeIcon icon={faUserCircle} />
+									<Header.USER_DROP_DOWN_CONTENT>
+										<Header.HEADER_BUTTONS_LIST_LI>
+											<Header.LINK_1 to="/account">Settings</Header.LINK_1>
+										</Header.HEADER_BUTTONS_LIST_LI>
+										<Header.HEADER_BUTTONS_LIST_LI>
+											<li onClick={this.logout}>Logout</li>
+										</Header.HEADER_BUTTONS_LIST_LI>
+										
+									</Header.USER_DROP_DOWN_CONTENT>
+								</Header.USER_DROP_DOWN>
 	                        </Header.HEADER_BUTTONS_LIST>
 	                    </Header.USER_AND_SETTINGS_BUTTONS>
 	                </Header.THE_HEADER>

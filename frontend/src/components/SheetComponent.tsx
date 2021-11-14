@@ -7,7 +7,7 @@ import { saveNewRow, showNewRow, search } from 'ka-table/actionCreators';
 import { ISheetComponentState } from "../models/ISheetComponentState";
 import { tableProps } from "../constants/tableProps";
 import { ChildComponents } from "ka-table/models";
-import { clearFocused, moveFocusedDown, moveFocusedLeft, moveFocusedRight, moveFocusedUp, openEditor, 
+import { clearFocused, moveFocusedDown, moveFocusedLeft, moveFocusedRight, moveFocusedUp, openEditor,
     setFocused, updatePageIndex, updateSortDirection } from 'ka-table/actionCreators';
 import axios from "axios";
 
@@ -150,6 +150,12 @@ class SheetComponent extends Component<any, ISheetComponentState>
                                 break;
                             }
                         }
+                        this.setState((prevState) => ({
+                            tableProps: {
+                                ...prevState.tableProps,
+                                data: this.state.tableProps.data
+                            }
+                        }));
                     }
                 }
             }
@@ -351,7 +357,7 @@ class SheetComponent extends Component<any, ISheetComponentState>
                 rowKeyValue: action.rowKeyValue
             };
             this.getTicker(cell);
-        }            
+        }
     }
 }
 export { SheetComponent };

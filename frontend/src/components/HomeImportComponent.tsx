@@ -1,5 +1,4 @@
 import { Component, Fragment } from "react";
-import { Link } from "react-router-dom";
 import { Home } from "../cssComponents/Home";
 import { Import } from "../cssComponents/Import";
 import axios, { AxiosResponse } from "axios";
@@ -64,16 +63,6 @@ class HomeImportComponent extends Component<any, IHomeImportComponentState>
         return (
             <Fragment>
                 <Home.SECTION>
-                    <Home.LEFT_HOME>
-                        <Home.LEFT_HOME_MAIN_LIST_DIV_NOWRAP>
-                            <Home.LEFT_HOME_MAIN_LIST_PAGEON>
-                                <li>Home</li>
-                            </Home.LEFT_HOME_MAIN_LIST_PAGEON>
-                            <Home.LEFT_HOME_MAIN_LIST>
-                                <Link to="/input1"><Home.IMPORT_BUTTON>Import Broker Files</Home.IMPORT_BUTTON></Link>
-                            </Home.LEFT_HOME_MAIN_LIST>
-                        </Home.LEFT_HOME_MAIN_LIST_DIV_NOWRAP>
-                    </Home.LEFT_HOME>
                     <Home.RIGHT_HOME>
                         <div className="formBlock">
                             <Import.FORM onSubmit={e => e.preventDefault()}>
