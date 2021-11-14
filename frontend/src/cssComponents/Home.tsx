@@ -17,6 +17,7 @@ class Home extends Component
 		height: 35vw;
 		width: 100%;
 		flex-shrink: 2;
+		margin-bottom: 100px;
 	`;
 	public static readonly LEFT_HOME = sty.div `
 		display: flex-inline;
@@ -79,7 +80,9 @@ class Home extends Component
 		flex-direction: row;
 		justify-content: flex-start;
 		align-content: flex-start;
-		margin: 2%; height: 85%;  width: 70%; 
+		margin: 2%; 
+		height: 85%;  
+		width: 70%; 
 	`;
 	public static readonly DATA_ICON_DIV = sty.div `
 		display:flex;

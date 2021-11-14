@@ -28,9 +28,9 @@ class Header extends Component
 	`;
 	public static readonly HEADER_BUTTONS_LIST_LI = sty.li `
 		list-style-type: none;
-		padding: 9px 60px 9px 60px;
+		padding: 9px 40px 9px 40px;
 		&:hover {
-			color: rgb(120,120,120); 
+			color: rgb(120,120,120);
 		}
 	`;
 	public static readonly USER_AND_SETTINGS_BUTTONS = sty.div `
@@ -45,12 +45,14 @@ class Header extends Component
 	`;
 	public static readonly USER_DROP_DOWN_CONTENT = sty.div `
 		display: none;
-		position: relative;
+		position: fixed;
 		background-color: #f9f9f9;
 		min-width: 160px;
 		box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
 		padding: 12px 16px;
 		z-index: 1;
+		right: 4px;
+		float: left;
 	`;
 	public static readonly USER_DROP_DOWN = sty.div `
 		position: relative;
@@ -59,7 +61,7 @@ class Header extends Component
 			display: block;
 		}
 	`;
-	
+
 	public static readonly NOWRAP = sty.div `
 		white-space: nowrap;
 	`;

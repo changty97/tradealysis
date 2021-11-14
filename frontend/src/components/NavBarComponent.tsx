@@ -78,7 +78,6 @@ class NavBarComponent extends Component<any, any>
 										<Header.HEADER_BUTTONS_LIST_LI>
 											<li onClick={this.logout}>Logout</li>
 										</Header.HEADER_BUTTONS_LIST_LI>
-										
 									</Header.USER_DROP_DOWN_CONTENT>
 								</Header.USER_DROP_DOWN>
 	                        </Header.HEADER_BUTTONS_LIST>
