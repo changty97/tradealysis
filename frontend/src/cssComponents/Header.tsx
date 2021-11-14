@@ -11,6 +11,13 @@ class Header extends Component
 		text-decoration: none;
 		color: black; 
 	`;
+	public static readonly LOGOUT  = sty.li`
+		text-decoration: none;
+		color: black; 
+		&:hover {
+			background-color: red;
+		}
+	`;
 	public static readonly THE_HEADER = sty.div `
 		display: flex;
 		flex-direction: row;

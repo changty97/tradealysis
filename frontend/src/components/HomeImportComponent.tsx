@@ -15,6 +15,7 @@ class HomeImportComponent extends Component<any, IHomeImportComponentState>
         };
 
         this.handleFileSelection = this.handleFileSelection.bind(this);
+        this.handleBrowseClick = this.handleBrowseClick.bind(this);
         this.importFile = this.importFile.bind(this);
     }
 
@@ -25,6 +26,14 @@ class HomeImportComponent extends Component<any, IHomeImportComponentState>
             this.setState({
                 selectedFile: event.target.files[0]
             });
+        }
+    }
+
+    handleBrowseClick(): void
+    {
+        var fileinput = document.getElementById("myfile");
+        if(fileinput) {
+            fileinput.click();
         }
     }
     
@@ -69,7 +78,8 @@ class HomeImportComponent extends Component<any, IHomeImportComponentState>
                                 <div className="INNER_FORM">
                                     <Import.FORM_TOP_DIV>
                                         <Import.FORM_TOP_DIV_LABEL>Select broker's file to import:</Import.FORM_TOP_DIV_LABEL>
-                                        <Import.FORM_TOP_DIV_INPUT type="file" id="myfile" name="file_input" onChange={this.handleFileSelection} />
+                                        <Import.FORM_TOP_DIV_INPUT type="file" id="myfile" name="file_input" style={{display: "none"}} onChange={this.handleFileSelection} />
+                                        <Import.FORM_TOP_DIV_INPUT type="button" id="browseFile" value="Import File" onClick={this.handleBrowseClick}></Import.FORM_TOP_DIV_INPUT>
                                     </Import.FORM_TOP_DIV>
                                     <Import.FORM_BOTTOM_DIV>
                                         <Import.FORM_BOTTOM_DIV_INPUT type="submit" id="myfile2" onClick={this.importFile}/>
