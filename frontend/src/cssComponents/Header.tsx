@@ -9,13 +9,9 @@ class Header extends Component
 	`;
 	public static readonly LINK_1  = sty(Link)`
 		text-decoration: none;
-		color: black; 
-	`;
-	public static readonly LOGOUT  = sty.li`
-		text-decoration: none;
-		color: black; 
+		color: #839a9b; 
 		&:hover {
-			background-color: red;
+			color: black;
 		}
 	`;
 	public static readonly THE_HEADER = sty.div `
@@ -36,9 +32,7 @@ class Header extends Component
 	public static readonly HEADER_BUTTONS_LIST_LI = sty.li `
 		list-style-type: none;
 		padding: 9px 40px 9px 40px;
-		&:hover {
-			color: rgb(120,120,120);
-		}
+		color: #839a9b;
 	`;
 	public static readonly USER_AND_SETTINGS_BUTTONS = sty.div `
 		margin-left: auto; 

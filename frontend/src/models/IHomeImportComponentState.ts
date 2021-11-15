@@ -1,3 +1,3 @@
 export interface IHomeImportComponentState {
-    selectedFile: File | null;
+    selectedFile: any | null;
 }

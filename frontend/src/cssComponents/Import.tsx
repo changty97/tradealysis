@@ -31,6 +31,22 @@ class Import extends Component
 		align-items: center;
 		flex-wrap: wrap;	
 	`;
+
+	public static readonly DIV = sty.div `
+		text-align: center;
+		padding: 30px;
+		border: 3px dashed #eeeeee;
+		background-color: #fafafa;
+		color: #bdbdbd;
+		cursor: pointer;
+		margin-bottom: 20px;
+		height: 200px;
+	`;
+
+	public static readonly SELECT_FILE_DIV = sty.div `
+		color: #000; 
+		font-weight: bold;
+	`;
 	
 	public static readonly FORM_TOP_DIV_LABEL = sty.label `
 		display: inline-flex;
@@ -38,7 +54,18 @@ class Import extends Component
 	`;
 	
 	public static readonly FORM_TOP_DIV_INPUT = sty.input `
-		display: inline-flex;
+		display: inline-block;
+		text-decoration: none;
+		font-size: 1.2vw;
+		border: none;
+		color: black;
+		padding: 15px 32px;
+		text-align: center;
+		text-decoration: none;
+		font-size: 16px;
+		margin: 4px 2px;
+		cursor: pointer;
+		border-radius: 2px;
 	`;
 	
 	public static readonly FORM_BOTTOM_DIV = sty.div `
@@ -51,10 +78,20 @@ class Import extends Component
 	`;
 	
 	public static readonly FORM_BOTTOM_DIV_INPUT = sty.input `
-		display: inline-flex;
+		display: inline-block;
+		text-decoration: none;
+		font-size: 1.2vw;
+		background-color: #4CAF50;
+		border: none;
+		color: black;
+		padding: 15px 32px;
+		text-align: center;
+		text-decoration: none;
+		font-size: 16px;
+		margin: 4px 2px;
+		cursor: pointer;
+		border-radius: 2px;
 	`;
-	
-	
 	
 }
 export { Import };

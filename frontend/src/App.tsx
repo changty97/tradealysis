@@ -95,7 +95,7 @@ class App extends Component<IReportsProps, IAppState>
 			                <Route path="/createaccount"><CreateAccountComponent/></Route>
 			                <Route path="/input1"><Redirect to="/login" /></Route>
 			                <Route path="/home"><Redirect to="/" /></Route>
-			                <Route path="/"><Redirect to="/login" /></Route>
+			                <Route path="/"><Redirect to="/" /></Route>
 			            </Switch>
 			           <FooterLoginComponent/>
 			        </BrowserRouter>

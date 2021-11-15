@@ -67,21 +67,6 @@ class Home extends Component
 		cursor: pointer;
 		border-radius: 2px;
 	`;
-	public static readonly IMPORT_INPUT = sty.input `
-		text-decoration: none;
-		font-size: 1.2vw;
-		background-color: #008CBA;
-		border: none;
-		color: white;
-		padding: 15px 32px;
-		text-align: center;
-		text-decoration: none;
-		display: inline-block;
-		font-size: 16px;
-		margin: 4px 2px;
-		cursor: pointer;
-		border-radius: 2px;
-	`;
 	public static readonly RIGHT_HOME = sty.div `
 		background-color: white; 
 		border-radius: 10px; 
