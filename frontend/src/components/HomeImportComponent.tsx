@@ -40,47 +40,18 @@ class HomeImportComponent extends Component<any, IHomeImportComponentState>
         }
     }
 
-    onDrop(files: any): void {
-        if (files.length > 0) {
-          this.setState({ selectedFile: files });
+    onDrop(files: any): void
+    {
+        if (files.length > 0)
+        {
+            this.setState({
+                selectedFile: files[0]
+            });
         }
     }
 
-    // upload(): void {
-    //     let currentFile = this.state.selectedFile[0];
-    
-    //     this.setState({
-    //       progress: 0,
-    //       currentFile: currentFile,
-    //     });
-    
-    //     this.importFile(currentFile)
-    //       .then((response: { data: { message: any; }; }) => {
-    //         this.setState({
-    //           message: response.data.message,
-    //         });
-    //       })
-    //       .then((files: { data: any; }) => {
-    //         this.setState({
-    //           fileInfos: files.data,
-    //         });
-    //       })
-    //       .catch(() => {
-    //         this.setState({
-    //           progress: 0,
-    //           message: "Could not upload the file!",
-    //           currentFile: null,
-    //         });
-    //       });
-    
-    //     this.setState({
-    //       selectedFile: null,
-    //     });
-    // }
-    
     importFile(): any
     {
-        console.log(this.state.selectedFile)
         if (!this.state.selectedFile)
         {
             return;
@@ -89,7 +60,7 @@ class HomeImportComponent extends Component<any, IHomeImportComponentState>
 
         formData.append("sourceName", "TDAmeritrade");
         formData.append("file", this.state.selectedFile);
-
+        
         axios({
             method: "POST",
             url: "http://localhost:3001/parseCSV",
@@ -110,22 +81,27 @@ class HomeImportComponent extends Component<any, IHomeImportComponentState>
 
     render(): JSX.Element
     {
-        const { selectedFile } = this.state;
+        const {
+            selectedFile
+        } = this.state;
         return (
             <Fragment>
                 <Dropzone onDrop={this.onDrop} multiple={false}>
-                    {({ getRootProps, getInputProps }) => (
+                    {({
+                        getRootProps, getInputProps
+                    }) => (
                         <section>
-                            <Import.DIV {...getRootProps({})}>
-                                <input {...getInputProps()} />
-                                {selectedFile && selectedFile[0].name ? (
-                                <Import.SELECT_FILE_DIV>
-                                    {selectedFile && selectedFile[0].name}
-                                </Import.SELECT_FILE_DIV>
+                            <Import.IMPORT_DIV {...getRootProps({
+                            })} onSubmit={e => e.preventDefault()}>
+                                <input {...getInputProps()} onChange={this.handleFileSelection} />
+                                {selectedFile && selectedFile.name ? (
+                                    <Import.SELECT_FILE_DIV>
+                                        {selectedFile && selectedFile.name}
+                                    </Import.SELECT_FILE_DIV>
                                 ) : (
-                                "Drag and drop file here, or click to select file"
+                                    "Drag and drop file here, or click to select file"
                                 )}
-                            </Import.DIV>
+                            </Import.IMPORT_DIV>
                             <Import.FORM_BOTTOM_DIV>
                                 <Import.FORM_BOTTOM_DIV_INPUT type="submit" id="myfile2" onClick={this.importFile}/>
                             </Import.FORM_BOTTOM_DIV>

@@ -5,9 +5,8 @@ class Reports extends Component
 {
 	public static readonly SECTION = sty.section ` 
 		height: 70vh;
-		width: 100%;
 		overflow: auto;
-		margin: auto;
+		margin: 2% 2%;
 	`;
 	public static readonly BUTTON = sty.button `
 		text-decoration: none;
@@ -23,6 +22,9 @@ class Reports extends Component
 		margin: 4px 2px;
 		cursor: pointer;
 		border-radius: 2px;
+		&:hover {
+			background-image: linear-gradient(rgba(0, 0, 0, 0.4) 0 0);
+		}
 	`;
 	public static readonly SEARCH = sty.input ` 
 		text-decoration: none;
@@ -30,7 +32,6 @@ class Reports extends Component
 		text-decoration: none;
 		font-size: 16px;
 		cursor: pointer;
-		border-radius: 2px;
 	`;
 }
 export { Reports };

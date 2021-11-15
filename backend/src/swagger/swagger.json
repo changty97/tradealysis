@@ -216,7 +216,7 @@
 						}
 					}
 				},
-				"description": "Get a username from a key in browser local storage\n   If the key does not match with a user, nothing is returned\n   else the user's username is returned",
+				"description": "Get a username from a key in browser local storage\r\n   If the key does not match with a user, nothing is returned\r\n   else the user's username is returned",
 				"parameters": [
 					{
 						"description": "",

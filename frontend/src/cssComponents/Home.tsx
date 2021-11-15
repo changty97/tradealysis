@@ -5,11 +5,6 @@ import sty from "styled-components";
 class Home extends Component
 {
 	public static readonly SECTION = sty.section `
-		border-style: solid; 
-		border-color: black; 
-		border-width: thin;
-		border-radius: 10px;
-		background-color: rgb(200,200,200);
 		display: flex;
 		flex-direction: row;
 		justify-content: flex-start; 
@@ -17,7 +12,7 @@ class Home extends Component
 		height: 35vw;
 		width: 100%;
 		flex-shrink: 2;
-		margin-bottom: 100px;
+		margin: auto;
 	`;
 	public static readonly LEFT_HOME = sty.div `
 		display: flex-inline;
@@ -68,18 +63,13 @@ class Home extends Component
 		border-radius: 2px;
 	`;
 	public static readonly RIGHT_HOME = sty.div `
-		background-color: white; 
-		border-radius: 10px; 
-		border-style: solid; 
-		border-color: black;  
-		border-width: thin;
+		box-shadow: 1px 1px 5px #aaaaaa;
+		background-color: #f3f3f3;
 		display: inline-flex;
 		flex-direction: row;
 		justify-content: flex-start;
 		align-content: flex-start;
-		margin: 2%; 
-		height: 85%;  
-		width: 70%; 
+		width: 100%; 
 	`;
 	public static readonly DATA_ICON_DIV = sty.div `
 		display:flex;
@@ -97,6 +87,9 @@ class Home extends Component
 	`;
 	public static readonly A_LINK = sty.a `
 		width: 50%;
+	`;
+	public static readonly HEADER = sty.h1 `
+		margin: 1% 2%;
 	`;
 }
 export { Home };

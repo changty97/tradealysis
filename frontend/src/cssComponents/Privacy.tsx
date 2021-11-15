@@ -4,10 +4,8 @@ import sty from "styled-components";
 class Privacy extends Component
 {
 	public static readonly SECTION = sty.section `
-		border-style: solid; 
-		border-color: black; 
-		border-width: thin; 
-		background-color: rgb(200,200,200);
+		box-shadow: 1px 1px 5px #aaaaaa;
+		background-color: #f3f3f3;
 		display: flex;
 		flex-direction: column;
 		justify-content: flex-start; 

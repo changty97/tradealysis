@@ -32,14 +32,15 @@ class Import extends Component
 		flex-wrap: wrap;	
 	`;
 
-	public static readonly DIV = sty.div `
+	public static readonly IMPORT_DIV = sty.div `
 		text-align: center;
+		font-size: x-large;
 		padding: 30px;
 		border: 3px dashed #eeeeee;
 		background-color: #fafafa;
 		color: #bdbdbd;
 		cursor: pointer;
-		margin-bottom: 20px;
+		margin: 2% 5%;
 		height: 200px;
 	`;
 
@@ -81,16 +82,19 @@ class Import extends Component
 		display: inline-block;
 		text-decoration: none;
 		font-size: 1.2vw;
-		background-color: #4CAF50;
+		background-color: #008CBA;
 		border: none;
 		color: black;
 		padding: 15px 32px;
 		text-align: center;
 		text-decoration: none;
 		font-size: 16px;
-		margin: 4px 2px;
+		margin: 4px auto 2px;
 		cursor: pointer;
 		border-radius: 2px;
+		&:hover {
+			background-image: linear-gradient(rgba(0, 0, 0, 0.4) 0 0);
+		}
 	`;
 	
 }

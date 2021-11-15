@@ -9,9 +9,8 @@ class Footer extends Component
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		background-color: rgb(170,170,170);
-		padding: 0px 10px 10px 0px;
-		position: inherit;
+		background-color: #839a9b;
+		position: absolute;
 		width: 100%;
 		text-align: center;
 		bottom: 0;
@@ -31,9 +30,9 @@ class Footer extends Component
 	`;
 	public static readonly A_LINK = sty.a `
 		text-decoration: none;
-		color: rgb(130, 0, 130);
+		color: white;
 		&:hover {
-			color: rgb(255, 0, 0);
+			color: black;
 		}
 	`;
 	

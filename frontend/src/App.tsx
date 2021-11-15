@@ -17,6 +17,7 @@ import { NavBarLoginComponent } from "./components/NavBarLoginComponent";
 import { FooterComponent } from "./components/FooterComponent";
 import { FooterLoginComponent } from "./components/FooterLoginComponent";
 import { IAppState } from './models/IAppState';
+import { LandingComponent } from "./components/LandingComponent";
 
 class App extends Component<IReportsProps, IAppState>
 {
@@ -94,8 +95,8 @@ class App extends Component<IReportsProps, IAppState>
 			                <Route path="/account"><AccountSettingsComponent/></Route>
 			                <Route path="/createaccount"><CreateAccountComponent/></Route>
 			                <Route path="/input1"><Redirect to="/login" /></Route>
-			                <Route path="/home"><Redirect to="/" /></Route>
-			                <Route path="/"><Redirect to="/" /></Route>
+			                <Route path="/home"><LandingComponent /></Route>
+			                <Route path="/"><LandingComponent /></Route>
 			            </Switch>
 			           <FooterLoginComponent/>
 			        </BrowserRouter>

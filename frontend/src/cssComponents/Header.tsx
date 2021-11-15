@@ -15,11 +15,12 @@ class Header extends Component
 		}
 	`;
 	public static readonly THE_HEADER = sty.div `
+		margin: 0% 5%;
+		border-bottom: 1px solid #839a9b29;
 		display: flex;
 		flex-direction: row;
 		justify-content: flex-start;
 		align-items: center;
-		margin-left: 5%;
 		flex-wrap: wrap;  
 	`;
 	public static readonly HEADER_BUTTONS_LIST = sty.ul `
