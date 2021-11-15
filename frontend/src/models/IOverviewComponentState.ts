@@ -11,6 +11,7 @@ interface IResults {
     avgGainPerTrade: number;
     avgGainPerTradePerc: number;
     totalTrades: number;
+    totalGainPerc: number;
     longs: number;
     shorts: number;
     tradeDates: string[];
@@ -20,6 +21,10 @@ interface IResults {
         symbol: string;
         PL: number;
     }[];
+    topSymbolsByGainPerc: {
+        symbol: string;
+        gainPerc: number;
+    }[]
 }
 
 export type { IOverviewComponentState, IResults }
