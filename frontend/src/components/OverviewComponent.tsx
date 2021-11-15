@@ -1,6 +1,6 @@
 import { Component, Fragment } from "react";
 import { Link } from "react-router-dom";
-import { Col, Input, Label, Row, Table } from "reactstrap";
+import { Button, Col, Input, Label, Row, Table } from "reactstrap";
 import { Reports } from "../cssComponents/Reports";
 import { IOverviewComponentState, IResults } from "../models/IOverviewComponentState";
 import { Bar, Line, Pie } from "react-chartjs-2";
@@ -148,7 +148,7 @@ class OverviewComponent extends Component<any, IOverviewComponentState>
                             {months.map((month: string, index: number) =>
                             {
                                 return (
-                                    <button
+                                    <Button
                                         key={uuid()}
                                         onClick={() =>
                                         {
@@ -158,9 +158,10 @@ class OverviewComponent extends Component<any, IOverviewComponentState>
 
                                             this.getData();
                                         }}
+                                        disabled={this.state.month === index + 1}
                                     >
                                         {month}
-                                    </button>
+                                    </Button>
                                 );
                             })}
                         </Col>
