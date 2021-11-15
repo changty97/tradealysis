@@ -3,16 +3,13 @@ import sty from "styled-components";
 
 class Login extends Component
 {
-	public static readonly SECTION = sty.section `
-		border-style: solid; 
-		border-color: black; 
-		border-width: thin; 
-		background-color: rgb(200,200,200);
+	public static readonly SECTION = sty.section `		 
 		display: flex; 
 		flex-direction: column;
 		justify-content: center; 
 		align-items: center;
-		height: 80vh; width: 100%;
+		height: 80vh; 
+		width: 100%;
 		border-radius: 10px; 
 		flex-shrink: 2;
 	`;
@@ -20,7 +17,7 @@ class Login extends Component
 		background-color: rgb(240,240,240);
 		border-style: solid; 
 		border-color: black; 
-		border-width: 2px;
+		border-width: 1px;
 		display: inline-flex;
 		flex-direction: column;
 		justify-content: center; 

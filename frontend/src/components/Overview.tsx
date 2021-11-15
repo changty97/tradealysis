@@ -9,9 +9,9 @@ class Overview extends Component
         return (
             <Fragment>
                 <Reports.SECTION>
-                    <Link to="/report"><button>Trade Report</button></Link>
-                    <Link to="/overview"><button>Overview</button></Link>
-                    <Link to="/strategies"><button>Strategies</button></Link>
+                    <Link to="/report"><Reports.BUTTON>Trade Report</Reports.BUTTON></Link>
+                    <Link to="/overview"><Reports.BUTTON>Overview</Reports.BUTTON></Link>
+                    <Link to="/strategies"><Reports.BUTTON>Strategies</Reports.BUTTON></Link>
                 </Reports.SECTION>
             </Fragment>
         );

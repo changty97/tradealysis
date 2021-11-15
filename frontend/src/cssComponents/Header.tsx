@@ -9,7 +9,10 @@ class Header extends Component
 	`;
 	public static readonly LINK_1  = sty(Link)`
 		text-decoration: none;
-		color: white; 
+		color: #839a9b; 
+		&:hover {
+			color: black;
+		}
 	`;
 	public static readonly THE_HEADER = sty.div `
 		display: flex;
@@ -28,13 +31,8 @@ class Header extends Component
 	`;
 	public static readonly HEADER_BUTTONS_LIST_LI = sty.li `
 		list-style-type: none;
-		border: 1px solid black;
-		background-color: rgb(100,100,100);
-		margin-left: 5%;
-		padding: 9px 60px 9px 60px;
-		&:hover {
-			background-color: rgb(120,120,120); 
-		}
+		padding: 9px 40px 9px 40px;
+		color: #839a9b;
 	`;
 	public static readonly USER_AND_SETTINGS_BUTTONS = sty.div `
 		margin-left: auto; 
@@ -46,6 +44,25 @@ class Header extends Component
 		margin-right: 0;
 		white-space: nowrap;
 	`;
+	public static readonly USER_DROP_DOWN_CONTENT = sty.div `
+		display: none;
+		position: fixed;
+		background-color: #f9f9f9;
+		min-width: 160px;
+		box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+		padding: 12px 16px;
+		z-index: 1;
+		right: 4px;
+		float: left;
+	`;
+	public static readonly USER_DROP_DOWN = sty.div `
+		position: relative;
+		display: inline-block;
+		&:hover ${Header.USER_DROP_DOWN_CONTENT} {
+			display: block;
+		}
+	`;
+
 	public static readonly NOWRAP = sty.div `
 		white-space: nowrap;
 	`;

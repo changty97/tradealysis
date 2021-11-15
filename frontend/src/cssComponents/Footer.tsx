@@ -23,10 +23,7 @@ class Footer extends Component
 		justify-content: center;
 		align-items: center;
 		flex-wrap: wrap;
-		background-color: rgb(200,200,200);
-		padding: 10px 13px 10px 13px;
-		border-style: solid;                                 
-		border-color: black;   
+		padding: 10px 13px 10px 13px; 
 	`;
 	public static readonly FOOTER_DIV_UL_LI = sty.li `
 		margin-left: 10px;

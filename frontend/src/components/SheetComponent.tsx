@@ -7,9 +7,10 @@ import { saveNewRow, showNewRow, search } from 'ka-table/actionCreators';
 import { ISheetComponentState } from "../models/ISheetComponentState";
 import { tableProps } from "../constants/tableProps";
 import { ChildComponents } from "ka-table/models";
-import { clearFocused, moveFocusedDown, moveFocusedLeft, moveFocusedRight, moveFocusedUp, openEditor, 
+import { clearFocused, moveFocusedDown, moveFocusedLeft, moveFocusedRight, moveFocusedUp, openEditor,
     setFocused, updatePageIndex, updateSortDirection } from 'ka-table/actionCreators';
 import axios from "axios";
+import { Reports } from "../cssComponents/Reports";
 
 class SheetComponent extends Component<any, ISheetComponentState>
 {
@@ -150,6 +151,12 @@ class SheetComponent extends Component<any, ISheetComponentState>
                                 break;
                             }
                         }
+                        this.setState((prevState) => ({
+                            tableProps: {
+                                ...prevState.tableProps,
+                                data: this.state.tableProps.data
+                            }
+                        }));
                     }
                 }
             }
@@ -303,23 +310,26 @@ class SheetComponent extends Component<any, ISheetComponentState>
                     enclosingCharacter={''}
                     separator={','}>
                     {/* Move style to .css later*/}
-                    <button style={ {
-                        float: 'right'
-                    }}>Download .csv</button>
+                    <Reports.BUTTON style={ {
+                        float: 'right',
+                        backgroundColor: "gray"
+                    }}>Download .csv</Reports.BUTTON>
                 </CSVLink>
                 {/* Add Row Button*/}
-                <button
+                <Reports.BUTTON
                     onClick={() =>
                     {
                         this.dispatch(showNewRow()); this.dispatch(saveNewRow(Math.random()));
                     }} >
                     New Row
-                </button>
-                <button
-                    onClick= {this.saveTable}>Save Table
-                </button>
+                </Reports.BUTTON>
+                <Reports.BUTTON
+                    onClick= {this.saveTable} style={{
+                        backgroundColor: "#008CBA"
+                    }}>Save Table
+                </Reports.BUTTON>
                 {/* Search Sheet*/}
-                <input type='search' defaultValue={tableProps.searchText} onChange={(event) =>
+                <Reports.SEARCH type='search' defaultValue={tableProps.searchText} onChange={(event) =>
                 {
                     this.dispatch(search(event.currentTarget.value));
                 }} className='top-element' placeholder="Find a Trade" style={ {
@@ -351,7 +361,7 @@ class SheetComponent extends Component<any, ISheetComponentState>
                 rowKeyValue: action.rowKeyValue
             };
             this.getTicker(cell);
-        }            
+        }
     }
 }
 export { SheetComponent };
