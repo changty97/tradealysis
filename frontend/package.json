@@ -31,7 +31,7 @@
     "prestart": "npm run build",
     "start": "react-scripts start",
     "lint": "eslint -c eslint.json --ext .tsx ./src --fix",
-    "deploy": "react-scripts build"
+    "publish": "react-scripts build"
   },
   "eslintConfig": {
     "extends": [
