@@ -9,12 +9,13 @@ class StrategiesComponent extends Component
         return (
             <Fragment>
                 <Reports.SECTION>
-                    <Link to="/report"><button>Trade Report</button></Link>
-                    <Link to="/overview"><button>Overview</button></Link>
-                    <Link to="/strategies"><button>Strategies</button></Link>
-                    <button style={ {
-                        float: 'right'
-                    }}>New Pattern</button>
+                    <Link to="/report"><Reports.BUTTON>Trade Report</Reports.BUTTON></Link>
+                    <Link to="/overview"><Reports.BUTTON>Overview</Reports.BUTTON></Link>
+                    <Link to="/strategies"><Reports.BUTTON>Strategies</Reports.BUTTON></Link>
+                    <Reports.BUTTON style={ {
+                        float: 'right',
+                        backgroundColor: '#4CAF50'
+                    }}>New Pattern</Reports.BUTTON>
                 </Reports.SECTION>
             </Fragment>
         );
