@@ -16,6 +16,7 @@ class HomeComponent extends Component<any, IHomeComponent>
             reportsId: null,
             sessionList: []
         };
+		this.clickReportIcon = this.clickReportIcon.bind(this);
     }
 
     componentDidMount(): void
@@ -38,6 +39,13 @@ class HomeComponent extends Component<any, IHomeComponent>
         });
     }
 
+	private clickReportIcon(sessionID: string) 
+	{
+		localStorage.setItem("reportsId", sessionID);
+		this.forceUpdate();
+		setTimeout(() => { window.location.href="/report"} , 100);
+	}
+	
     render(): JSX.Element
     {
         return (
@@ -61,13 +69,13 @@ class HomeComponent extends Component<any, IHomeComponent>
                             {
                                 icon = DataIcon_S;
                             }
-							const theKey = uuid();
+                            const theKey = uuid();
                             return (
-                                <Home.DATA_ICON_DIV key={theKey} onClick={() => localStorage.setItem("reportsId", session)}>
-                                    <Link to="/report">
+                                <Home.DATA_ICON_DIV key={theKey} onClick={() => this.clickReportIcon(session)}>
+                                   <Link to="/">
                                         <Home.DATA_ICON src={icon} alt={theKey}/>
                                         <Home.DATA_ICON_TEXT_DIV>{session}</Home.DATA_ICON_TEXT_DIV>
-                                    </Link>
+                                   </Link>
                                 </Home.DATA_ICON_DIV>
 
                             );
