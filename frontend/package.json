@@ -5,6 +5,7 @@
   "main": "dist/preindex.js",
   "types": "dist/types",
   "dependencies": {
+    "@react-icons/all-files": "^4.1.0",
     "@types/react-router-dom": "^5.1.8",
     "@types/styled-components": "^5.1.14",
     "axios": "^0.22.0",

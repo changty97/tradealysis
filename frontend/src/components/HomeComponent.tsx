@@ -6,6 +6,7 @@ import DataIcon from "../images/dataIcon3.jpg";
 import DataIcon_S from "../images/dataIcon3_Selected.jpg";
 import { IHomeComponent } from "../models/IHomeComponent";
 import { v4 as uuid } from "uuid";
+import { IoIosCloseCircle } from 'react-icons/io';
 
 class HomeComponent extends Component<any, IHomeComponent>
 {
@@ -63,13 +64,16 @@ class HomeComponent extends Component<any, IHomeComponent>
                             }
                             const theKey = uuid();
                             return (
-                                <Home.DATA_ICON_DIV key={theKey} onClick={() => localStorage.setItem("reportsId", session)}>
-                                    <Link to="/report">
+                                <Home.DATA_ICON_DIV key={theKey}>
+								   <div>
+                                        <IoIosCloseCircle size={17} onClick={() => this.deleteReportIcon(session)}/>
+                                    </div>
+								   <div onClick={() => this.clickReportIcon(session)}>
+                                        <br/>
                                         <Home.DATA_ICON src={icon} alt={theKey}/>
                                         <Home.DATA_ICON_TEXT_DIV>{session}</Home.DATA_ICON_TEXT_DIV>
-                                    </Link>
+                                    </div>
                                 </Home.DATA_ICON_DIV>
-
                             );
                         })}
                     </Home.RIGHT_HOME>
