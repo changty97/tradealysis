@@ -580,6 +580,45 @@
 					}
 				]
 			}
+		},
+		"/removeSessionForUser": {
+			"get": {
+				"operationId": "ServiceRemoveSessionForUser",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"type": "string"
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"schema": {
+							"$ref": "#/definitions/BadRequestError"
+						}
+					}
+				},
+				"description": "Remove Session  *",
+				"parameters": [
+					{
+						"description": "",
+						"in": "query",
+						"name": "key",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"description": "",
+						"in": "query",
+						"name": "session",
+						"required": true,
+						"type": "string"
+					}
+				]
+			}
 		}
 	},
 	"swagger": "2.0",
