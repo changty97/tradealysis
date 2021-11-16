@@ -6,7 +6,7 @@ class Reports extends Component
 	public static readonly SECTION = sty.section ` 
 		height: 70vh;
 		overflow: auto;
-		margin: 2% 2%;
+		margin: 5% 2%;
 	`;
 	public static readonly TABLE_SECTION = sty.section `
 		border-color: #c1c1c1;

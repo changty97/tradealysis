@@ -9,7 +9,9 @@ class Footer extends Component
 		justify-content: center;
 		align-items: center;
 		background-color: #839a9b;
-		position: absolute;
+		margin-top: 10%;
+		position: fixed;
+		bottom: 0px;
 		width: 100%;
 		text-align: center;
 		bottom: 0;
@@ -34,7 +36,6 @@ class Footer extends Component
 			color: black;
 		}
 	`;
-	
 }
 export { Footer };
  

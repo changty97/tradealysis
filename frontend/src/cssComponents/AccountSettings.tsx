@@ -11,6 +11,7 @@ class AccountSettings extends Component
 		width: 100%;
 		font-size: 20px;
 		overflow: auto;
+		margin-bottom: 10%;
 	`;
 	
 	public static readonly HORIZONTAL_LIST_LI_A = sty.a `
@@ -58,7 +59,7 @@ class AccountSettings extends Component
 		display: block; 
 		padding: 10px;
 		text-decoration: none;
-		font-size: 16px;
+		font-size: 15px;
 		cursor: pointer;
 	`;
 	public static readonly INPUT_LAST_OF_TYPE = sty.input `
@@ -76,7 +77,8 @@ class AccountSettings extends Component
 		cursor: pointer;
 		border-radius: 2px;
 		&:hover {
-			background-image: linear-gradient(rgba(0, 0, 0, 0.4) 0 0);
+			background-image: linear-gradient(rgba(0, 0, 0, 0.3) 0 0);
+			color: white;
 		}
 	`;
 	
