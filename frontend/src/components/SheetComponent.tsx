@@ -128,20 +128,22 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
             for (const [key, value] of Object.entries(i))
             {
                 // return past data using Ticker and DOI value in current row
-                if (`${key}` === 'Ticker' && `${value}` !== '' && this.isValidDate(i.DOI))
+                if (`${key}` === 'Ticker' && `${value}` !== '')
                 {
+                    if (i.DOI !== undefined && this.isValidDate(i.DOI))
+                    {
                     console.log(`getting past data for ${i.Ticker} on ${i.DOI}`);
                     const pastData = this.getPastData(i.Ticker, i.DOI);
                     console.log(pastData);
                     this.setCells(pastData, cell);
-                }
-                // return today's data
-                if (`${key}` === 'Ticker' && `${value}` !== '' && i.DOI === '')
-                {
-                    console.log("Getting today's data");
-                    const todayData = this.getTodayData(i.Ticker);
-                    console.log(todayData);
-                    this.setCells(todayData, cell);
+                    }
+                    else 
+                    {
+                        console.log("Getting today's data");
+                        const todayData = this.getTodayData(i.Ticker);
+                        console.log(todayData);
+                        this.setCells(todayData, cell);
+                    }
                 }
             }
         }
@@ -170,7 +172,8 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
     {
         return axios.get(`http://localhost:3001/stockapi/${ticker}/${date}`, {
             params: {
-                ID: ticker
+                ID: ticker,
+                date: date
             }
         }).then((response) =>
         {
@@ -369,17 +372,13 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                                 end: e.ctrlKey
                             })); break;
                             // opens the editor for the selected cell
-                        case "Enter":
+                        case "Shift":
                             this.dispatch(openEditor(cell.rowKeyValue, cell.columnKey));
-                            
                             this.dispatch(setFocused({
                                 cellEditorInput: cell
                             }));
-                            
-                            console.log("enter key pressed");
                             break;
                         }
-                        
                     },
                     onFocus: () => !isFocused &&  this.dispatch(setFocused({
                         cell: {
@@ -412,7 +411,6 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                             this.dispatch(setFocused({
                                 cell
                             }));
-                            console.log("Enter key released");
                         }
                     },
                     onBlur: (e, {
