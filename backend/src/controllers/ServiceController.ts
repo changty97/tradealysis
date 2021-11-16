@@ -2,12 +2,13 @@ import { FileParam, FormParam, GET, POST,  Path, QueryParam, PathParam } from "t
 import { Produces, Response } from "typescript-rest-swagger";
 import { BadRequestError } from "typescript-rest/dist/server/model/errors";
 import { CSVParser } from "../CSVParser";
-import { removeItem, getAllSessions, saveTable, theSaveData } from "../MongoFiles/Mongo";
+import { removeItem, saveTable, theSaveData } from "../MongoFiles/Mongo";
 import { correctLoginKey, userFromKey } from "../MongoFiles/MongoLogin";
 import { createAccount } from "../MongoFiles/MongoCreateAccount";
 import { getStockData, retrieveYahooData } from "../stockapi";
 import { ITableData } from "../models/ITableData";
-import { accountValueFromKey, accountValuesFromKey } from "../MongoFiles/MongoAccountSettings";
+import { accountValuesFromKey } from "../MongoFiles/MongoAccountSettings";
+import { allUserSessions } from "../MongoFiles/MongoReportSessions";
 import { ISession } from "../models/ISession";
 import { IStockData } from "../models/IStockData";
 
@@ -115,13 +116,6 @@ export class ServiceController
 	    return await removeItem(body.data.item, body.data.coll);
 	}
 	
-	@Path("/getSessionList")
-	@GET
-	public async getSessionList(): Promise<ISession[]>
-	{
-	    return await getAllSessions();
-	}
-	
 	 /**
 	 * @param dataArray: any - 2d array which contains data of every cell in the spreadsheet
 	 * @returns the spreadsheet array as a JSON object
@@ -140,4 +134,12 @@ export class ServiceController
     {
 	    return await theSaveData(coll);
     }
+	
+	/** Get all user Sessions **/
+	@Path("/userSessionsGet")
+	@GET
+	public async userSessionsGet(@QueryParam("key") key:string): Promise<string[]>
+	{
+	    return await allUserSessions(key);
+	}
 }

@@ -4,7 +4,7 @@ import axios from "axios";
 import { kaReducer, Table } from 'ka-table';
 import { CSVLink } from 'react-csv';
 import { kaPropsUtils } from 'ka-table/utils';
-import { InsertRowPosition } from 'ka-table/enums';  /** new **/ //ISheetComponentProps
+import { InsertRowPosition } from 'ka-table/enums';
 import { ISheetComponentProps } from "../models/ISheetComponentProps";
 import { ISheetComponentState } from "../models/ISheetComponentState";
 import { tableProps, initialReportItems } from "../constants/tableProps";
@@ -23,7 +23,8 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
         super(props);
         this.state = {
             tableProps,
-            lastRowId: initialReportItems
+            lastRowId: initialReportItems,
+            reportsId: localStorage.getItem('reportsId')
         };
         this.dispatch = this.dispatch.bind(this);
         this.generateNewId = this.generateNewId.bind(this);
@@ -39,14 +40,9 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
     /** Loads items onto reports page **/
     private loadSheet(): void
     {
-        if (this.props.reportsId === null)
-        {
-            window.location.href = "/";
-            return;
-        }
         axios.get('http://localhost:3001/stockdataGet', {
             params: {
-                coll: `${this.props.reportsId  }_stock_data`,
+                coll: `${this.state.reportsId }_stock_data`,
             }
         })
             .then((response) =>
@@ -112,7 +108,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
         axios.post(`http://localhost:3001/postTableDB`, {
             data: {
                 table: tableData,
-                coll: `${this.props.reportsId  }_stock_data`,
+                coll: `${this.state.reportsId  }_stock_data`,
             }
         }).then(function(response)
         {
@@ -140,7 +136,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                     this.setCells(pastData, cell);
                 }
                 // return today's data
-                else if (`${key}` === 'Ticker' && `${value}` !== '')
+                if (`${key}` === 'Ticker' && `${value}` !== '' && i.DOI === '')
                 {
                     console.log("Getting today's data");
                     const todayData = this.getTodayData(i.Ticker);
@@ -310,6 +306,13 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                     {
                         i["MC-Cat"] = "LARGE";
                     }
+
+                    this.setState((prevState) => ({
+                        tableProps: {
+                            ...prevState.tableProps,
+                            data: this.state.tableProps.data
+                        }
+                    }));
                 }
             }
         });
@@ -322,7 +325,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
             {
                 if (props.column.key === ':delete')
                 {
-                    return ( <img src={DeleteIcon} onClick={() => this.deleteItemFromDB(props.rowKeyValue)} alt="Del" /> );
+                    return ( <img src={DeleteIcon} alt="Del" onClick={() => this.deleteItemFromDB(props.rowKeyValue)} /> );
                 }
                 return;
             }
@@ -449,7 +452,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
         axios.post('http://localhost:3001/removeTheItemGet', {
             data: {
                 item: val,
-                coll: `${this.props.reportsId  }_stock_data`,
+                coll: `${this.state.reportsId  }_stock_data`,
             }
 	    })
             .catch((err: Error) =>

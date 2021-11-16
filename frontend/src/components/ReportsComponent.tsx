@@ -7,6 +7,25 @@ import { Reports } from "../cssComponents/Reports";
 
 class ReportsComponent extends Component<IReportsProps, IReportsState>
 {
+    constructor(props: IReportsProps)
+    {
+        super(props);
+        this.state = {
+            reportsId: null
+        };
+    }
+    componentDidMount(): void
+    {
+        const val = localStorage.getItem('reportsId');
+	    if (!val)
+        {
+            window.location.href = "/";
+        }
+        this.setState({
+            reportsId: val
+        });
+    }
+	
     render(): JSX.Element
     {
         return (
@@ -15,7 +34,7 @@ class ReportsComponent extends Component<IReportsProps, IReportsState>
                     <Link to="/report"><button>Trade Report</button></Link>
                     <Link to="/overview"><button>Overview</button></Link>
                     <Link to="/strategies"><button>Strategies</button></Link>
-                    <SheetComponent reportsId={this.props.reportsId}/>{/* Search bar & Export button moved within SheetComponent*/}
+                    <SheetComponent/>
                 </Reports.SECTION>
             </Fragment>
         );

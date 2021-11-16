@@ -1,8 +1,9 @@
 import { Component, Fragment } from "react";
 import { AccountSettings } from "../cssComponents/AccountSettings";
+import { IAccountSettingsState } from "../models/IAccountSettingsState";
 import axios from "axios";
 
-class AccountSettingsComponent extends Component<any, any>
+class AccountSettingsComponent extends Component<any, IAccountSettingsState>
 {
     constructor(props: any)
     {
@@ -21,7 +22,7 @@ class AccountSettingsComponent extends Component<any, any>
     componentDidMount(): void
     {
         const theKey = localStorage.getItem("Key");
-	    if (theKey == null)
+	    if (!theKey)
 	    {
 	        this.logout();
 	        return;
@@ -38,28 +39,18 @@ class AccountSettingsComponent extends Component<any, any>
                     params: {
                         key: `${theKey}`,
                     }
-                }
-                )
+                })
                     .then((res2) =>
                     {
                         const unameVal = res2.data;
                         const val = Object.values(res.data);
-                        this.setState((val === null) ? {
-                            uname: "",
-                            pssd: "",
-                            fName: "",
-                            lName: "",
-                            email: "",
-                            phone: "",
-                            date: ""
-                        } : {
-                            uname: (unameVal != null) ? unameVal : "",
-                            pssd: (val[1] != null)   ? "" : "",
-                            fName: (val[0] != null)   ? val[0] : "",
-                            lName: (val[1] != null)   ? val[1] : "",
-                            email: (val[2] != null)   ? val[2] : "",
-                            phone: (val[3] != null)   ? val[3] : "",
-                            date: (val[4] != null)   ? val[4] : ""
+                        this.setState({
+                            uname: unameVal,
+                            fName: (val[0]) ? val[0] as string : "",
+                            lName: (val[1]) ? val[1] as string : "",
+                            email: (val[2]) ? val[2] as string : "",
+                            phone: (val[3]) ? val[3] as string : "",
+                            date: (val[4])  ? val[4] as string : ""
                         });
                         this.initalizeTextFields();
                     });
@@ -68,7 +59,7 @@ class AccountSettingsComponent extends Component<any, any>
 
     private initalizeTextFields(): void
     {
-        if (document !== null)
+        if (document)
         {
             const userName  = (document.getElementById(`myUsername`) as HTMLInputElement);
             const theFName  = (document.getElementById(`myFName`) as HTMLInputElement);
@@ -76,7 +67,7 @@ class AccountSettingsComponent extends Component<any, any>
             const theEmail = (document.getElementById(`myEmail`) as HTMLInputElement);
             const thePhone = (document.getElementById(`myPhone`) as HTMLInputElement);
             const theBdate = (document.getElementById(`myDate`) as HTMLInputElement);
-            if (userName !== null && theFName !== null && theLName !== null && theEmail !== null && thePhone !== null && theBdate !== null)
+            if (userName && theFName && theLName && theEmail && thePhone && theBdate)
             {
                 userName.value = this.state.uname;
                 theFName.value = this.state.fName;
