@@ -20,7 +20,8 @@ class Login extends Component
 		flex-direction: column;
 		justify-content: center; 
 		allign-content: flex-start;
-		height: 60%; 
+		margin-bottom:5%;
+		height: 63%; 
 		width: 25vw;  
 		white-space: wrap;
 		padding: 20px;
@@ -72,25 +73,26 @@ class Login extends Component
 	
 	public static readonly USERNAME_OR_PSWD_INPUT = sty.input `
 		margin-top: 1%;
-		font-size: 3.5vh;
+		font-size: 3.8vh;
 	`;
 	
 	public static readonly FORGOT_PSSD_BUTTON = sty.button `
 		text-decoration: none;
-		font-size: 1.2vw;
-		background-color: #008CBA;
-		border: none;
+		
+		background-color: #0099cc;
+		border: 1px solid black;
 		color: black;
-		padding: 15px 32px;
+		padding: 1.5% 6%;
 		text-align: center;
 		text-decoration: none;
 		display: inline-block;
-		font-size: 16px;
+		font-size: 2.3vh;
 		margin: 4px 2px;
 		cursor: pointer;
 		border-radius: 2px;
 		&:hover {
 			background-image: linear-gradient(rgba(0, 0, 0, 0.4) 0 0);
+			color: white;
 		}
 	`;
 }
