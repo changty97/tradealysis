@@ -38,6 +38,45 @@ class HomeComponent extends Component<any, IHomeComponent>
             console.error(err);
         });
     }
+	
+    private clickReportIcon(sessionID: string)
+    {
+        localStorage.setItem("reportsId", sessionID);
+        this.setState({});
+        setTimeout(() =>
+        {
+            window.location.href = "/report";
+        }, 100);
+    }
+	
+    private deleteReportIcon(sessionID:string)
+    {
+		const theKey = localStorage.getItem("Key");
+        const reportVal = localStorage.getItem("reportsId");
+		
+        if (reportVal === sessionID)
+        {
+            localStorage.removeItem("reportsId");
+			this.render();
+        }
+		 axios({
+            method: "GET",
+            url: "http://localhost:3001/removeSessionForUser",
+            params: {
+                key: `${theKey}`,
+				session: `${sessionID}`,
+            }
+        }).then((response) =>
+        {
+			this.forceUpdate();
+			window.location.href = "/";
+        }).catch((err) =>
+        {
+            console.error(err);
+        });
+		
+    }
+	
 
     render(): JSX.Element
     {
