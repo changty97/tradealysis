@@ -336,11 +336,13 @@ class SheetComponent extends Component<any, ISheetComponentState>
                     float: 'right'
                 }}/>
                 {/* Configurable Spreadsheet */}
-                <Table
-                    {...this.state.tableProps}
-                    childComponents = {this.childComponents}
-                    dispatch={this.dispatch}
-                />
+                <Reports.TABLE_SECTION>
+                    <Table
+                        {...this.state.tableProps}
+                        childComponents = {this.childComponents}
+                        dispatch={this.dispatch}
+                    />
+                </Reports.TABLE_SECTION>
             </Fragment>
         );
     }

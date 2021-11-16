@@ -8,6 +8,11 @@ class Reports extends Component
 		overflow: auto;
 		margin: 2% 2%;
 	`;
+	public static readonly TABLE_SECTION = sty.section `
+		border-color: #c1c1c1;
+		border-style: solid;
+		border-width: thin;
+	`;
 	public static readonly BUTTON = sty.button `
 		text-decoration: none;
 		font-size: 1.2vw;

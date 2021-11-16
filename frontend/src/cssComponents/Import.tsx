@@ -40,7 +40,7 @@ class Import extends Component
 		background-color: #fafafa;
 		color: #bdbdbd;
 		cursor: pointer;
-		margin: 2% 5%;
+		margin: 5% 20%;
 		height: 200px;
 	`;
 

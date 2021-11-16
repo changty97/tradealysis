@@ -17,7 +17,9 @@ class LandingComponent extends Component
                         <Landing.BAR_GRAPH_3></Landing.BAR_GRAPH_3>
                         <Landing.BAR_GRAPH_4></Landing.BAR_GRAPH_4>
                     </Landing.BAR_GRID>
-                    <Link to="/createaccount" style={{color: "white"}}><Landing.A>Sign Up</Landing.A></Link>
+                    <Link to="/createaccount" style={{
+                        color: "white"
+                    }}><Landing.A>Sign Up</Landing.A></Link>
                 </Landing.SECTION>
                 
             </Fragment>

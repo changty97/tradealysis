@@ -69,7 +69,8 @@ class Home extends Component
 		flex-direction: row;
 		justify-content: flex-start;
 		align-content: flex-start;
-		width: 100%; 
+		width: 100%;
+		margin: 0 5%;
 	`;
 	public static readonly DATA_ICON_DIV = sty.div `
 		display:flex;
@@ -89,7 +90,7 @@ class Home extends Component
 		width: 50%;
 	`;
 	public static readonly HEADER = sty.h1 `
-		margin: 1% 2%;
+		margin: 1% 5%;
 	`;
 }
 export { Home };

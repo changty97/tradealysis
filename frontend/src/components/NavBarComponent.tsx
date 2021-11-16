@@ -70,10 +70,12 @@ class NavBarComponent extends Component<any, any>
 	                    <Header.USER_AND_SETTINGS_BUTTONS>
 	                        <Header.HEADER_BUTTONS_LIST>
                                 <Header.HEADER_BUTTONS_LIST_LI color="#839a9b">
-									Hi, {this.state.user}!
+									{this.state.user}
                                 </Header.HEADER_BUTTONS_LIST_LI>
                                 <Header.USER_DROP_DOWN>
-                                    <FontAwesomeIcon icon={faUserCircle} color="#839a9b" style={{fontSize : "30px"}}/>
+                                    <FontAwesomeIcon icon={faUserCircle} color="#839a9b" style={{
+                                        fontSize: "30px"
+                                    }}/>
                                     <Header.USER_DROP_DOWN_CONTENT>
                                         <Header.HEADER_BUTTONS_LIST_LI>
                                             <Header.LINK_1 to="/account">Settings</Header.LINK_1>
