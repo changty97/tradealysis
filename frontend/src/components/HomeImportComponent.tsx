@@ -1,9 +1,8 @@
 import { Component, Fragment } from "react";
-import { Link } from "react-router-dom";
-import { Home } from "../cssComponents/Home";
 import { Import } from "../cssComponents/Import";
 import axios, { AxiosResponse } from "axios";
 import { IHomeImportComponentState } from "../models/IHomeImportComponentState";
+import Dropzone from "react-dropzone";
 
 class HomeImportComponent extends Component<any, IHomeImportComponentState>
 {
@@ -17,6 +16,7 @@ class HomeImportComponent extends Component<any, IHomeImportComponentState>
 
         this.handleFileSelection = this.handleFileSelection.bind(this);
         this.importFile = this.importFile.bind(this);
+        this.onDrop = this.onDrop.bind(this);
     }
 
     handleFileSelection(event: React.ChangeEvent<HTMLInputElement>): void
@@ -59,38 +59,47 @@ class HomeImportComponent extends Component<any, IHomeImportComponentState>
         });
     }
 
+    onDrop(files: any): void
+    {
+        if (files.length > 0)
+        {
+            this.setState({
+                selectedFile: files[0]
+            });
+        }
+    }
+
     render(): JSX.Element
     {
+        const {
+            selectedFile
+        } = this.state;
         return (
             <Fragment>
-                <Home.SECTION>
-                    <Home.LEFT_HOME>
-                        <Home.LEFT_HOME_MAIN_LIST_DIV_NOWRAP>
-                            <Home.LEFT_HOME_MAIN_LIST_PAGEON>
-                                <li>Home</li>
-                            </Home.LEFT_HOME_MAIN_LIST_PAGEON>
-                            <Home.LEFT_HOME_MAIN_LIST>
-                                <Link to="/input1"><Home.IMPORT_BUTTON>Import Broker Files</Home.IMPORT_BUTTON></Link>
-                            </Home.LEFT_HOME_MAIN_LIST>
-                        </Home.LEFT_HOME_MAIN_LIST_DIV_NOWRAP>
-                    </Home.LEFT_HOME>
-                    <Home.RIGHT_HOME>
-                        <div className="formBlock">
-                            <Import.FORM onSubmit={e => e.preventDefault()}>
-                                <div className="INNER_FORM">
-                                    <Import.FORM_TOP_DIV>
-                                        <Import.FORM_TOP_DIV_LABEL>Select broker's file to import:</Import.FORM_TOP_DIV_LABEL>
-                                        <Import.FORM_TOP_DIV_INPUT type="file" id="myfile" name="file_input" onChange={this.handleFileSelection} />
-                                    </Import.FORM_TOP_DIV>
-                                    <Import.FORM_BOTTOM_DIV>
-                                        <Import.FORM_BOTTOM_DIV_INPUT type="submit" id="myfile2" onClick={this.importFile}/>
-                                    </Import.FORM_BOTTOM_DIV>
-                                </div>
-                            </Import.FORM>
-                        </div>
-                    </Home.RIGHT_HOME>
-                </Home.SECTION>
+                <Dropzone onDrop={this.onDrop} multiple={false}>
+                    {({
+                        getRootProps, getInputProps
+                    }) => (
+                        <section>
+                            <Import.IMPORT_DIV {...getRootProps({
+                            })} onSubmit={e => e.preventDefault()}>
+                                <input {...getInputProps()} onChange={this.handleFileSelection} />
+                                {selectedFile && selectedFile.name ? (
+                                    <Import.SELECT_FILE_DIV>
+                                        {selectedFile && selectedFile.name}
+                                    </Import.SELECT_FILE_DIV>
+                                ) : (
+                                    "Drag and drop file here, or click to select file"
+                                )}
+                            </Import.IMPORT_DIV>
+                            <Import.FORM_BOTTOM_DIV>
+                                <Import.FORM_BOTTOM_DIV_INPUT type="submit" id="myfile2" onClick={this.importFile}/>
+                            </Import.FORM_BOTTOM_DIV>
+                        </section>
+                    )}
+                </Dropzone>
             </Fragment>
+
         );
     }
 }

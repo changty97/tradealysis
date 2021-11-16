@@ -105,7 +105,7 @@ class AccountSettingsComponent extends Component<any, IAccountSettingsState>
                             <AccountSettings.INPUT type="email" name="myEmail" id="myEmail" />
                             <AccountSettings.LABEL>Phone:</AccountSettings.LABEL>
                             <AccountSettings.INPUT type="tel" name="Phone" id="myPhone"/>
-                            <AccountSettings.LABEL>Birth Date</AccountSettings.LABEL>
+                            <AccountSettings.LABEL>Birth Date:</AccountSettings.LABEL>
                             <AccountSettings.INPUT type="date" name="myDate" id="myDate"/><br/>
                             <AccountSettings.INPUT_LAST_OF_TYPE id="mySubmit" type="Submit"  value="Submit"/>
                         </AccountSettings.FORM_DIV>
