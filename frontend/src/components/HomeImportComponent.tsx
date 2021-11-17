@@ -3,6 +3,7 @@ import { Import } from "../cssComponents/Import";
 import axios, { AxiosResponse } from "axios";
 import { IHomeImportComponentState } from "../models/IHomeImportComponentState";
 import Dropzone from "react-dropzone";
+import { SERVICE_URL } from "../constants/globals";
 
 class HomeImportComponent extends Component<any, IHomeImportComponentState>
 {
@@ -43,7 +44,7 @@ class HomeImportComponent extends Component<any, IHomeImportComponentState>
 
         axios({
             method: "POST",
-            url: "http://localhost:3001/parseCSV",
+            url: `${SERVICE_URL}/parseCSV`,
             data: formData
         }).then((response: AxiosResponse) =>
         {

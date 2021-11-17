@@ -1,9 +1,10 @@
 import { Component, Fragment } from "react";
 import { AccountSettings } from "../cssComponents/AccountSettings";
 import axios from "axios";
+import { SERVICE_URL } from "../constants/globals";
  
 const api = axios.create({
-    baseURL: 'http://localhost:3001/'
+    baseURL: `${SERVICE_URL}/`
 });
 
 class CreateAccountComponent extends Component<any, any>

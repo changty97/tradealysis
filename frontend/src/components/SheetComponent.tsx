@@ -16,6 +16,7 @@ import { clearFocused, moveFocusedDown, moveFocusedLeft,
 		 search, deleteRow, updateData } from 'ka-table/actionCreators';
 import DeleteIcon from "../images/deleteImg.svg";
 import { Reports } from "../cssComponents/Reports";
+import { SERVICE_URL } from "../constants/globals";
 
 class SheetComponent extends Component<ISheetComponentProps, ISheetComponentState>
 {
@@ -41,7 +42,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
     /** Loads items onto reports page **/
     private loadSheet(): void
     {
-        axios.get('http://localhost:3001/stockdataGet', {
+        axios.get(`${SERVICE_URL}/stockdataGet`, {
             params: {
                 coll: `${this.state.reportsId }_stock_data`,
             }
@@ -108,7 +109,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
         const tableData = this.state.tableProps.data;
         console.log(tableData);
         console.log(tableData!.length);
-        axios.post(`http://localhost:3001/postTableDB`, {
+        axios.post(`${SERVICE_URL}/postTableDB`, {
             data: {
                 table: tableData,
                 coll: `${this.state.reportsId  }_stock_data`,
@@ -238,7 +239,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
     private deleteItemFromDB(val:number): void
     {
         this.dispatch(deleteRow(val));
-        axios.post('http://localhost:3001/removeTheItemGet', {
+        axios.post(`${SERVICE_URL}/removeTheItemGet`, {
             data: {
                 item: val,
                 coll: `${this.state.reportsId  }_stock_data`,

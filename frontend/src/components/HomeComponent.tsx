@@ -6,6 +6,7 @@ import DataIcon_S from "../images/dataIcon3_Selected.jpg";
 import { IHomeComponent } from "../models/IHomeComponent";
 import { v4 as uuid } from "uuid";
 import { IoIosCloseCircle } from 'react-icons/io';
+import { SERVICE_URL } from "../constants/globals";
 
 class HomeComponent extends Component<any, IHomeComponent>
 {
@@ -23,7 +24,7 @@ class HomeComponent extends Component<any, IHomeComponent>
         const theKey = localStorage.getItem("Key");
 		 axios({
             method: "GET",
-            url: "http://localhost:3001/userSessionsGet",
+            url: `${SERVICE_URL}/userSessionsGet`,
             params: {
                 key: `${theKey}`,
             }
@@ -61,7 +62,7 @@ class HomeComponent extends Component<any, IHomeComponent>
         }
 		 axios({
             method: "GET",
-            url: "http://localhost:3001/removeSessionForUser",
+            url: `${SERVICE_URL}/removeSessionForUser`,
             params: {
                 key: `${theKey}`,
                 session: `${sessionID}`,

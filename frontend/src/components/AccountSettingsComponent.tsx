@@ -2,6 +2,7 @@ import { Component, Fragment } from "react";
 import { AccountSettings } from "../cssComponents/AccountSettings";
 import { IAccountSettingsState } from "../models/IAccountSettingsState";
 import axios from "axios";
+import { SERVICE_URL } from "../constants/globals";
 
 class AccountSettingsComponent extends Component<any, IAccountSettingsState>
 {
@@ -27,7 +28,7 @@ class AccountSettingsComponent extends Component<any, IAccountSettingsState>
 	        this.logout();
 	        return;
 	    }
-        axios.get('http://localhost:3001/accountData', {
+        axios.get(`${SERVICE_URL}/accountData`, {
 	        params: {
 	            key: `${theKey}`,
 	            }
@@ -35,7 +36,7 @@ class AccountSettingsComponent extends Component<any, IAccountSettingsState>
 	    )
             .then((res) =>
             {
-                axios.get('http://localhost:3001/usernameFromKeyGet', {
+                axios.get(`${SERVICE_URL}/usernameFromKeyGet`, {
                     params: {
                         key: `${theKey}`,
                     }
