@@ -1,3 +1,7 @@
-const SERVICE_URL: string = process.env.REACT_APP_SERVICE_URL || "";
+import axios, { AxiosInstance } from "axios";
 
-export { SERVICE_URL };
+const api: AxiosInstance = axios.create({
+    baseURL: process.env.REACT_APP_SERVICE_URL
+});
+
+export { api };

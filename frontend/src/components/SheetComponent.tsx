@@ -1,6 +1,5 @@
 import "ka-table/style.css";
 import { Component, Fragment } from "react";
-import axios from "axios";
 import { kaReducer, Table } from 'ka-table';
 import { CSVLink } from 'react-csv';
 import { kaPropsUtils } from 'ka-table/utils';
@@ -16,7 +15,7 @@ import { clearFocused, moveFocusedDown, moveFocusedLeft,
 		 search, deleteRow, updateData } from 'ka-table/actionCreators';
 import DeleteIcon from "../images/deleteImg.svg";
 import { Reports } from "../cssComponents/Reports";
-import { SERVICE_URL } from "../constants/globals";
+import { api } from "../constants/globals";
 
 class SheetComponent extends Component<ISheetComponentProps, ISheetComponentState>
 {
@@ -42,7 +41,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
     /** Loads items onto reports page **/
     private loadSheet(): void
     {
-        axios.get(`${SERVICE_URL}/stockdataGet`, {
+        api.get("stockdataGet", {
             params: {
                 coll: `${this.state.reportsId }_stock_data`,
             }
@@ -109,7 +108,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
         const tableData = this.state.tableProps.data;
         console.log(tableData);
         console.log(tableData!.length);
-        axios.post(`${SERVICE_URL}/postTableDB`, {
+        api.post("postTableDB", {
             data: {
                 table: tableData,
                 coll: `${this.state.reportsId  }_stock_data`,
@@ -239,7 +238,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
     private deleteItemFromDB(val:number): void
     {
         this.dispatch(deleteRow(val));
-        axios.post(`${SERVICE_URL}/removeTheItemGet`, {
+        api.post("removeTheItemGet", {
             data: {
                 item: val,
                 coll: `${this.state.reportsId  }_stock_data`,

@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 import { Component, Fragment } from "react";
 import { Home } from "../cssComponents/Home";
 import DataIcon from "../images/dataIcon3.jpg";
@@ -6,7 +6,7 @@ import DataIcon_S from "../images/dataIcon3_Selected.jpg";
 import { IHomeComponent } from "../models/IHomeComponent";
 import { v4 as uuid } from "uuid";
 import { IoIosCloseCircle } from 'react-icons/io';
-import { SERVICE_URL } from "../constants/globals";
+import { api } from "../constants/globals";
 
 class HomeComponent extends Component<any, IHomeComponent>
 {
@@ -22,9 +22,7 @@ class HomeComponent extends Component<any, IHomeComponent>
     componentDidMount(): void
     {
         const theKey = localStorage.getItem("Key");
-		 axios({
-            method: "GET",
-            url: `${SERVICE_URL}/userSessionsGet`,
+		 api.get("userSessionsGet", {
             params: {
                 key: `${theKey}`,
             }
@@ -60,9 +58,7 @@ class HomeComponent extends Component<any, IHomeComponent>
             localStorage.removeItem("reportsId");
             this.render();
         }
-		 axios({
-            method: "GET",
-            url: `${SERVICE_URL}/removeSessionForUser`,
+		 api.get("removeSessionForUser", {
             params: {
                 key: `${theKey}`,
                 session: `${sessionID}`,
