@@ -8,7 +8,7 @@ import { createAccount } from "../MongoFiles/MongoCreateAccount";
 import { getStockData, retrieveYahooData } from "../stockapi";
 import { ITableData } from "../models/ITableData";
 import { accountValuesFromKey } from "../MongoFiles/MongoAccountSettings";
-import { allUserSessions, createNewSession } from "../MongoFiles/MongoReportSessions";
+import { allUserSessions, createNewSession, removeSession } from "../MongoFiles/MongoReportSessions";
 import { IStockData } from "../models/IStockData";
 
 const badRequestExampleResponse: BadRequestError = {
@@ -149,6 +149,14 @@ export class ServiceController
 	public async createNewSessionForUser(@QueryParam("key") key:string, @QueryParam("collectionName") collectionName:string): Promise<string>
 	{
 	    return await createNewSession(key, collectionName);
+	}
+	
+	/** Remove Session  **/
+	@Path("/removeSessionForUser")
+	@GET
+	public async removeSessionForUser(@QueryParam("key") key:string, @QueryParam("session") session:string): Promise<string>
+	{
+	    return await removeSession(key, session);
 	}
 
 	@Path("/getTradesByYear")

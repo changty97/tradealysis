@@ -1,4 +1,5 @@
 import { MongoClient, Db, Collection } from "mongodb";
+import { mongoOptions } from "../constants/globals";
 import { userMongoOptions } from "../constants/globals";
 import { userFromKey } from "./MongoLogin";
 
@@ -69,7 +70,7 @@ async function createNewSession(key:string, newCollectionName:string):Promise<st
                 const userName = await userFromKey(key);
                 if (!userName || userName === "")
                 {
-                    return "";
+                    return theNewCollectionName;
                 }
                 const sessions = (await theCollectionSessionsTable.distinct(
                     "session_ids", {
@@ -88,7 +89,63 @@ async function createNewSession(key:string, newCollectionName:string):Promise<st
                     }
                 },
             );
-            return theNewCollectionName;
+        }
+    }
+    catch (err)
+    {
+        Promise.reject(err);
+    }
+    finally
+    {
+        if (client)
+        {
+            client.close();
+        }
+    }
+    return theNewCollectionName;
+}
+
+async function removeSession(key:string, session:string):Promise<string>
+{
+    let client: MongoClient | null = null;
+    let client2: MongoClient | null = null;
+    let sessionName = "";
+    try
+    {
+        client = await MongoClient.connect(userMongoOptions.uri);
+        const db: Db = client.db(userMongoOptions.db);
+        const theCollectionKeyTable: Collection = db.collection(userMongoOptions.collections['userKey']);
+        const theCollectionSessionsTable: Collection = db.collection(userMongoOptions.collections['userSessions']);
+
+        const userObjIDArr = await theCollectionKeyTable.distinct("user_obj_id", {
+            "key": key
+        });
+		
+        if (userObjIDArr && userObjIDArr.length !== 0)
+        {
+            sessionName = session;
+            await theCollectionSessionsTable.updateOne(
+                {
+                    "user_obj_id": userObjIDArr[0]
+                },
+                {
+                    $pull: {
+                        "session_ids": `${sessionName}`
+                    }
+                },
+            );
+            client2 = await MongoClient.connect(mongoOptions.uri);
+            const db2: Db = client2.db(mongoOptions.db);
+			
+            try
+            {
+                const deleteTable: Collection | null = await db2.collection(`${sessionName  }_stock_data`);
+                await deleteTable.drop();
+            }
+            catch (error) // exception thrown if deleteTable collection does not exist. No worry
+            {
+                console.log("");
+            }
         }
     }
     catch (err)
@@ -99,6 +156,11 @@ async function createNewSession(key:string, newCollectionName:string):Promise<st
     {
         client.close();
     }
-    return theNewCollectionName;
+    if (client2)
+    {
+        client2.close();
+    }
+    return sessionName;
 }
-export { allUserSessions, createNewSession };
+
+export { allUserSessions, createNewSession, removeSession };

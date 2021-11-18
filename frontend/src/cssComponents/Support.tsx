@@ -4,11 +4,8 @@ import { Component } from "react";
 class Support extends Component
 {
 	public static readonly SECTION = sty.section `
-		border-style: solid; 
-		border-color: black; 
-		border-width: thin;
-		border-radius: 10px;
-		background-color: rgb(200,200,200);
+		box-shadow: 1px 1px 5px #aaaaaa;
+		background-color: #f3f3f3;
 		display: flex;
 		flex-direction: column;
 		justify-content: flex-start; 
@@ -30,7 +27,7 @@ class Support extends Component
 		list-style-type: none;
 		margin: 2% 2%% 2% 2%;
 		padding: 0;
-		color:purple;
+		color: black;
 		font-weight: bold; 
 		font-size: 1.2em;
 		margin-top: 20px; 
@@ -49,6 +46,25 @@ class Support extends Component
 		width: 50vw;
 		height: 200px;
 		font-size: 20px;
+	`;
+
+	public static readonly INPUT_SUMBIT = sty.input `
+		display: inline-block;
+		text-decoration: none;
+		font-size: 1.2vw;
+		background-color: #008CBA;
+		border: none;
+		color: black;
+		padding: 15px 32px;
+		text-align: center;
+		text-decoration: none;
+		font-size: 16px;
+		margin: 4px auto 2px;
+		cursor: pointer;
+		border-radius: 2px;
+		&:hover {
+			background-image: linear-gradient(rgba(0, 0, 0, 0.4) 0 0);
+		}
 	`;
 }
 export { Support };

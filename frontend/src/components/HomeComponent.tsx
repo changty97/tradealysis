@@ -1,11 +1,11 @@
 import axios, { AxiosResponse } from "axios";
 import { Component, Fragment } from "react";
-import { Link } from "react-router-dom";
 import { Home } from "../cssComponents/Home";
 import DataIcon from "../images/dataIcon3.jpg";
 import DataIcon_S from "../images/dataIcon3_Selected.jpg";
 import { IHomeComponent } from "../models/IHomeComponent";
 import { v4 as uuid } from "uuid";
+import { IoIosCloseCircle } from 'react-icons/io';
 
 class HomeComponent extends Component<any, IHomeComponent>
 {
@@ -37,22 +37,51 @@ class HomeComponent extends Component<any, IHomeComponent>
             console.error(err);
         });
     }
+	
+    private clickReportIcon(sessionID: string):void
+    {
+        localStorage.setItem("reportsId", sessionID);
+        this.setState({
+        });
+        setTimeout(() =>
+        {
+            window.location.href = "/report";
+        }, 100);
+    }
+	
+    private deleteReportIcon(sessionID:string):void
+    {
+        const theKey = localStorage.getItem("Key");
+        const reportVal = localStorage.getItem("reportsId");
+		
+        if (reportVal === sessionID)
+        {
+            localStorage.removeItem("reportsId");
+            this.render();
+        }
+		 axios({
+            method: "GET",
+            url: "http://localhost:3001/removeSessionForUser",
+            params: {
+                key: `${theKey}`,
+                session: `${sessionID}`,
+            }
+        }).then((response) =>
+        {
+            this.forceUpdate();
+            window.location.href = "/";
+        }).catch((err) =>
+        {
+            console.error(err);
+        });
+    }
 
     render(): JSX.Element
     {
         return (
             <Fragment>
+                <Home.HEADER>Recent Files</Home.HEADER>
                 <Home.SECTION>
-                    <Home.LEFT_HOME>
-                        <Home.LEFT_HOME_MAIN_LIST_DIV_NOWRAP>
-                            <Home.LEFT_HOME_MAIN_LIST_PAGEON>
-                                <li>Home</li>
-                            </Home.LEFT_HOME_MAIN_LIST_PAGEON>
-                            <Home.LEFT_HOME_MAIN_LIST>
-                                <Link to="/input1"><Home.IMPORT_BUTTON>Import Broker Files</Home.IMPORT_BUTTON></Link>
-                            </Home.LEFT_HOME_MAIN_LIST>
-                        </Home.LEFT_HOME_MAIN_LIST_DIV_NOWRAP>
-                    </Home.LEFT_HOME>
                     <Home.RIGHT_HOME>
                         {this.state.sessionList.map((session: string) =>
                         {
@@ -63,13 +92,16 @@ class HomeComponent extends Component<any, IHomeComponent>
                             }
                             const theKey = uuid();
                             return (
-                                <Home.DATA_ICON_DIV key={theKey} onClick={() => localStorage.setItem("reportsId", session)}>
-                                    <Link to="/report">
+                                <Home.DATA_ICON_DIV key={theKey}>
+								   <div>
+                                        <IoIosCloseCircle size={17} onClick={() => this.deleteReportIcon(session)}/>
+                                    </div>
+								   <div onClick={() => this.clickReportIcon(session)}>
+                                        <br/>
                                         <Home.DATA_ICON src={icon} alt={theKey}/>
                                         <Home.DATA_ICON_TEXT_DIV>{session}</Home.DATA_ICON_TEXT_DIV>
-                                    </Link>
+                                    </div>
                                 </Home.DATA_ICON_DIV>
-
                             );
                         })}
                     </Home.RIGHT_HOME>

@@ -4,19 +4,14 @@ import sty from "styled-components";
 class AccountSettings extends Component
 {
 	public static readonly SECTION = sty.section `
-		border-style: solid; 
-		border-color: black; 
-		border-width: thin;
-		border-radius: 10px;
-		background-color: rgb(200,200,200);
 		display: flex;
 		flex-direction: column;
 		justify-content: flex-start; 
 		align-items: flex-start;
-		height: 600px;
 		width: 100%;
 		font-size: 20px;
 		overflow: auto;
+		margin-bottom: 10%;
 	`;
 	
 	public static readonly HORIZONTAL_LIST_LI_A = sty.a `
@@ -39,10 +34,8 @@ class AccountSettings extends Component
 	`;
 	
 	public static readonly FORM_DIV = sty.div `
+		box-shadow: 1px 1px 5px #aaaaaa;
 		background-color: rgb(240,240,240);
-		border-style: solid; 
-		border-color: black; 
-		border-width: 1px;
 		font-family: Arial, sans-serif;
 		text-align: center;
 		padding: 10px 40px 10px 40px; 
@@ -58,24 +51,40 @@ class AccountSettings extends Component
 		clear: left;
 		text-align: left;
 		padding-right: 2.5em;
-		margin-top: 25px; 
+		margin-top: 10%;
 	`;
 	
 	public static readonly INPUT = sty.input `
 		margin-top: 2em;
 		display: block; 
+		padding: 10px;
+		text-decoration: none;
+		font-size: 15px;
+		cursor: pointer;
 	`;
 	public static readonly INPUT_LAST_OF_TYPE = sty.input `
-		margin-top: 2em;
-		display: block;
-		margin: 20px;
+		display: inline-block;
+		text-decoration: none;
+		font-size: 1.2vw;
+		background-color: #008CBA;
+		border: none;
+		color: black;
+		padding: 15px 32px;
+		text-align: center;
+		text-decoration: none;
+		font-size: 16px;
+		margin: 4px auto 2px;
+		cursor: pointer;
+		border-radius: 2px;
+		&:hover {
+			background-image: linear-gradient(rgba(0, 0, 0, 0.3) 0 0);
+			color: white;
+		}
 	`;
 	
 	public static readonly UL_HORIZ_LIST = sty.ul `
+		box-shadow: 1px 1px 5px #aaaaaa;
 		background-color: rgb(240,240,240);
-		border-style: solid; 
-		border-color: rgb(150,100,100); 
-		border-width: 1px;
 		list-style: none;	
 		margin: 0;
 		color:black;
