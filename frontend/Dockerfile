@@ -1,5 +1,5 @@
 # 1. Build our Node app
-FROM node:alpine as builder
+FROM node:14.16.1-alpine as builder
 
 WORKDIR /app
 COPY package.json package-lock.json ./
