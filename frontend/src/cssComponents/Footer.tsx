@@ -1,5 +1,4 @@
 import { Component } from "react";
-//import { Link } from "react-router-dom";
 import sty from "styled-components";
 
 class Footer extends Component
@@ -9,9 +8,10 @@ class Footer extends Component
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		background-color: rgb(170,170,170);
-		padding: 0px 10px 10px 0px;
-		position: inherit;
+		background-color: #839a9b;
+		margin-top: 10%;
+		position: fixed;
+		bottom: 0px;
 		width: 100%;
 		text-align: center;
 		bottom: 0;
@@ -23,10 +23,7 @@ class Footer extends Component
 		justify-content: center;
 		align-items: center;
 		flex-wrap: wrap;
-		background-color: rgb(200,200,200);
-		padding: 10px 13px 10px 13px;
-		border-style: solid;                                 
-		border-color: black;   
+		padding: 10px 13px 10px 13px; 
 	`;
 	public static readonly FOOTER_DIV_UL_LI = sty.li `
 		margin-left: 10px;
@@ -34,12 +31,11 @@ class Footer extends Component
 	`;
 	public static readonly A_LINK = sty.a `
 		text-decoration: none;
-		color: rgb(130, 0, 130);
+		color: white;
 		&:hover {
-			color: rgb(255, 0, 0);
+			color: black;
 		}
 	`;
-	
 }
 export { Footer };
  

@@ -3,29 +3,25 @@ import sty from "styled-components";
 
 class Login extends Component
 {
-	public static readonly SECTION = sty.section `
-		border-style: solid; 
-		border-color: black; 
-		border-width: thin; 
-		background-color: rgb(200,200,200);
+	public static readonly SECTION = sty.section `		 
 		display: flex; 
 		flex-direction: column;
 		justify-content: center; 
 		align-items: center;
-		height: 80vh; width: 100%;
+		height: 80vh; 
+		width: 100%;
 		border-radius: 10px; 
 		flex-shrink: 2;
 	`;
 	public static readonly LOGIN_BOX = sty.div`
+		box-shadow: 1px 1px 5px #aaaaaa;
 		background-color: rgb(240,240,240);
-		border-style: solid; 
-		border-color: black; 
-		border-width: 2px;
 		display: inline-flex;
 		flex-direction: column;
 		justify-content: center; 
 		allign-content: flex-start;
-		height: 60%; 
+		margin-bottom:5%;
+		height: 63%; 
 		width: 25vw;  
 		white-space: wrap;
 		padding: 20px;
@@ -56,7 +52,6 @@ class Login extends Component
 		font-size: 1.9vh;
 		font-weight: bold;
 		margin-top: 1.5%;
-		
 	`;
 	
 	public static readonly USERNAME_AND_PASSWORD_TXT_BOXES = sty.div `
@@ -64,7 +59,6 @@ class Login extends Component
 		flex-direction: column;
 		justify-content: center;
 		allign-content: center;
-		
 		margin: 2%;
 		margin-bottom: 3.5%;
 		
@@ -79,14 +73,27 @@ class Login extends Component
 	
 	public static readonly USERNAME_OR_PSWD_INPUT = sty.input `
 		margin-top: 1%;
-		font-size: 3.5vh;
+		font-size: 3.8vh;
 	`;
+	
 	public static readonly FORGOT_PSSD_BUTTON = sty.button `
-		background-color: rgb(30,30,160);
-		font-weight: 500;
-		color: white;
-		margin: 0.1em;
-		font-size: 2.5vh;
+		text-decoration: none;
+		
+		background-color: #0099cc;
+		border: 1px solid black;
+		color: black;
+		padding: 1.5% 6%;
+		text-align: center;
+		text-decoration: none;
+		display: inline-block;
+		font-size: 2.3vh;
+		margin: 4px 2px;
+		cursor: pointer;
+		border-radius: 2px;
+		&:hover {
+			background-image: linear-gradient(rgba(0, 0, 0, 0.4) 0 0);
+			color: white;
+		}
 	`;
 }
 export { Login };

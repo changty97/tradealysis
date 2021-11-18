@@ -1,0 +1,16 @@
+# This file will automate the deploy process by utilizing the Dockerfile within this repo
+# Run the following command:
+# sudo docker-compose up -d
+# Created by Tyler Chang
+
+version: "2"
+services:
+  nginx-react:
+    container_name: tradealysis
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8080:80
+    environment:
+      NODE_ENV: production

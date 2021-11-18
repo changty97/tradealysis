@@ -15,6 +15,7 @@ import { clearFocused, moveFocusedDown, moveFocusedLeft,
 		 insertRow, hideLoading, showLoading,
 		 search, deleteRow, updateData } from 'ka-table/actionCreators';
 import DeleteIcon from "../images/deleteImg.svg";
+import { Reports } from "../cssComponents/Reports";
 
 class SheetComponent extends Component<ISheetComponentProps, ISheetComponentState>
 {
@@ -264,12 +265,13 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                     enclosingCharacter={''}
                     separator={','}>
                     {/* Move style to .css later*/}
-                    <button style={ {
-                        float: 'right'
-                    }}>Download .csv</button>
+                    <Reports.BUTTON style={ {
+                        float: 'right',
+                        backgroundColor: "gray"
+                    }}>Download .csv</Reports.BUTTON>
                 </CSVLink>
                 {/* Add Row Button*/}
-                <button
+                <Reports.BUTTON
                     onClick={() =>
                     {
                         const id = this.generateNewId();
@@ -282,23 +284,27 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                         }));
                     }} >
                     New Row
-                </button>
-                <button
-                    onClick= {this.saveTable}>Save Table
-                </button>
+                </Reports.BUTTON>
+                <Reports.BUTTON
+                    onClick= {this.saveTable} style={{
+                        backgroundColor: "#008CBA"
+                    }}>Save Table
+                </Reports.BUTTON>
                 {/* Search Sheet*/}
-                <input type='search' defaultValue={tableProps.searchText} onChange={(event) =>
+                <Reports.SEARCH type='search' defaultValue={tableProps.searchText} onChange={(event) =>
                 {
                     this.dispatch(search(event.currentTarget.value));
                 }} className='top-element' placeholder="Find a Trade" style={ {
                     float: 'right'
                 }}/>
                 {/* Configurable Spreadsheet */}
-                <Table
-                    {...this.state.tableProps}
-                    childComponents = {this.childComponents}
-                    dispatch={this.dispatch}
-                />
+                <Reports.TABLE_SECTION>
+                    <Table
+                        {...this.state.tableProps}
+                        childComponents = {this.childComponents}
+                        dispatch={this.dispatch}
+                    />
+                </Reports.TABLE_SECTION>
             </Fragment>
         );
     }

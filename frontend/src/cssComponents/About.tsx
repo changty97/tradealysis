@@ -4,11 +4,6 @@ import sty from "styled-components";
 class About extends Component
 {
 	public static readonly SECTION = sty.section `
-		border-style: solid; 
-		border-color: black; 
-		border-width: thin;
-		border-radius: 10px;
-		background-color: rgb(200,200,200);
 		display: flex;
 		flex-direction: row;
 		justify-content: flex-start; 
@@ -50,19 +45,17 @@ class About extends Component
 	`;
 	
 	public static readonly ABOUT_RIGHT_HOME = sty.div `
+		box-shadow: 1px 1px 5px #aaaaaa;
 		display: flex;
 		text-align: left;
 		flex-direction: column;
 		justify-content: flex-start;  
-		background-color: white;
+		background-color: rgb(240,240,240);
 		border-radius: 10px;
-		margin: 2%;
-		margin-left: 0;
+		margin: 2% 5%;
 		padding-left: 50px;
 		font-size:20px;
-		height: 450px;  
-		width: 70%; 
+		width: 100%;
 	`;
 }
 export { About };
- 

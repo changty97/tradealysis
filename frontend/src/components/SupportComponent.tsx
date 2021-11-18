@@ -22,7 +22,7 @@ class SupportComponent extends Component
                                 <Support.TEXTAREA id="support" name="support"></Support.TEXTAREA>
                             </div>
                             <div>
-                                <input type="submit" value="Submit"/>
+                                <Support.INPUT_SUMBIT type="submit" value="Submit"/>
                             </div>
                         </Support.FORM>
                     </Support.SECTION_DIV>
