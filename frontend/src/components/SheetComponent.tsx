@@ -132,16 +132,12 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                 {
                     if (i.DOI !== undefined && this.isValidDate(i.DOI))
                     {
-                    console.log(`getting past data for ${i.Ticker} on ${i.DOI}`);
                     const pastData = this.getPastData(i.Ticker, i.DOI);
-                    console.log(pastData);
                     this.setCells(pastData, cell);
                     }
                     else 
                     {
-                        console.log("Getting today's data");
                         const todayData = this.getTodayData(i.Ticker);
-                        console.log(todayData);
                         this.setCells(todayData, cell);
                     }
                 }
@@ -159,8 +155,6 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
             }
         }).then((response) =>
         {
-            console.log("getTodayData returned: ");
-            console.log(response.data);
             return response.data;
         }).catch(function(error)
         {
@@ -177,8 +171,6 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
             }
         }).then((response) =>
         {
-            console.log("getPastData returned: ");
-            console.log(response.data);
             return response.data;
         }).catch(function(error)
         {
@@ -215,7 +207,6 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                     const i = this.state.tableProps.data[cell.rowKeyValue];
                     if (`${k}` === 'Ticker' && `${v}` !== '')
                     {
-                        console.log(value);
                         // check each alpha vantage object property
                         for (const [key, val] of Object.entries(value))
                         {
@@ -265,7 +256,6 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                     // Float Rotation = Volume-DOI / Float
                     i["FloatR"] = parseFloat((i["Vol-DOI"] / i["Float"]).toFixed(4));
                     // Float Category is defined by size of float
-                    console.log(i.Float);
                     if ( i.Float > 0 && i.Float <= 1000000)
                     {
                         i["FloatC"] = "NANO";
@@ -367,7 +357,6 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                             end: e.ctrlKey
                         })); break;
                         case "ArrowDown":
-                            console.log("arrow down");
                             this.dispatch(moveFocusedDown({
                                 end: e.ctrlKey
                             })); break;
@@ -417,7 +406,6 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                         baseFunc
                     }) =>
                     {
-                        console.log("Blur");
                         baseFunc();
                         this.dispatch(clearFocused());
                     },
@@ -522,17 +510,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
             }
         }));
 
-        if (action.columnKey === "Ticker" && action.type === "UpdateCellValue")
-        {
-            const cell = {
-                columnKey: action.columnKey,
-                rowKeyValue: action.rowKeyValue
-            };
-            console.log("Cell: ");
-            console.log(cell);
-            this.getTicker(cell);
-        }
-        if (action.columnKey === "DOI" && action.type === "UpdateCellValue")
+        if ((action.columnKey === "Ticker" || action.columnKey === "DOI") && action.type === "UpdateCellValue")
         {
             const cell = {
                 columnKey: action.columnKey,
