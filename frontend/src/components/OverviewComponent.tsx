@@ -1,13 +1,18 @@
 import { Component, Fragment } from "react";
 import { Link } from "react-router-dom";
-import { Col, Input, Label, Row, Table } from "reactstrap";
 import { Reports } from "../cssComponents/Reports";
 import { IOverviewComponentState, IResults } from "../models/IOverviewComponentState";
 import { Bar, Line, Pie } from "react-chartjs-2";
 import axios, { AxiosResponse } from "axios";
 import { v4 as uuid } from "uuid";
+import { Overview } from "../cssComponents/Overview";
 
 const months: string[] = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dev"];
+
+const formatter: Intl.NumberFormat = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD'
+});
 
 class OverviewComponent extends Component<any, IOverviewComponentState>
 {
@@ -107,8 +112,6 @@ class OverviewComponent extends Component<any, IOverviewComponentState>
         results.avgGainPerTrade = results.total / results.totalTrades;
         results.avgGainPerTradePerc = results.totalGainPerc / results.totalTrades;
 
-        // I have no idea how to calculate average gain / trade %
-
         results.topSymbolsByPL.sort((firstEl: any, secondEl: any) => secondEl.PL - firstEl.PL);
         results.topSymbolsByGainPerc.sort((firstEl: any, secondEl: any) => secondEl.gainPerc - firstEl.gainPerc);
 
@@ -118,7 +121,6 @@ class OverviewComponent extends Component<any, IOverviewComponentState>
         });
     }
 
-    // TODO: None of this will style properly unless we import bootstrap, but then that breaks all other styles everywhere...
     render(): JSX.Element
     {
         return (
@@ -127,11 +129,9 @@ class OverviewComponent extends Component<any, IOverviewComponentState>
                     <Link to="/report"><Reports.BUTTON>Trade Report</Reports.BUTTON></Link>
                     <Link to="/overview"><Reports.BUTTON>Overview</Reports.BUTTON></Link>
                     <Link to="/strategies"><Reports.BUTTON>Strategies</Reports.BUTTON></Link>
-                    <Row>
-                        <Col
-                            xs="3"
-                        >
-                            <Input
+                    <Overview.ROW>
+                        <div className="yearSelection">
+                            <input
                                 placeholder="Year"
                                 value={this.state.year}
                                 onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
@@ -141,10 +141,8 @@ class OverviewComponent extends Component<any, IOverviewComponentState>
                                     });
                                 }}
                             />
-                        </Col>
-                        <Col
-                            xs="6"
-                        >
+                        </div>
+                        <div className="monthSelection">
                             {months.map((month: string, index: number) =>
                             {
                                 return (
@@ -164,58 +162,60 @@ class OverviewComponent extends Component<any, IOverviewComponentState>
                                     </Reports.BUTTON>
                                 );
                             })}
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col
-                            xs="6"
-                        >
-                            <Row>
-                                <Table hover>
-                                    <thead>
-                                        <tr>
-                                            <th>
+                        </div>
+                    </Overview.ROW>
+                    <Overview.ROW>
+                        <Overview.LEFT>
+                            <Overview.ROW>
+                                <Overview.SUMMARY>
+                                    <Overview.THEAD>
+                                        <Overview.TR>
+                                            <Overview.TH>
                                                 Total P/L
-                                            </th>
-                                            <th>
+                                            </Overview.TH>
+                                            <Overview.TH>
                                                 Wins
-                                            </th>
-                                            <th>
+                                            </Overview.TH>
+                                            <Overview.TH>
                                                 Average Gain / Trade
-                                            </th>
-                                            <th>
+                                            </Overview.TH>
+                                            <Overview.TH>
                                                 Average Gain / Trade %
-                                            </th>
-                                            <th>
+                                            </Overview.TH>
+                                            <Overview.TH>
                                                 Total Trades
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                ${this.state.results.total.toFixed(2)}
-                                            </td>
-                                            <td>
+                                            </Overview.TH>
+                                        </Overview.TR>
+                                    </Overview.THEAD>
+                                    <Overview.TBODY>
+                                        <Overview.TR>
+                                            <Overview.TD_COLORED 
+                                                value={this.state.results.total}
+                                            >
+                                                {formatter.format(this.state.results.total)}
+                                            </Overview.TD_COLORED>
+                                            <Overview.TD>
                                                 {this.state.results.wins}
-                                            </td>
-                                            <td>
-                                                ${this.state.results.avgGainPerTrade.toFixed(2)}
-                                            </td>
-                                            <td>
+                                            </Overview.TD>
+                                            <Overview.TD_COLORED
+                                                value={this.state.results.avgGainPerTrade}
+                                            >
+                                                {formatter.format(this.state.results.avgGainPerTrade)}
+                                            </Overview.TD_COLORED>
+                                            <Overview.TD_COLORED
+                                                value={this.state.results.avgGainPerTradePerc}
+                                            >
                                                 {this.state.results.avgGainPerTradePerc.toFixed(2)}%
-                                            </td>
-                                            <td>
+                                            </Overview.TD_COLORED>
+                                            <Overview.TD>
                                                 {this.state.results.totalTrades}
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </Table>
-                            </Row>
-                            <Row>
-                                <Col
-                                    xs="7"
-                                >
+                                            </Overview.TD>
+                                        </Overview.TR>
+                                    </Overview.TBODY>
+                                </Overview.SUMMARY>
+                            </Overview.ROW>
+                            <Overview.ROW>
+                                <Overview.LINE_CHART>
                                     <Line
                                         data={{
                                             labels: this.state.results.tradeDates, // Array of all DOI
@@ -232,14 +232,15 @@ class OverviewComponent extends Component<any, IOverviewComponentState>
                                                 title: {
                                                     display: true,
                                                     text: "Accumulated Profit"
+                                                },
+                                                legend: {
+                                                    onClick: () => {}
                                                 }
                                             }
                                         }}
                                     />
-                                </Col>
-                                <Col
-                                    xs="2"
-                                >
+                                </Overview.LINE_CHART>
+                                <Overview.PIE_CHART>
                                     <Pie
                                         data={{
                                             labels: ["Long", "Short"],
@@ -261,13 +262,16 @@ class OverviewComponent extends Component<any, IOverviewComponentState>
                                                 title: {
                                                     display: true,
                                                     text: "Long / Short"
+                                                },
+                                                legend: {
+                                                    onClick: () => {}
                                                 }
                                             }
                                         }}
                                     />
-                                </Col>
-                            </Row>
-                            <Row>
+                                </Overview.PIE_CHART>
+                            </Overview.ROW>
+                            <Overview.ROW>
                                 <Bar
                                     data={{
                                         labels: this.state.results.tradeDates, // Array of all DOI
@@ -282,77 +286,87 @@ class OverviewComponent extends Component<any, IOverviewComponentState>
                                             title: {
                                                 display: true,
                                                 text: "Daily P/L"
+                                            },
+                                            legend: {
+                                                onClick: () => {}
                                             }
                                         }
                                     }}
                                 />
-                            </Row>
-                        </Col>
-                        <Col
-                            xs="3"
-                        >
-                            <Row>
-                                <Label>Top symbols by P/L</Label>
-                                <Table hover>
-                                    <thead>
-                                        <tr>
-                                            <th>
+                            </Overview.ROW>
+                        </Overview.LEFT>
+                        <Overview.RIGHT>
+                            <Overview.ROW>
+                                <Overview.TABLE>
+                                    <Overview.CAPTION>Top symbols by P/L</Overview.CAPTION>
+                                    <Overview.THEAD>
+                                        <Overview.TR>
+                                            <Overview.TH>
                                                 Symbol
-                                            </th>
-                                            <th>
+                                            </Overview.TH>
+                                            <Overview.TH>
                                                 P/L
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
+                                            </Overview.TH>
+                                        </Overview.TR>
+                                    </Overview.THEAD>
+                                    <Overview.TBODY>
                                         {this.state.results.topSymbolsByPL.map((row: any) =>
                                         {
                                             return (
-                                                <tr key={uuid()}>
-                                                    <td>
+                                                <Overview.TR key={uuid()}>
+                                                    <Overview.TD_COLORED
+                                                        value={row.PL}
+                                                    >
                                                         {row.symbol}
-                                                    </td>
-                                                    <td>
-                                                        ${row.PL.toFixed(2)}
-                                                    </td>
-                                                </tr>
+                                                    </Overview.TD_COLORED>
+                                                    <Overview.TD_COLORED
+                                                        value={row.PL}
+                                                    >
+                                                        {formatter.format(row.PL.toFixed(2))}
+                                                    </Overview.TD_COLORED>
+                                                </Overview.TR>
                                             );
                                         })}
-                                    </tbody>
-                                </Table>
-                            </Row>
-                            <Row>
-                                <Label>Top symbols by Gain %</Label>
-                                <Table hover>
-                                    <thead>
-                                        <tr>
-                                            <th>
+                                    </Overview.TBODY>
+                                </Overview.TABLE>
+                            </Overview.ROW>
+                            <br />
+                            <Overview.ROW>
+                                <Overview.TABLE>
+                                    <Overview.CAPTION>Top symbols by Gain %</Overview.CAPTION>
+                                    <Overview.THEAD>
+                                        <Overview.TR>
+                                            <Overview.TH>
                                                 Symbol
-                                            </th>
-                                            <th>
+                                            </Overview.TH>
+                                            <Overview.TH>
                                                 Average Gain %
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
+                                            </Overview.TH>
+                                        </Overview.TR>
+                                    </Overview.THEAD>
+                                    <Overview.TBODY>
                                         {this.state.results.topSymbolsByGainPerc.map((row: any) =>
                                         {
                                             return (
-                                                <tr key={uuid()}>
-                                                    <td>
+                                                <Overview.TR key={uuid()}>
+                                                    <Overview.TD_COLORED
+                                                        value={row.gainPerc}
+                                                    >
                                                         {row.symbol}
-                                                    </td>
-                                                    <td>
+                                                    </Overview.TD_COLORED>
+                                                    <Overview.TD_COLORED
+                                                        value={row.gainPerc}
+                                                    >
                                                         {row.gainPerc.toFixed(2)}%
-                                                    </td>
-                                                </tr>
+                                                    </Overview.TD_COLORED>
+                                                </Overview.TR>
                                             );
                                         })}
-                                    </tbody>
-                                </Table>
-                            </Row>
-                        </Col>
-                    </Row>
+                                    </Overview.TBODY>
+                                </Overview.TABLE>
+                            </Overview.ROW>
+                        </Overview.RIGHT>
+                    </Overview.ROW>
                 </Reports.SECTION>
             </Fragment>
         );
