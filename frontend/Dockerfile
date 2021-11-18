@@ -6,7 +6,7 @@ COPY package.json package-lock.json ./
 
 RUN npm install
 COPY . ./
-RUN npm run built -- --prod
+RUN npm run test -- --prod
 
 # 2. Deploy our Node app to NGINX
 FROM nginx:alpine
