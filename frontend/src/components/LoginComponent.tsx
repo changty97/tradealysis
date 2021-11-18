@@ -1,10 +1,6 @@
 import { Component, Fragment } from "react";
 import { Login } from "../cssComponents/Login";
-import axios from "axios";
-
-const api = axios.create({
-    baseURL: 'http://localhost:3001/'
-});
+import { api } from "../constants/globals";
 
 class LoginComponent extends Component<any, any>
 {

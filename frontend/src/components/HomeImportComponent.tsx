@@ -1,8 +1,9 @@
 import { Component, Fragment } from "react";
 import { Import } from "../cssComponents/Import";
-import axios, { AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 import { IHomeImportComponentState } from "../models/IHomeImportComponentState";
 import Dropzone from "react-dropzone";
+import { api } from "../constants/globals";
 
 class HomeImportComponent extends Component<any, IHomeImportComponentState>
 {
@@ -41,11 +42,9 @@ class HomeImportComponent extends Component<any, IHomeImportComponentState>
         formData.append("sourceName", "TDAmeritrade");
         formData.append("file", this.state.selectedFile);
 
-        axios({
-            method: "POST",
-            url: "http://localhost:3001/parseCSV",
+        api.post("parseCSV", {
             data: formData
-        }).then((response: AxiosResponse) =>
+        }).then((response: AxiosResponse<any>) =>
         {
             console.log(response.data);
             // TODO: Add verification of data step
