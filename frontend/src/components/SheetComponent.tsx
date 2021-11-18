@@ -294,9 +294,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                 <Reports.SEARCH type='search' defaultValue={tableProps.searchText} onChange={(event) =>
                 {
                     this.dispatch(search(event.currentTarget.value));
-                }} className='top-element' placeholder="Find a Trade" style={ {
-                    float: 'right'
-                }}/>
+                }} className='top-element' placeholder="Find a Trade"/>
                 {/* Configurable Spreadsheet */}
                 <Reports.TABLE_SECTION>
                     <Table

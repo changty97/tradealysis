@@ -1,6 +1,6 @@
 import { Component, Fragment } from "react";
 import { Link } from "react-router-dom";
-import { Button, Col, Input, Label, Row, Table } from "reactstrap";
+import { Col, Input, Label, Row, Table } from "reactstrap";
 import { Reports } from "../cssComponents/Reports";
 import { IOverviewComponentState, IResults } from "../models/IOverviewComponentState";
 import { Bar, Line, Pie } from "react-chartjs-2";
@@ -124,9 +124,9 @@ class OverviewComponent extends Component<any, IOverviewComponentState>
         return (
             <Fragment>
                 <Reports.SECTION>
-                    <Link to="/report"><button>Trade Report</button></Link>
-                    <Link to="/overview"><button>Overview</button></Link>
-                    <Link to="/strategies"><button>Strategies</button></Link>
+                    <Link to="/report"><Reports.BUTTON>Trade Report</Reports.BUTTON></Link>
+                    <Link to="/overview"><Reports.BUTTON>Overview</Reports.BUTTON></Link>
+                    <Link to="/strategies"><Reports.BUTTON>Strategies</Reports.BUTTON></Link>
                     <Row>
                         <Col
                             xs="3"
@@ -148,7 +148,7 @@ class OverviewComponent extends Component<any, IOverviewComponentState>
                             {months.map((month: string, index: number) =>
                             {
                                 return (
-                                    <Button
+                                    <Reports.BUTTON
                                         key={uuid()}
                                         onClick={() =>
                                         {
@@ -161,7 +161,7 @@ class OverviewComponent extends Component<any, IOverviewComponentState>
                                         disabled={this.state.month === index + 1}
                                     >
                                         {month}
-                                    </Button>
+                                    </Reports.BUTTON>
                                 );
                             })}
                         </Col>
@@ -240,7 +240,7 @@ class OverviewComponent extends Component<any, IOverviewComponentState>
                                 <Col
                                     xs="2"
                                 >
-                                    <Pie 
+                                    <Pie
                                         data={{
                                             labels: ["Long", "Short"],
                                             datasets: [{
