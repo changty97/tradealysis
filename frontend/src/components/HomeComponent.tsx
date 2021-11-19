@@ -18,7 +18,7 @@ class HomeComponent extends Component<any, IHomeComponent>
             reportsId: null,
             sessionList: []
         };
-		this.updateSessionList = this.updateSessionList.bind(this);
+        this.updateSessionList = this.updateSessionList.bind(this);
     }
 
     componentDidMount(): void
@@ -26,9 +26,10 @@ class HomeComponent extends Component<any, IHomeComponent>
         this.updateSessionList();
     }
 	
-	private async updateSessionList(): Promise<void> {
-		const theKey = localStorage.getItem("Key");
-		return await api.get("userSessionsGet", {
+    private async updateSessionList(): Promise<void>
+    {
+        const theKey = localStorage.getItem("Key");
+        return await api.get("userSessionsGet", {
             params: {
                 key: `${theKey}`,
             }
@@ -37,12 +38,12 @@ class HomeComponent extends Component<any, IHomeComponent>
             this.setState({
                 sessionList: response.data
             });
-			return;
+            return;
         }).catch((err) =>
         {
             console.error(err);
         });
-	}
+    }
 	
     private clickReportIcon(sessionID: string):void
     {
@@ -69,39 +70,44 @@ class HomeComponent extends Component<any, IHomeComponent>
         {
 		  if (result.isConfirmed)
             {
-				const theKey = localStorage.getItem("Key");
-				const reportVal = localStorage.getItem("reportsId");
-				if (reportVal === sessionID)
-				{
-					localStorage.removeItem("reportsId");
-				}
+                const theKey = localStorage.getItem("Key");
+                const reportVal = localStorage.getItem("reportsId");
+                if (reportVal === sessionID)
+                {
+                    localStorage.removeItem("reportsId");
+                }
 				 api.get("removeSessionForUser", {
-					params: {
-						key: `${theKey}`,
-						session: `${sessionID}`,
-					}
-				}).then((response) =>
-				{
-					Swal.fire(
-					{
-						title: 'Removed: ' + sessionID,
-						timer: 600,
-						showConfirmButton: false,
-					})
-					.then(() => {
-						return this.updateSessionList();
-					});
-				});
+                    params: {
+                        key: `${theKey}`,
+                        session: `${sessionID}`,
+                    }
+                }).then((response) =>
+                {
+                    Swal.fire(
+                        {
+                            title: `Removed: ${  sessionID}`,
+                            timer: 600,
+                            showConfirmButton: false,
+                        })
+                        .then(() =>
+                        {
+                            return this.updateSessionList();
+                        });
+                });
 		  }
-			else
-			{
-				Swal.fire({title:'Not Removed: ' + sessionID, timer:600,showConfirmButton: false,});
-			}
+            else
+            {
+                Swal.fire({
+                    title: `Not Removed: ${  sessionID}`,
+                    timer: 600,
+                    showConfirmButton: false
+                });
+            }
         })
-		.catch((err) =>
-		{
-			console.error(err);
-		});
+            .catch((err) =>
+            {
+                console.error(err);
+            });
     }
 
     render(): JSX.Element

@@ -155,7 +155,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                 {
                     return ( <img src={DeleteIcon} alt="Del" onClick={() => this.deleteItemFromDB(props.rowKeyValue)} /> );
                 }
-				return undefined;
+                return undefined;
             }
         },
         // Allows keyboard tab navigation
@@ -261,51 +261,55 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
 
     private deleteItemFromDB(val:number): void
     {
-		Swal.fire({
+        Swal.fire({
 		  title: 'Are you sure you want to delete this row',
 		  showDenyButton: true,
 		  showCancelButton: false,
 		  confirmButtonText: 'Yes',
 		  denyButtonText: `No`,
-		}).then((result) => {
-		  if (result.isConfirmed) {
-			Swal.fire({
-				title:'Removed', 
-				timer:500, 
-				showCancelButton: false,
-				showConfirmButton: false
-			})
-			.then(() => {
-				const theKey = localStorage.getItem("Key");
-				this.dispatch(deleteRow(val));
-				api.get("usernameFromKeyGET", {
-					params: {
-						key: `${theKey}`,
-					}
-				})
-					.then((uret: AxiosResponse<string>) =>
-					{
-						api.post("removeTheItemGet", {
-							data: {
-								item: val,
-								coll: `${uret.data}_${  this.state.reportsId}`,
-							}
-						});
-					});
-			});
-		  } 
-		  else {
-			Swal.fire({
-				title:'Not Removed', 
-				timer:500, 
-				showConfirmButton: false,
-			})
+        }).then((result) =>
+        {
+		  if (result.isConfirmed)
+            {
+                Swal.fire({
+                    title: 'Removed',
+                    timer: 500,
+                    showCancelButton: false,
+                    showConfirmButton: false
+                })
+                    .then(() =>
+                    {
+                        const theKey = localStorage.getItem("Key");
+                        this.dispatch(deleteRow(val));
+                        api.get("usernameFromKeyGET", {
+                            params: {
+                                key: `${theKey}`,
+                            }
+                        })
+                            .then((uret: AxiosResponse<string>) =>
+                            {
+                                api.post("removeTheItemGet", {
+                                    data: {
+                                        item: val,
+                                        coll: `${uret.data}_${  this.state.reportsId}`,
+                                    }
+                                });
+                            });
+                    });
 		  }
-		})
-		.catch((err: Error) =>
-		{
-			return Promise.reject(err);
-		});
+		  else
+            {
+                Swal.fire({
+                    title: 'Not Removed',
+                    timer: 500,
+                    showConfirmButton: false,
+                });
+		  }
+        })
+            .catch((err: Error) =>
+            {
+                return Promise.reject(err);
+            });
 
     }
 	
