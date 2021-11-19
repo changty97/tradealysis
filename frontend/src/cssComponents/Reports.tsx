@@ -4,9 +4,9 @@ import { Component } from "react";
 class Reports extends Component
 {
 	public static readonly SECTION = sty.section ` 
-		height: 70vh;
+		height: 50vh;
 		overflow: auto;
-		margin: 5% 2%;
+		margin: 5% 1%;
 	`;
 	public static readonly TABLE_SECTION = sty.section `
 		border-color: #c1c1c1;

@@ -35,7 +35,10 @@ const tableProps: ITableProps = {
     editingMode: EditingMode.Cell,
     rowKeyField: 'id',
     sortingMode: SortingMode.Single,
-	singleAction: openAllEditors()
+	singleAction: openAllEditors(),
+	virtualScrolling: {
+		enabled: true
+	},
 };
 
 /*

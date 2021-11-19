@@ -1,5 +1,5 @@
-import { AxiosResponse } from "axios";
 import { Component, Fragment } from "react";
+import { AxiosResponse } from "axios";
 import { Home } from "../cssComponents/Home";
 import DataIcon from "../images/dataIcon3.jpg";
 import DataIcon_S from "../images/dataIcon3_Selected.jpg";
@@ -7,6 +7,7 @@ import { IHomeComponent } from "../models/IHomeComponent";
 import { v4 as uuid } from "uuid";
 import { IoIosCloseCircle } from 'react-icons/io';
 import { api } from "../constants/globals";
+import Swal from 'sweetalert2';
 
 class HomeComponent extends Component<any, IHomeComponent>
 {
@@ -50,27 +51,52 @@ class HomeComponent extends Component<any, IHomeComponent>
 	
     private deleteReportIcon(sessionID:string):void
     {
-        const theKey = localStorage.getItem("Key");
-        const reportVal = localStorage.getItem("reportsId");
-		
-        if (reportVal === sessionID)
+        Swal.fire({
+		  title: `Do you want to Delete ${ sessionID}`,
+		  footer: "You won't be able to revert this!",
+		  icon: 'warning',
+		  showDenyButton: true,
+		  showCancelButton: false,
+		  confirmButtonText: 'Yes',
+		  denyButtonText: `No`,
+        }).then((result) =>
         {
-            localStorage.removeItem("reportsId");
-            this.render();
-        }
-		 api.get("removeSessionForUser", {
-            params: {
-                key: `${theKey}`,
-                session: `${sessionID}`,
-            }
-        }).then((response) =>
-        {
-            this.forceUpdate();
-            window.location.href = "/";
-        }).catch((err) =>
-        {
-            console.error(err);
-        });
+		  if (result.isConfirmed)
+            {
+				const theKey = localStorage.getItem("Key");
+				const reportVal = localStorage.getItem("reportsId");
+				if (reportVal === sessionID)
+				{
+					localStorage.removeItem("reportsId");
+					this.render();
+				}
+				 api.get("removeSessionForUser", {
+					params: {
+						key: `${theKey}`,
+						session: `${sessionID}`,
+					}
+				}).then((response) =>
+				{
+					Swal.fire(
+					{
+						title: 'Removed: ' + sessionID,
+						timer: 600,
+					})
+					.then((res) => {
+						this.forceUpdate();
+						window.location.href = "/";
+					});
+				});
+		  }
+			else
+			{
+				Swal.fire({title:'Not Removed: ' + sessionID, timer:600,});
+			}
+        })
+		.catch((err) =>
+		{
+			console.error(err);
+		});
     }
 
     render(): JSX.Element

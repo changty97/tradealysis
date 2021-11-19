@@ -1,9 +1,12 @@
 import { Component, Fragment } from "react";
+//import { AxiosResponse } from "axios";
 import { IReportsProps } from "../models/IReportsProps";
 import { IReportsState } from "../models/IReportsState";
 import { SheetComponent } from "../components/SheetComponent";
 import { Link } from "react-router-dom";
 import { Reports } from "../cssComponents/Reports";
+//import { api } from "../constants/globals";
+//import axios from "axios";
 
 class ReportsComponent extends Component<IReportsProps, IReportsState>
 {
@@ -11,7 +14,7 @@ class ReportsComponent extends Component<IReportsProps, IReportsState>
     {
         super(props);
         this.state = {
-            reportsId: null
+            reportsId: null,
         };
     }
     componentDidMount(): void
@@ -26,7 +29,7 @@ class ReportsComponent extends Component<IReportsProps, IReportsState>
         });
     }
 	
-    render(): JSX.Element
+    render(): JSX.Element | null
     {
         return (
             <Fragment>
@@ -34,7 +37,7 @@ class ReportsComponent extends Component<IReportsProps, IReportsState>
                     <Link to="/report"><Reports.BUTTON>Trade Report</Reports.BUTTON></Link>
                     <Link to="/overview"><Reports.BUTTON>Overview</Reports.BUTTON></Link>
                     <Link to="/strategies"><Reports.BUTTON>Strategies</Reports.BUTTON></Link>
-                    <SheetComponent/>
+                    <SheetComponent />
                 </Reports.SECTION>
             </Fragment>
         );

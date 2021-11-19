@@ -1,5 +1,6 @@
 import "ka-table/style.css";
 import { Component, Fragment } from "react";
+import { AxiosResponse } from "axios";
 import { kaReducer, Table } from 'ka-table';
 import { CSVLink } from 'react-csv';
 import { kaPropsUtils } from 'ka-table/utils';
@@ -16,6 +17,7 @@ import { clearFocused, moveFocusedDown, moveFocusedLeft,
 import DeleteIcon from "../images/deleteImg.svg";
 import { Reports } from "../cssComponents/Reports";
 import { api } from "../constants/globals";
+import Swal from 'sweetalert2';
 
 class SheetComponent extends Component<ISheetComponentProps, ISheetComponentState>
 {
@@ -41,56 +43,63 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
     /** Loads items onto reports page **/
     private loadSheet(): void
     {
-        api.get("stockdataGet", {
+        const theKey = localStorage.getItem("Key");
+        api.get("usernameFromKeyGET", {
             params: {
-                coll: `${this.state.reportsId }_stock_data`,
+                key: `${theKey}`,
             }
-        })
-            .then((response) =>
-            {
-                const allArrVals = [];
-                const theArr = response.data as Array<any>;
-                if (theArr && theArr.length > 0)
-                {
-                    this.dispatch(showLoading());
-                    for (let i = 0; i < theArr.length; i++)
-                    {
-                        const valsToInsert = {
-                        };
-                        for (const [key, value] of Object.entries(theArr[i]))
-                        {
-                            const theKey = key;
-                            if (theKey === '_id')
-                            {
-                                continue;
-                            }
-                            const theValue = value;
-                            Object.defineProperty(valsToInsert, theKey, {
-                                value: theValue,
-                                writable: true,
-                                enumerable: true
-                            });
-                        }
-                        allArrVals.push(valsToInsert);
-                    }
-                    const theidDesc = Object.getOwnPropertyDescriptor(allArrVals[allArrVals.length - 1], 'id');
-                    this.setState({
-                        lastRowId: theidDesc!.value
-                    });
-                    this.dispatch(updateData(allArrVals));
-                    this.dispatch(hideLoading());
-                }
-                else
-                {
-                    this.setState({
-                        lastRowId: -1
-                    });
+        }).then((uret: AxiosResponse<string>) =>
+        {
+            api.get("stockdataGet", {
+                params: {
+                    coll: `${uret.data}_${  this.state.reportsId}`,
                 }
             })
-            .catch(function(error)
+                .then((response: AxiosResponse<string[]>) =>
+                {
+                    const allArrVals = [];
+                    const theArr = response.data;
+                    if (theArr && theArr.length > 0)
+                    {
+                        this.dispatch(showLoading());
+                        for (let i = 0; i < theArr.length; i++)
+                        {
+                            const valsToInsert = {
+                            };
+                            for (const [key, value] of Object.entries(theArr[i]))
+                            {
+                                const theKey = key;
+                                if (theKey === '_id')
+                                {
+                                    continue;
+                                }
+                                const theValue = value;
+                                Object.defineProperty(valsToInsert, theKey, {
+                                    value: theValue,
+                                    writable: true,
+                                    enumerable: true
+                                });
+                            }
+                            allArrVals.push(valsToInsert);
+                        }
+                        const theidDesc = Object.getOwnPropertyDescriptor(allArrVals[allArrVals.length - 1], 'id');
+                        this.setState({
+                            lastRowId: theidDesc!.value
+                        });
+                        this.dispatch(updateData(allArrVals));
+                        this.dispatch(hideLoading());
+                    }
+                    else
+                    {
+                        this.setState({
+                            lastRowId: -1
+                        });
+                    }
+                });
+        })
+            .catch((error) =>
             {
                 console.log('Error', error);
-				
             });
     }
 
@@ -106,24 +115,39 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
     private saveTable(): void
     {
         const tableData = this.state.tableProps.data;
-        console.log(tableData);
-        console.log(tableData!.length);
-        api.post("postTableDB", {
-            data: {
-                table: tableData,
-                coll: `${this.state.reportsId  }_stock_data`,
+        const theKey = localStorage.getItem("Key");
+        api.get("usernameFromKeyGET", {
+            params: {
+                key: `${theKey}`,
             }
-        }).then(function(response)
-        {
-            return;
-        }).catch(function(error)
-        {
-            console.log('Error', error);
-        });
+        })
+            .then((uret: AxiosResponse<string>) =>
+            {
+                api.post("postTableDB", {
+                    data: {
+                        table: tableData,
+                        coll: `${uret.data  }_${  this.state.reportsId}`,
+                    }
+                }).then(function(response)
+                {
+                    return;
+                });
+            })
+            .catch((error)=>
+            {
+                console.log('Error', error);
+            });
     }
 
     childComponents: ChildComponents = {
         // Delete column icon (on far right)
+        tableWrapper: {
+            elementAttributes: () => ({
+                style: {
+                    maxHeight: 600
+                }
+            })
+        },
         cellText: {
             content: props =>
             {
@@ -131,7 +155,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                 {
                     return ( <img src={DeleteIcon} alt="Del" onClick={() => this.deleteItemFromDB(props.rowKeyValue)} /> );
                 }
-                return;
+				return undefined;
             }
         },
         // Allows keyboard tab navigation
@@ -237,17 +261,43 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
 
     private deleteItemFromDB(val:number): void
     {
-        this.dispatch(deleteRow(val));
-        api.post("removeTheItemGet", {
-            data: {
-                item: val,
-                coll: `${this.state.reportsId  }_stock_data`,
-            }
-	    })
-            .catch((err: Error) =>
-            {
-                return Promise.reject(err);
-            });
+		Swal.fire({
+		  title: 'Are you sure you want to delete this row',
+		  showDenyButton: true,
+		  showCancelButton: false,
+		  confirmButtonText: 'Yes',
+		  denyButtonText: `No`,
+		}).then((result) => {
+		  if (result.isConfirmed) {
+			Swal.fire({title:'Removed', timer:500})
+			.then(() => {
+				const theKey = localStorage.getItem("Key");
+				this.dispatch(deleteRow(val));
+				api.get("usernameFromKeyGET", {
+					params: {
+						key: `${theKey}`,
+					}
+				})
+					.then((uret: AxiosResponse<string>) =>
+					{
+						api.post("removeTheItemGet", {
+							data: {
+								item: val,
+								coll: `${uret.data}_${  this.state.reportsId}`,
+							}
+						});
+					});
+			});
+		  } 
+		  else {
+			Swal.fire({title:'Not Removed', timer:500})
+		  }
+		})
+		.catch((err: Error) =>
+		{
+			return Promise.reject(err);
+		});
+
     }
 	
     public render() : JSX.Element
