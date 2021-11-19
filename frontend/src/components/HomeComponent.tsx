@@ -81,6 +81,7 @@ class HomeComponent extends Component<any, IHomeComponent>
 					{
 						title: 'Removed: ' + sessionID,
 						timer: 600,
+						showConfirmButton: false,
 					})
 					.then((res) => {
 						this.forceUpdate();
@@ -90,7 +91,7 @@ class HomeComponent extends Component<any, IHomeComponent>
 		  }
 			else
 			{
-				Swal.fire({title:'Not Removed: ' + sessionID, timer:600,});
+				Swal.fire({title:'Not Removed: ' + sessionID, timer:600,showConfirmButton: false,});
 			}
         })
 		.catch((err) =>

@@ -269,7 +269,12 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
 		  denyButtonText: `No`,
 		}).then((result) => {
 		  if (result.isConfirmed) {
-			Swal.fire({title:'Removed', timer:500})
+			Swal.fire({
+				title:'Removed', 
+				timer:500, 
+				showCancelButton: false,
+				showConfirmButton: false
+			})
 			.then(() => {
 				const theKey = localStorage.getItem("Key");
 				this.dispatch(deleteRow(val));
@@ -290,7 +295,11 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
 			});
 		  } 
 		  else {
-			Swal.fire({title:'Not Removed', timer:500})
+			Swal.fire({
+				title:'Not Removed', 
+				timer:500, 
+				 showConfirmButton: false,
+			})
 		  }
 		})
 		.catch((err: Error) =>
