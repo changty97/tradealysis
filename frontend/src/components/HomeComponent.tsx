@@ -74,7 +74,6 @@ class HomeComponent extends Component<any, IHomeComponent>
 				if (reportVal === sessionID)
 				{
 					localStorage.removeItem("reportsId");
-					this.render();
 				}
 				 api.get("removeSessionForUser", {
 					params: {
