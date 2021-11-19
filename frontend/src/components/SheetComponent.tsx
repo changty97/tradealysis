@@ -298,7 +298,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
 			Swal.fire({
 				title:'Not Removed', 
 				timer:500, 
-				 showConfirmButton: false,
+				showConfirmButton: false,
 			})
 		  }
 		})
