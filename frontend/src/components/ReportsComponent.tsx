@@ -11,7 +11,7 @@ class ReportsComponent extends Component<IReportsProps, IReportsState>
     {
         super(props);
         this.state = {
-            reportsId: null
+            reportsId: null,
         };
     }
     componentDidMount(): void
@@ -26,7 +26,7 @@ class ReportsComponent extends Component<IReportsProps, IReportsState>
         });
     }
 	
-    render(): JSX.Element
+    render(): JSX.Element | null
     {
         return (
             <Fragment>
@@ -34,7 +34,7 @@ class ReportsComponent extends Component<IReportsProps, IReportsState>
                     <Link to="/report"><Reports.BUTTON>Trade Report</Reports.BUTTON></Link>
                     <Link to="/overview"><Reports.BUTTON>Overview</Reports.BUTTON></Link>
                     <Link to="/strategies"><Reports.BUTTON>Strategies</Reports.BUTTON></Link>
-                    <SheetComponent/>
+                    <SheetComponent />
                 </Reports.SECTION>
             </Fragment>
         );
