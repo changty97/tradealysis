@@ -1,12 +1,9 @@
 import { Component, Fragment } from "react";
-//import { AxiosResponse } from "axios";
 import { IReportsProps } from "../models/IReportsProps";
 import { IReportsState } from "../models/IReportsState";
 import { SheetComponent } from "../components/SheetComponent";
 import { Link } from "react-router-dom";
 import { Reports } from "../cssComponents/Reports";
-//import { api } from "../constants/globals";
-//import axios from "axios";
 
 class ReportsComponent extends Component<IReportsProps, IReportsState>
 {
