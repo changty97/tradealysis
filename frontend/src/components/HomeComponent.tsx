@@ -18,12 +18,17 @@ class HomeComponent extends Component<any, IHomeComponent>
             reportsId: null,
             sessionList: []
         };
+		this.updateSessionList = this.updateSessionList.bind(this);
     }
 
     componentDidMount(): void
     {
-        const theKey = localStorage.getItem("Key");
-		 api.get("userSessionsGet", {
+        this.updateSessionList();
+    }
+	
+	private async updateSessionList(): Promise<void> {
+		const theKey = localStorage.getItem("Key");
+		return await api.get("userSessionsGet", {
             params: {
                 key: `${theKey}`,
             }
@@ -32,11 +37,12 @@ class HomeComponent extends Component<any, IHomeComponent>
             this.setState({
                 sessionList: response.data
             });
+			return;
         }).catch((err) =>
         {
             console.error(err);
         });
-    }
+	}
 	
     private clickReportIcon(sessionID: string):void
     {
@@ -83,9 +89,8 @@ class HomeComponent extends Component<any, IHomeComponent>
 						timer: 600,
 						showConfirmButton: false,
 					})
-					.then((res) => {
-						this.forceUpdate();
-						window.location.href = "/";
+					.then(() => {
+						return this.updateSessionList();
 					});
 				});
 		  }
