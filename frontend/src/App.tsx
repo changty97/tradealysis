@@ -18,7 +18,8 @@ import { FooterComponent } from "./components/FooterComponent";
 import { FooterLoginComponent } from "./components/FooterLoginComponent";
 import { LandingComponent } from "./components/LandingComponent";
 import { IAppState } from './models/IAppState';
-import axios from "axios";
+import { AxiosResponse } from "axios";
+import { api } from "./constants/globals";
 
 class App extends Component<IReportsProps, IAppState>
 {
@@ -36,12 +37,12 @@ class App extends Component<IReportsProps, IAppState>
         const theKey = localStorage.getItem("Key");
         if (theKey)
         {
-            axios.get('usernameFromKeyGET', {
+            api.get('usernameFromKeyGET', {
                 params: {
                     key: `${theKey}`,
                 }
             })
-                .then((res) =>
+                .then((res: AxiosResponse<string>) =>
                 {
                     if (!res || !res.data || res.data === "")
                     {

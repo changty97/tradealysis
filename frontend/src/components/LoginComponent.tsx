@@ -36,29 +36,32 @@ class LoginComponent extends Component<any, any>
 	            {
                         if (res != null)
                         {
-							let invalidLoginLabel = document.getElementById('Invalid_Login_Mssg');
-							if(invalidLoginLabel) {
-								invalidLoginLabel.style.fontSize='2.3vh';
-								invalidLoginLabel.style.textAlign="center";
-								invalidLoginLabel.style.position = "relative";
-								invalidLoginLabel.style.top = "3%";
-							}
+                            const invalidLoginLabel = document.getElementById('Invalid_Login_Mssg');
+                            if (invalidLoginLabel)
+                            {
+                                invalidLoginLabel.style.fontSize = '2.3vh';
+                                invalidLoginLabel.style.textAlign = "center";
+                                invalidLoginLabel.style.position = "relative";
+                                invalidLoginLabel.style.top = "3%";
+                            }
                             if (res.data !== "" && res.data)
                             {
-								if(invalidLoginLabel) {
-									invalidLoginLabel.innerHTML = "Logging In...";
-									invalidLoginLabel.style.color = "green";
-								}
+                                if (invalidLoginLabel)
+                                {
+                                    invalidLoginLabel.innerHTML = "Logging In...";
+                                    invalidLoginLabel.style.color = "green";
+                                }
                                 this.setLocalStorageStateKey(res.data);
-                                window.location.href="/";
+                                window.location.href = "/";
                             }
                             else
                             {
                                 this.setLocalStorageStateKey("");
-								if(invalidLoginLabel) {
-									invalidLoginLabel.innerHTML = "Incorrect Username or Password";
-									invalidLoginLabel.style.color = "red";
-								}
+                                if (invalidLoginLabel)
+                                {
+                                    invalidLoginLabel.innerHTML = "Incorrect Username or Password";
+                                    invalidLoginLabel.style.color = "red";
+                                }
                             }
                         }
 	            })
@@ -108,8 +111,8 @@ class LoginComponent extends Component<any, any>
 	                        <Login.FORGOT_PSSD_BUTTON type="submit" onClick={this.loginKey}>Login</Login.FORGOT_PSSD_BUTTON>
 	                            <Login.FORGOT_PSSD_BUTTON>Forgot Password?</Login.FORGOT_PSSD_BUTTON>
 	                            <Login.FORGOT_PSSD_BUTTON type="submit" onClick={this.signupKey}>Sign Up</Login.FORGOT_PSSD_BUTTON>
-							</Login.LOGIN_BUTTON>
-							<label id='Invalid_Login_Mssg'></label>
+                        </Login.LOGIN_BUTTON>
+                        <label id='Invalid_Login_Mssg'></label>
 	                </Login.LOGIN_BOX>
 	            </Login.SECTION>
 	        </Fragment>
