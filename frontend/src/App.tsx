@@ -36,7 +36,7 @@ class App extends Component<IReportsProps, IAppState>
         const theKey = localStorage.getItem("Key");
         if (theKey)
         {
-            axios.get('http://localhost:3001/usernameFromKeyGET', {
+            axios.get('usernameFromKeyGET', {
                 params: {
                     key: `${theKey}`,
                 }
