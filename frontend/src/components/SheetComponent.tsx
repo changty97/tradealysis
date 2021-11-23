@@ -331,7 +331,6 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                     onClick={() =>
                     {
                         const id = this.generateNewId(); const newRow = { id };
-						console.log("Onclick: " + this.state.lastRowId);
                         this.dispatch(insertRow(newRow, { rowKeyValue: this.state.lastRowId, insertRowPosition: InsertRowPosition.after }));
                     }} >
                     New Row
@@ -350,8 +349,6 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
         this.setState((prevState) => ({ ...prevState, ...{ tableProps: kaReducer(prevState.tableProps, action) } }));
         if ((action.columnKey === "Ticker" || action.columnKey === "DOI") && action.type === "UpdateCellValue")
         {
-            alert("Ticker");
-			console.log(action.rowKeyValue + " ");
             const cell = { columnKey: action.columnKey, rowKeyValue: action.rowKeyValue }; this.getTicker(cell);
         }
     }
