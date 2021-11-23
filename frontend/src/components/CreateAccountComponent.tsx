@@ -1,6 +1,7 @@
 import { Component, Fragment } from "react";
 import { AccountSettings } from "../cssComponents/AccountSettings";
 import { api } from "../constants/globals";
+import Swal from 'sweetalert2'
 
 class CreateAccountComponent extends Component<any, any>
 {
@@ -27,7 +28,7 @@ class CreateAccountComponent extends Component<any, any>
 	**/
     private createAccount(): void
     {
-        if (document != null)
+        if (document)
 	    {
             const userName  = (document.getElementById(`myUsername`) as HTMLInputElement);
 	        const passWord  = (document.getElementById(`myPassword`) as HTMLInputElement);
@@ -37,11 +38,15 @@ class CreateAccountComponent extends Component<any, any>
             const phoneNum  = (document.getElementById(`myPhone`) as HTMLInputElement);
             const myBdate   = (document.getElementById(`myDate`) as HTMLInputElement);
 			
-            if (userName !== null && passWord !== null && firstName !== null &&
-			   lastName !== null && emailAddr !== null && phoneNum !== null &&
-			   myBdate !== null)
+            if (userName && passWord && firstName && lastName && emailAddr && phoneNum && myBdate)
             {
-                if (userName.value.length > 0 && passWord.value.length > 0)
+				if(userName.value.length === 0 && passWord.value.length === 0) {
+					Swal.fire({ title: 'Specify a Username & Password', icon: 'error', timer: 1000, showCancelButton: false, showConfirmButton: false });
+				}
+				else if(userName.value.length === 0 || passWord.value.length === 0) {
+					Swal.fire({ title: (userName.value.length === 0)?'Input a Username':'Input a Password', icon: 'error', timer: 1000, showCancelButton: false, showConfirmButton: false });
+				}
+                else if (userName.value.length > 0 && passWord.value.length > 0)
                 {
                     api.post('createAccountPost',
                         {
@@ -55,14 +60,21 @@ class CreateAccountComponent extends Component<any, any>
                                 bdate: myBdate.value
                             }
                         })
-                        .then(res =>
-                        {
-                            window.location.href = ((res !== null && res.data) ? "/login" : "/createaccount");
-                        })
-                        .catch((err: Error) =>
-                        {
-                            return Promise.reject(err);
-                        });
+                        .then(res => 
+						{							
+							if(res) {
+								if(res.data) {
+									window.location.href = "/login"
+								}
+								else {
+									Swal.fire({ title: 'Account Already Exists with this Username', icon: 'error', timer: 1300, showCancelButton: false, showConfirmButton: false })
+									.then(() => {
+										window.location.href = "/createaccount"
+									});
+								}
+							}
+							
+						}).catch((err: Error) => { console.log(err); });
                 }
             }
 	    }
@@ -70,32 +82,36 @@ class CreateAccountComponent extends Component<any, any>
 	
     render(): JSX.Element
     {
-	    return (
-	        <Fragment>
+        return (
+            <Fragment>
                 <AccountSettings.SECTION>
-                    <AccountSettings.ACCOUNT_LIST>
-                        <AccountSettings.UL_HORIZ_LIST><AccountSettings.UL_HORIZ_LIST_LI>Create Account</AccountSettings.UL_HORIZ_LIST_LI></AccountSettings.UL_HORIZ_LIST>
+                    <AccountSettings.SECTION_INNER>
+                        <div><AccountSettings.AS_LABEL>Create New Account</AccountSettings.AS_LABEL><hr/></div>
                         <AccountSettings.FORM_DIV>
-                            <AccountSettings.LABEL>Username:</AccountSettings.LABEL>
-                            <AccountSettings.INPUT type="text" name="myUsername" id="myUsername"/>
-                            <AccountSettings.LABEL>Password:</AccountSettings.LABEL>
-                            <AccountSettings.INPUT type="password" name="myPassword" id="myPassword"/>
-                            <AccountSettings.LABEL>First Name:</AccountSettings.LABEL>
-                            <AccountSettings.INPUT type="text" name="myFName" id="myFName"/>
-                            <AccountSettings.LABEL>Last Name:</AccountSettings.LABEL>
-                            <AccountSettings.INPUT type="text" name="myLName" id="myLName"/>
-                            <AccountSettings.LABEL>E-mail:</AccountSettings.LABEL>
-                            <AccountSettings.INPUT type="email" name="myEmail" id="myEmail" />
-                            <AccountSettings.LABEL>Phone:</AccountSettings.LABEL>
-                            <AccountSettings.INPUT type="tel" name="Phone" id="myPhone"/>
-                            <AccountSettings.LABEL>Birth Date:</AccountSettings.LABEL>
-                            <AccountSettings.INPUT type="date" name="myDate" id="myDate"/><br/>
-                            <AccountSettings.INPUT_LAST_OF_TYPE id="mySubmit" type="Submit" onClick={this.createAccount} value="Submit"/>
+                            <AccountSettings.FORM_DIV_ITEM1>
+                                <AccountSettings.LABEL>Username *</AccountSettings.LABEL>
+                                <AccountSettings.LABEL>Password *</AccountSettings.LABEL>
+                                <AccountSettings.LABEL>First Name</AccountSettings.LABEL>
+                                <AccountSettings.LABEL>Last Name</AccountSettings.LABEL>
+                                <AccountSettings.LABEL>E-mail</AccountSettings.LABEL>
+                                <AccountSettings.LABEL>Phone</AccountSettings.LABEL>
+                                <AccountSettings.LABEL>Birth Date</AccountSettings.LABEL>
+                            </AccountSettings.FORM_DIV_ITEM1>
+                            <AccountSettings.FORM_DIV_ITEM1>
+                                <AccountSettings.INPUT type="text" name="myUsername" id="myUsername" />
+                                <AccountSettings.INPUT type="password" name="myPassword" id="myPassword"/>
+                                <AccountSettings.INPUT type="text" name="myFName" id="myFName"/>
+                                <AccountSettings.INPUT type="text" name="myLName" id="myLName"/>
+                                <AccountSettings.INPUT type="email" name="myEmail" id="myEmail" />
+                                <AccountSettings.INPUT type="tel" name="Phone" id="myPhone"/>
+                                <AccountSettings.INPUT type="date" name="myDate" id="myDate"/>
+                            </AccountSettings.FORM_DIV_ITEM1>
                         </AccountSettings.FORM_DIV>
-                    </AccountSettings.ACCOUNT_LIST>
+                        <div> <AccountSettings.SUBMIT_BUTTON id="mySubmit" type="Submit" onClick={this.createAccount} value="Submit"/> </div>
+                    </AccountSettings.SECTION_INNER>
                 </AccountSettings.SECTION>
             </Fragment>
-	    );
+        );
     }
 }
 export { CreateAccountComponent };

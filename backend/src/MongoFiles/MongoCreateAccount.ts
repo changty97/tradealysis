@@ -69,7 +69,7 @@ async function createAccount(username: string, password: string, fName: string, 
                                                 },
                                                 {
                                                     $push: {
-                                                        "session_ids": `${username}_1`
+                                                        "session_ids": `myData`
                                                     }
                                                 },
                                             ).then(()=>

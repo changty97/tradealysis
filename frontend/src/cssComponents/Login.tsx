@@ -27,6 +27,10 @@ class Login extends Component
 		padding: 20px;
 		border-radius: 8px;
 	`;
+	
+	public static readonly WELCOME_LABEL = sty.label `
+		font-weight: bold;
+	`;
 	public static readonly LOGIN_LABEL_DIV = sty.div `
 		display: inline-flex;
 		flex-direction: row;
@@ -94,6 +98,13 @@ class Login extends Component
 			background-image: linear-gradient(rgba(0, 0, 0, 0.4) 0 0);
 			color: white;
 		}
+	`;
+	
+	public static readonly INVALID_LOGIN_MSSG = sty.label `
+		font-size: 2.3vh;
+		text-align: center;
+		position: relative;
+		top: 3%;
 	`;
 }
 export { Login };
