@@ -109,175 +109,147 @@ class AccountSettingsComponent extends Component<any, IAccountSettingsState>
 		
         const theKey = localStorage.getItem("Key");
         
-        if (theKey && userName && passWord && newPassWord && firstName && lastName && emailAddr && phoneNum && myBdate)
+		if (theKey && userName && passWord && newPassWord && firstName && lastName && emailAddr && phoneNum && myBdate)
         {
-            const wasUserNameUpdated = await this.updateUserName(theKey, userName.value);
-            const wasPssdUpdated = await this.updatePssd(theKey, passWord.value, newPassWord.value);
-            const wasAccountDataUpdate = await this.updateUserData(theKey, firstName.value, lastName.value, emailAddr.value, phoneNum.value, myBdate.value);
-            if (wasUserNameUpdated && wasPssdUpdated && wasAccountDataUpdate)
-            {
-                return Swal.fire({
+			const wasUserNameUpdated = await this.updateUserName(theKey, userName.value)
+			const wasPssdUpdated = await this.updatePssd(theKey, passWord.value, newPassWord.value);
+			const wasAccountDataUpdate = await this.updateUserData(theKey, firstName.value, lastName.value, emailAddr.value, phoneNum.value, myBdate.value);
+			if(wasUserNameUpdated && wasPssdUpdated && wasAccountDataUpdate) {
+				return Swal.fire({
 				  icon: 'success',
 				  title: 'Settings Updated!',
 				  showConfirmButton: false,
 				  timer: 1000
-                }).then(() =>
-                {
-                    this.getDataFromBackEnd(); return;
-                });
-            }
-        }
-        return;
+				}).then(() => { this.getDataFromBackEnd(); return; });
+			}
+		}
+		return;
     }
 	
-    public async updateUserName(theKey: string|null, newUsername: string) : Promise<boolean>
-    {
-        return api.get('/usernameFromKeyGET', {
-            params: {
-                key: theKey
-            }
-        }).then((un) =>
-        {
-            if (un && un.data && un.data !== "" )
-            {
-                return api.get('/sameAccountGet', {
-                    params: {
-                        key: theKey,
-                        account: newUsername,
-                    }
-                })
-                    .then((unamesame) =>
-                    {
-                        if (unamesame)
-                        {
-                            if (unamesame.data)
-                            {
-                                return true;
-                            }
-                            else
-                            {
-                                return api.get('/accountExists', {
-                                    params: {
-                                        newAccountName: newUsername
-                                    }
-                                })
-                                    .then((accountExists) =>
-                                    {
-                                        if (accountExists)
-                                        {
-                                            if (accountExists.data)
-                                            {
-                                                return Swal.fire({
-                                                    title: "Sorry, Username already in Use",
-                                                    icon: 'error',
-                                                    timer: 1000,
-                                                    showCancelButton: false,
-                                                }).then(() =>
-                                                {
-                                                    return false;
-                                                });
-                                            }
-                                            else
-                                            {
-                                                return api.get('/changeTheAccountName', {
-                                                    params: {
-                                                        key: theKey,
-                                                        newAccountName: newUsername,
-                                                    }
-                                                }).then(() =>
-                                                {
-                                                    return true;
-                                                });
-                                            }
-                                        }
-                                        return false;
-                                    });
-                            }
-                        }
-                        return false;
-                    });
-            }
-            return false;
-        });
-    }
+	public async updateUserName(theKey: string|null, newUsername: string) : Promise<boolean>
+	{
+		return api.get('/usernameFromKeyGET', {
+				params: {
+					key: theKey
+				}
+			}).then((un) =>
+			{
+				if(un && un.data && un.data !== "" ) {
+					return api.get('/sameAccountGet', {
+						params: {
+							key: theKey,
+							account: newUsername,
+						}
+					})
+					.then((unamesame) =>
+					{
+						if(unamesame) {
+							if(unamesame.data) {
+								return true;
+							}
+							else 
+							{
+								return api.get('/accountExists', {
+									params: {
+										newAccountName:newUsername
+									}
+								})
+								.then((accountExists) =>
+								{
+									if(accountExists) {
+										if(accountExists.data) {
+											return Swal.fire({
+												title: "Sorry, Username already in Use",
+												icon: 'error',
+												timer: 1000,
+												showCancelButton: false,
+											}).then(() => { return false; });
+										}
+										else {
+											return api.get('/changeTheAccountName', {
+												params: {
+													key: theKey,
+													newAccountName: newUsername,
+												}
+											}).then(() => { return true; });
+										}
+									}
+									return false;
+								});
+							}
+						}
+						return false;
+					});
+				}
+				return false;
+			});
+	}	
 	
-    public async updatePssd(theKey: string, oldPssd:string, newPssd:string):Promise<boolean>
-    {
-        if (oldPssd === newPssd && oldPssd === "")
-        {
-            return true;
-        }
-        else if (oldPssd === "" || newPssd === "")
-        {
-            return await Swal.fire({
-                title: (oldPssd === "") ? 'What is Your Current Password?' : 'Whats Your New Password?',
-                icon: 'error',
-                timer: 1000,
-                showCancelButton: false,
-                showConfirmButton: false
-            }).then(() =>
-            {
-                return false;
-            });
-        }
-        else
-        {
-            return await api.get('/changePassword', {
-                params: {
-                    key: theKey,
-                    oldP: oldPssd,
-                    newP: newPssd,
-                }
-            })
-                .then((changedPssd) =>
-                {
-                    if (!changedPssd.data)
-                    {
-                        Swal.fire({
-                            title: 'Incorrect Password',
-                            icon: 'error',
-                            timer: 1000,
-                            showCancelButton: false,
-                            showConfirmButton: false
-                        });
-                        return false;
-                    }
-                    return true;
-                });
-        }
-    }
+	public async updatePssd(theKey: string, oldPssd:string, newPssd:string):Promise<boolean> {
+		if(oldPssd === newPssd && oldPssd === "") {
+			return true;
+		}
+		else if (oldPssd === "" || newPssd === "") {
+			return await Swal.fire({
+                    title: (oldPssd === "")?'What is Your Current Password?':'Whats Your New Password?',
+					icon: 'error',
+                    timer: 1000,
+                    showCancelButton: false,
+                    showConfirmButton: false
+                }).then(() => { return false; });
+		}
+		else {
+			return await api.get('/changePassword', {
+				params: {
+					key: theKey,
+					oldP: oldPssd,
+					newP: newPssd,
+				}
+			})
+			.then((changedPssd) => {
+				if(!changedPssd.data) {
+					Swal.fire({
+						title: 'Incorrect Password',
+						icon: 'error',
+						timer: 1000,
+						showCancelButton: false,
+						showConfirmButton: false
+					});
+					return false;
+				}
+				return true;
+			});
+		}
+	}
 	
-    public async updateUserData(theKey:string, theFirstName:string, theLastName: string, theEmail:string, thePhone:string, theBdate:string) : Promise<boolean>
-    {
-        return await api.get('/changeExtraAccountData', {
-            params: {
-                key: theKey,
-                firstName: theFirstName,
-                lastName: theLastName,
-                email: theEmail,
-                phone: thePhone,
-                bdate: theBdate,
-            }
-        })
-            .then((res)=>
-            {
-                if (!res.data)
-                {
-                    return Swal.fire({
-                        title: 'Error Updating User Data',
-                        icon: 'error',
-                        timer: 1000,
-                        showCancelButton: false,
-                        showConfirmButton: false
-                    })
-                        .then(() =>
-                        {
-                            return false;
-                        });
-                }
-                return true;
-            });
-    }
+	public async updateUserData(theKey:string, theFirstName:string, theLastName: string, theEmail:string, thePhone:string, theBdate:string) : Promise<boolean> {
+		return await api.get('/changeExtraAccountData', {
+				params: {
+					key: theKey,
+					firstName: theFirstName,
+					lastName: theLastName,
+					email: theEmail,
+					phone: thePhone,
+					bdate: theBdate,
+				}
+			})
+			.then((res)=> {
+				if(!res.data) {
+					return Swal.fire({
+						title: 'Error Updating User Data',
+						icon: 'error',
+						timer: 1000,
+						showCancelButton: false,
+						showConfirmButton: false
+					})
+					.then(() => 
+					{
+						return false;
+					});
+				}
+				return true;
+			});
+	}
 	
     render(): JSX.Element
     {
