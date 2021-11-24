@@ -37,6 +37,10 @@ class Reports extends Component
 		text-decoration: none;
 		font-size: 16px;
 		cursor: pointer;
+		float: right; 
+		@media only screen and (max-width: 1204px) { 
+			float: none; 
+		} 
 	`;
 }
 export { Reports };
