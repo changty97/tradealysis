@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 import { Reports } from "../cssComponents/Reports";
 import { IOverviewComponentState, IResults } from "../models/IOverviewComponentState";
 import { Bar, Line, Pie } from "react-chartjs-2";
-import axios, { AxiosResponse } from "axios";
 import { v4 as uuid } from "uuid";
 import { Overview } from "../cssComponents/Overview";
+import { api } from "../constants/globals";
 
 const months: string[] = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dev"];
 
@@ -50,21 +50,20 @@ class OverviewComponent extends Component<any, IOverviewComponentState>
         this.getData();
     }
 
-    getData(): void
+    async getData(): Promise<void>
     {
-        axios.get("http://localhost:3001/getTradesByYear", {
+        const username: string = (await api.get("usernameFromKeyGET", {
             params: {
-                coll: `${localStorage.getItem('reportsId')}_stock_data`,
+                key: localStorage.getItem("Key"),
+            }
+        })).data;
+
+        this.parseData((await api.get("getTradesByYear", {
+            params: {
+                coll: `${username}_${localStorage.getItem('reportsId')}`,
                 year: this.state.year
             }
-        }).then((response: AxiosResponse<any>) =>
-        {
-            this.parseData(response.data);
-
-        }).catch((err: Error) =>
-        {
-            console.error(err);
-        });
+        })).data);
     }
 
     parseData(data: any): void
@@ -189,7 +188,7 @@ class OverviewComponent extends Component<any, IOverviewComponentState>
                                     </Overview.THEAD>
                                     <Overview.TBODY>
                                         <Overview.TR>
-                                            <Overview.TD_COLORED 
+                                            <Overview.TD_COLORED
                                                 value={this.state.results.total}
                                             >
                                                 {formatter.format(this.state.results.total)}
@@ -234,7 +233,10 @@ class OverviewComponent extends Component<any, IOverviewComponentState>
                                                     text: "Accumulated Profit"
                                                 },
                                                 legend: {
-                                                    onClick: () => {}
+                                                    onClick: () =>
+                                                    {
+                                                        return;
+                                                    }
                                                 }
                                             }
                                         }}
@@ -264,7 +266,10 @@ class OverviewComponent extends Component<any, IOverviewComponentState>
                                                     text: "Long / Short"
                                                 },
                                                 legend: {
-                                                    onClick: () => {}
+                                                    onClick: () =>
+                                                    {
+                                                        return;
+                                                    }
                                                 }
                                             }
                                         }}
@@ -288,7 +293,10 @@ class OverviewComponent extends Component<any, IOverviewComponentState>
                                                 text: "Daily P/L"
                                             },
                                             legend: {
-                                                onClick: () => {}
+                                                onClick: () =>
+                                                {
+                                                    return;
+                                                }
                                             }
                                         }
                                     }}

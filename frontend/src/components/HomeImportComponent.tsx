@@ -1,6 +1,5 @@
 import { Component, Fragment } from "react";
 import { Import } from "../cssComponents/Import";
-import axios from "axios";
 import { IHomeImportComponentState } from "../models/IHomeImportComponentState";
 import Dropzone from "react-dropzone";
 import { api } from "../constants/globals";
@@ -44,29 +43,25 @@ class HomeImportComponent extends Component<any, IHomeImportComponentState>
 
         try
         {
-            const parsedData = (await axios({
-                method: "POST",
-                url: "http://localhost:3001/parseCSV",
-                data: formData
+            const parsedData = (await api.post("parseCSV", formData)).data;
+
+            const username: string = (await api.get("usernameFromKeyGET", {
+                params: {
+                    key: localStorage.getItem("Key"),
+                }
             })).data;
 
-            const newCollName: string = (await axios({
-                method: "GET",
-                url: "http://localhost:3001/createNewSessionForUser",
+            const newCollName: string = (await api.get("createNewSessionForUser", {
                 params: {
                     key: localStorage.getItem("Key"),
                     collectionName: this.state.selectedFile.name
                 }
             })).data;
 
-            await axios({
-                method: "POST",
-                url: "http://localhost:3001/postTableDB",
+            await api.post("postTableDB", {
                 data: {
-                    data: {
-                        table: parsedData,
-                        coll: `${newCollName}_stock_data`
-                    }
+                    table: parsedData,
+                    coll: `${username}_${newCollName}`
                 }
             });
 

@@ -26,11 +26,21 @@ class Overview extends Component
 	`;
 
     public static readonly TD_COLORED = sty.td<{ value: number }> `
-        color: ${props => {
-            if (props.value > 0) return "green";
-            else if (props.value < 0) return "red";
-            else return "black";
-        }};
+        color: ${props =>
+    {
+        if (props.value > 0)
+        {
+            return "green";
+        }
+        else if (props.value < 0)
+        {
+            return "red";
+        }
+        else
+        {
+            return "black";
+        }
+    }};
     `;
 
     public static readonly TABLE = sty.table `

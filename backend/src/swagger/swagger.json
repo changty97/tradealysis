@@ -581,15 +581,9 @@
 				]
 			}
 		},
-<<<<<<< HEAD
-		"/getTradesByYear": {
-			"get": {
-				"operationId": "ServiceGetTradesByYear",
-=======
 		"/removeSessionForUser": {
 			"get": {
 				"operationId": "ServiceRemoveSessionForUser",
->>>>>>> jozh-overview-merged
 				"produces": [
 					"application/json"
 				],
@@ -597,11 +591,7 @@
 					"200": {
 						"description": "Ok",
 						"schema": {
-<<<<<<< HEAD
-							"type": "object"
-=======
 							"type": "string"
->>>>>>> jozh-overview-merged
 						}
 					},
 					"400": {
@@ -611,31 +601,58 @@
 						}
 					}
 				},
-<<<<<<< HEAD
-				"description": "",
-=======
 				"description": "Remove Session  *",
->>>>>>> jozh-overview-merged
 				"parameters": [
 					{
 						"description": "",
 						"in": "query",
-<<<<<<< HEAD
-						"name": "coll",
-=======
 						"name": "key",
->>>>>>> jozh-overview-merged
 						"required": true,
 						"type": "string"
 					},
 					{
 						"description": "",
 						"in": "query",
-<<<<<<< HEAD
-						"name": "year",
-=======
 						"name": "session",
->>>>>>> jozh-overview-merged
+						"required": true,
+						"type": "string"
+					}
+				]
+			}
+		},
+		"/getTradesByYear": {
+			"get": {
+				"operationId": "ServiceGetTradesByYear",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"type": "object"
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"schema": {
+							"$ref": "#/definitions/BadRequestError"
+						}
+					}
+				},
+				"description": "",
+				"parameters": [
+					{
+						"description": "",
+						"in": "query",
+						"name": "coll",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"description": "",
+						"in": "query",
+						"name": "year",
 						"required": true,
 						"type": "string"
 					}
