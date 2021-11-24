@@ -1,6 +1,5 @@
 import { Component, Fragment } from "react";
 import { Import } from "../cssComponents/Import";
-import { AxiosResponse } from "axios";
 import { IHomeImportComponentState } from "../models/IHomeImportComponentState";
 import Dropzone from "react-dropzone";
 import { api } from "../constants/globals";
@@ -30,7 +29,7 @@ class HomeImportComponent extends Component<any, IHomeImportComponentState>
         }
     }
     
-    importFile(): void
+    async importFile(): Promise<void>
     {
         if (!this.state.selectedFile)
         {
@@ -42,20 +41,38 @@ class HomeImportComponent extends Component<any, IHomeImportComponentState>
         formData.append("sourceName", "TDAmeritrade");
         formData.append("file", this.state.selectedFile);
 
-        api.post("parseCSV", {
-            data: formData
-        }).then((response: AxiosResponse<any>) =>
+        try
         {
-            console.log(response.data);
-            // TODO: Add verification of data step
-            // TODO: After verifying data, upload data to database
-        }).catch((err) =>
+            const parsedData = (await api.post("parseCSV", formData)).data;
+
+            const username: string = (await api.get("usernameFromKeyGET", {
+                params: {
+                    key: localStorage.getItem("Key"),
+                }
+            })).data;
+
+            const newCollName: string = (await api.get("createNewSessionForUser", {
+                params: {
+                    key: localStorage.getItem("Key"),
+                    collectionName: this.state.selectedFile.name
+                }
+            })).data;
+
+            await api.post("postTableDB", {
+                data: {
+                    table: parsedData,
+                    coll: `${username}_${newCollName}`
+                }
+            });
+
+            localStorage.setItem("reportsId", newCollName);
+        }
+        catch (err)
         {
             console.error(err);
-        }).finally(() =>
-        {
-            // TODO: Redirect to home.
-        });
+        }
+
+        window.location.href = "/report";
     }
 
     onDrop(files: any): void
