@@ -7,7 +7,7 @@ import { correctLoginKey, userFromKey } from "../MongoFiles/MongoLogin";
 import { createAccount } from "../MongoFiles/MongoCreateAccount";
 import { getStockData, retrieveYahooData } from "../stockapi";
 import { ITableData } from "../models/ITableData";
-import { accountValuesFromKey } from "../MongoFiles/MongoAccountSettings";
+import { accountValuesFromKey, doesThisAccountExist, sameAccount, modifyAccountName, changePssd, changeUserAccount } from "../MongoFiles/MongoAccountSettings";
 import { allUserSessions, createNewSession, removeSession } from "../MongoFiles/MongoReportSessions";
 import { IStockData } from "../models/IStockData";
 
@@ -105,8 +105,43 @@ export class ServiceController
 	    return await accountValuesFromKey(key);
 	}
 	
+	/** For Account Settings. Sees if @param account is the same name as uname associated with @param key **/
+	@Path("/sameAccountGet")
+	@GET
+	public async sameAccountGet(@QueryParam("key") key:string, @QueryParam("account") account:string):Promise<boolean>
+	{
+	    return await sameAccount(key, account);
+	}
 	
-
+	@Path("/accountExists")
+	@GET
+	public async accountExists(@QueryParam("newAccountName") newAccountName:string):Promise<boolean>
+	{
+	    return await doesThisAccountExist(newAccountName);
+	}
+	
+	@Path("/changeTheAccountName")
+	@GET
+	public async changeTheAccountName(@QueryParam("key") key:string, @QueryParam("newAccountName") newAccountName:string):Promise<void>
+	{
+	    return await modifyAccountName(key, newAccountName);
+	}
+	
+	@Path("/changePassword")
+	@GET
+	public async changePassword(@QueryParam("key") key:string, @QueryParam("oldP") oldP:string, @QueryParam("newP") newP:string): Promise<boolean>
+	{
+	    return await changePssd(key, oldP, newP);
+	}
+	
+	@Path("/changeExtraAccountData")
+	@GET
+	public async changeExtraAccountData(@QueryParam("key") key:string, @QueryParam("firstName") firstName:string, @QueryParam("lastName") lastName:string,
+									    @QueryParam("email") email:string, @QueryParam("phone") phone:string, @QueryParam("bdate") bdate:string): Promise<boolean>
+	{
+	    return await changeUserAccount(key, firstName, lastName, email, phone, bdate);
+	}
+	
 	/** Remove data item based on id **/
 	@Path("/removeTheItemGet")
 	@POST

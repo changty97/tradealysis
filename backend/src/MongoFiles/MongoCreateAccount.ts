@@ -35,7 +35,7 @@ async function createAccount(username: string, password: string, fName: string, 
                     "pssd": password
                 }).then((res2)=>
                 {
-                    if (res2 !== null && res2.insertedId !== null)
+                    if (res2 && res2.insertedId)
                     {
                         return theCollectionAccountTable.insertOne(
                             {
@@ -48,7 +48,7 @@ async function createAccount(username: string, password: string, fName: string, 
                             }
                         ).then((res3)=>
                         {
-                            if (res3 !== null && res3.insertedId !== null)
+                            if (res3 && res3.insertedId)
                             {
                                 const originalKey = `${username}_key`;
                                 return theCollectionKeyTable.insertOne({
@@ -69,7 +69,7 @@ async function createAccount(username: string, password: string, fName: string, 
                                                 },
                                                 {
                                                     $push: {
-                                                        "session_ids": `${username}_1`
+                                                        "session_ids": `myData`
                                                     }
                                                 },
                                             ).then(()=>
