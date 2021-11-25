@@ -7,7 +7,8 @@ import { kaPropsUtils } from 'ka-table/utils';
 import { InsertRowPosition } from 'ka-table/enums';
 import { ISheetComponentProps } from "../models/ISheetComponentProps";
 import { ISheetComponentState } from "../models/ISheetComponentState";
-import { tableProps, initialReportItems } from "../constants/tableProps";
+import { tableProps } from "../constants/tableProps";
+//import { tableProps, initialReportItems } from "../constants/tableProps";
 import { ChildComponents } from "ka-table/models";
 import { clearFocused, moveFocusedDown, moveFocusedLeft,
     moveFocusedRight, moveFocusedUp, openEditor,
@@ -26,7 +27,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
         super(props);
         this.state = {
             tableProps,
-            lastRowId: initialReportItems,
+            lastRowId: -1,
             reportsId: localStorage.getItem('reportsId')
         };
         this.dispatch = this.dispatch.bind(this);
@@ -41,66 +42,71 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
     }
 
     /** Loads items onto reports page **/
-    private loadSheet(): void
+    private async loadSheet(): Promise<void>
     {
         const theKey = localStorage.getItem("Key");
-        api.get("usernameFromKeyGET", {
+        return api.get("/usernameFromKeyGET", {
             params: {
-                key: `${theKey}`,
+                key: `${theKey}`
             }
-        }).then((uret: AxiosResponse<string>) =>
-        {
-            api.get("stockdataGet", {
-                params: {
-                    coll: `${uret.data}_${  this.state.reportsId}`,
-                }
-            })
-                .then((response: AxiosResponse<string[]>) =>
-                {
-                    const allArrVals = [];
-                    const theArr = response.data;
-                    if (theArr && theArr.length > 0)
-                    {
-                        this.dispatch(showLoading());
-                        for (let i = 0; i < theArr.length; i++)
-                        {
-                            const valsToInsert = {
-                            };
-                            for (const [key, value] of Object.entries(theArr[i]))
-                            {
-                                const theKey = key;
-                                if (theKey === '_id')
-                                {
-                                    continue;
-                                }
-                                const theValue = value;
-                                Object.defineProperty(valsToInsert, theKey, {
-                                    value: theValue,
-                                    writable: true,
-                                    enumerable: true
-                                });
-                            }
-                            allArrVals.push(valsToInsert);
-                        }
-                        const theidDesc = Object.getOwnPropertyDescriptor(allArrVals[allArrVals.length - 1], 'id');
-                        this.setState({
-                            lastRowId: theidDesc!.value
-                        });
-                        this.dispatch(updateData(allArrVals));
-                        this.dispatch(hideLoading());
-                    }
-                    else
-                    {
-                        this.setState({
-                            lastRowId: -1
-                        });
-                    }
-                });
         })
-            .catch((error) =>
+            .then((uret: AxiosResponse<string>) =>
             {
-                console.log('Error', error);
+                return api.get("stockdataGet", {
+                    params: {
+                        coll: `${uret.data}_${  this.state.reportsId}`
+                    }
+                })
+                    .then((response: AxiosResponse<string[]>) =>
+                    {
+                        const allArrVals = []; const theArr = response.data;
+                        if (theArr && theArr.length > 0)
+                        {
+                            this.dispatch(showLoading());
+                            for (let i = 0; i < theArr.length; i++)
+                            {
+                                const valsToInsert = {
+ 
+                                };
+                                for (const [key, value] of Object.entries(theArr[i]))
+                                {
+                                    const theKey = key;
+                                    const theValue = value;
+                                    if (theKey === '_id')
+                                    {
+                                        continue;
+                                    }
+                                    else if (theKey === 'id')
+                                    {
+                                        if (this.state.lastRowId < Number(value))
+                                        {
+                                            this.setState({
+                                                lastRowId: Number(value)
+                                            });
+                                        }
+                                    }
+                                    Object.defineProperty(valsToInsert, theKey, {
+                                        value: theValue,
+                                        writable: true,
+                                        enumerable: true
+                                    });
+                                }
+                                allArrVals.push(valsToInsert);
+                            }
+                            this.dispatch(updateData(allArrVals)); this.dispatch(hideLoading());
+                        }
+                        else
+                        {
+                            this.setState({
+                                lastRowId: -1
+                            });
+                        }
+                    });
+            }).catch((error) =>
+            {
+                Promise.reject(error);
             });
+		
     }
 
     private generateNewId(): number
@@ -118,7 +124,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
         const theKey = localStorage.getItem("Key");
         api.get("usernameFromKeyGET", {
             params: {
-                key: `${theKey}`,
+                key: `${theKey}`
             }
         })
             .then((uret: AxiosResponse<string>) =>
@@ -126,17 +132,217 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                 api.post("postTableDB", {
                     data: {
                         table: tableData,
-                        coll: `${uret.data  }_${  this.state.reportsId}`,
+                        coll: `${uret.data  }_${  this.state.reportsId}`
                     }
-                }).then(function(response)
-                {
-                    return;
                 });
             })
             .catch((error)=>
             {
                 console.log('Error', error);
             });
+    }
+	
+    getTicker(cell: any): void
+    {
+        if (this.state.tableProps.data)
+        {
+            let idx = -1;
+            //console.log("cell rowkey value " + cell.rowKeyValue);
+            //console.log("data array " + this.state.tableProps.data);
+            for (let i = this.state.tableProps.data.length - 1; i >= 0; i--)
+            {
+                const descriptor1 = Object.getOwnPropertyDescriptor(this.state.tableProps.data[i], 'id');
+                if (descriptor1 && descriptor1.value === cell.rowKeyValue)
+                {
+                    idx = Number(i);
+                    const row = this.state.tableProps.data[idx];
+                    const obj = Object.entries(row);
+                    if (row && obj)
+                    {
+                        for (const [key, value] of obj)
+                        {
+                            // return past data using Ticker and DOI value in current row
+                            if (`${key}` === 'Ticker' && `${value}` !== '')
+                            {
+                                if (row.DOI !== undefined && this.isValidDate(row.DOI))
+                                {
+                                    const pastData = this.getPastData(row.Ticker, row.DOI);
+                                    this.setCells(pastData, cell);
+                                }
+                                else
+                                {
+                                    console.log("no doi");
+                                    const todayData = this.getTodayData(row.Ticker);
+                                    this.setCells(todayData, cell);
+                                }
+                            }
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+        // save table each time new data is fetched
+        this.saveTable();
+    }
+	
+    getTodayData(ticker: string): any
+    {
+        return api.get(`/stockapi/${ticker}`, {
+            params: {
+                ID: ticker
+            }
+        }).then((response) =>
+        {
+            return response.data;
+        }).catch(function(error)
+        {
+            console.log('Error', error);
+        });
+    }
+    
+    getPastData(ticker: string, date: string): any
+    {
+        return api.get(`/stockapi/:ID${ticker}/${date}`, {
+            params: {
+                ID: ticker,
+                date: date
+            }
+        })
+            .then((response) =>
+            {
+                return response.data;
+            }).catch(function(error)
+            {
+                console.log('Error', error);
+            });
+    }
+
+    // check YYYY-MM-DD format
+    isValidDate(doi: any): boolean
+    {
+        const regEx = /^\d{4}-\d{2}-\d{2}$/;
+        if (!doi.match(regEx))
+        {
+            return false;
+        }
+        // Invalid format
+        const d = new Date(doi);
+        const dNum = d.getTime();
+        if (!dNum && dNum !== 0)
+        {
+            return false;
+        } // NaN value, Invalid date
+        return d.toISOString().slice(0, 10) === doi;
+    }
+
+    setCells(data: any, cell: any): void
+    {
+        Promise.resolve(data).then((_value) =>
+        {
+            if (this.state.tableProps.data && _value)
+            {
+				
+                let idx = -1;
+                for (let crkv = this.state.tableProps.data.length - 1; crkv >= 0; crkv--)
+                {
+                    const descriptor1 = Object.getOwnPropertyDescriptor(this.state.tableProps.data[crkv], 'id');
+                    if (descriptor1 && descriptor1.value === cell.rowKeyValue)
+                    {
+                        idx = Number(crkv);
+						
+                        const theObj = this.state.tableProps.data[idx];
+                        for (const [k, v] of Object.entries(theObj))
+                        {
+                            const i = theObj;
+                            if (`${k}` === 'Ticker' && `${v}` !== '')
+                            {
+                                for (const [key, val] of Object.entries(_value)) // check each alpha vantage object property
+                                {
+                                    switch (key)
+                                    {
+                                    case "Price": i["Price"] = val; break;
+                                    case "W52H": i["52-WH"] = val; break;
+                                    case "W52L": i["52-WL"] = val; break;
+                                    case "VolAvg": i["VolAvg"] = val; break;
+                                    case "Outstanding": i.Outstanding = val; break;
+                                    case "Float": i.Float = val; break;
+                                    case "Industry": i.Industry = val; break;
+                                    case "PC": i.PC = val; break;
+                                    case "PremHigh": i["PreM High"] = val; break;
+                                    case "Open": i["Open"] = val; break;
+                                    case "HOD": i["HOD"] = val; break;
+                                    case "HODTime": i["HOD-Time"] = val; break;
+                                    case "LOD": i["LOD"] = val;  break;
+                                    case "LODTime": i["LOD-Time"] = val; break;
+                                    case "Close": i["Close"] = val;  break;
+                                    case "AH": i["AH"] = val; break;
+                                    case "VolDOI": i["Vol-DOI"] = val; break;
+                                    case "VolPreM": i["Vol-PreM"] = val;  break;
+                                    default: break;
+                                    }
+                                }
+                            }
+                            // populate calculated data
+                            // Float Rotation = Volume-DOI / Float
+                            i["FloatR"] = parseFloat((i["Vol-DOI"] / i["Float"]).toFixed(4));
+                            // Float Category is defined by size of float
+                            if ( i.Float > 0 && i.Float <= 1000000)
+                            {
+                                i["FloatC"] = "NANO";
+                            }
+                            else if ( i.Float > 1000000 && i.Float <= 2000000)
+                            {
+                                i["FloatC"] = "MICRO";
+                            }
+                            else if ( i.Float > 2000000 && i.Float <= 10000000)
+                            {
+                                i["FloatC"] = "LOW";
+                            }
+                            else if ( i.Float > 10000000 && i.Float <= 20000000)
+                            {
+                                i["FloatC"] = "MEDIUM";
+                            }
+                            else if ( i.Float > 20000000)
+                            {
+                                i["FloatC"] = "HIGH";
+                            }
+                            // MarketCap = price * outstanding
+                            i["MC-Current"] = i["Price"] * i["Outstanding"];
+                            // MarketCap Category
+                            if ( i["MC-Current"] <= 50000000)
+                            {
+                                i["MC-Cat"] = "NANO";
+                            }
+                            else if ( i["MC-Current"] > 50000000 && i["MC-Current"] <= 300000000)
+                            {
+                                i["MC-Cat"] = "MICRO";
+                            }
+                            else if ( i["MC-Current"] > 300000000 && i["MC-Current"] <= 20000000000)
+                            {
+                                i["MC-Cat"] = "SMALL";
+                            }
+                            else if ( i["MC-Current"] > 20000000000 && i["MC-Current"] <= 100000000000)
+                            {
+                                i["MC-Cat"] = "MID";
+                            }
+                            else if ( i["MC-Current"] > 100000000000)
+                            {
+                                i["MC-Cat"] = "LARGE";
+                            }
+
+                            this.setState((prevState) => ({
+                                tableProps: {
+                                    ...prevState.tableProps,
+                                    data: this.state.tableProps.data
+                                }
+                            }));
+                        }
+                        break;
+                    }
+                }
+            }
+        });
     }
 
     childComponents: ChildComponents = {
@@ -262,55 +468,64 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
     private deleteItemFromDB(val:number): void
     {
         Swal.fire({
-		  title: 'Are you sure you want to delete this row',
-		  showDenyButton: true,
-		  showCancelButton: false,
-		  confirmButtonText: 'Yes',
-		  denyButtonText: `No`,
-        }).then((result) =>
-        {
-		  if (result.isConfirmed)
+            title: 'Are you sure you want to delete this row',
+            showDenyButton: true,
+            showCancelButton: false,
+            confirmButtonText: 'Yes',
+            denyButtonText: `No`
+        })
+            .then((result) =>
             {
-                Swal.fire({
-                    title: 'Removed',
-                    timer: 500,
-                    showCancelButton: false,
-                    showConfirmButton: false
-                })
-                    .then(() =>
-                    {
-                        const theKey = localStorage.getItem("Key");
-                        this.dispatch(deleteRow(val));
-                        api.get("usernameFromKeyGET", {
-                            params: {
-                                key: `${theKey}`,
-                            }
-                        })
-                            .then((uret: AxiosResponse<string>) =>
-                            {
-                                api.post("removeTheItemGet", {
-                                    data: {
-                                        item: val,
-                                        coll: `${uret.data}_${  this.state.reportsId}`,
-                                    }
+		  if (result.isConfirmed)
+                {
+                    Swal.fire({
+                        title: 'Removed',
+                        timer: 500,
+                        showCancelButton: false,
+                        showConfirmButton: false
+                    })
+                        .then(() =>
+                        {
+                            const theKey = localStorage.getItem("Key");
+                            this.dispatch(deleteRow(val));
+				
+				
+                            api.get("usernameFromKeyGET", {
+                                params: {
+                                    key: `${theKey}`
+                                }
+                            })
+                                .then((uret: AxiosResponse<string>) =>
+                                {
+                                    api.post("removeTheItemGet", {
+                                        data: {
+                                            item: val,
+                                            coll: `${uret.data}_${  this.state.reportsId}`
+                                        }
+                                    });
                                 });
-                            });
-                    });
+				
+                            if (val === this.state.lastRowId)
+                            {
+                                this.setState({
+                                    lastRowId: this.state.lastRowId - 1
+                                });
+                            }
+                        });
 		  }
 		  else
-            {
-                Swal.fire({
-                    title: 'Not Removed',
-                    timer: 500,
-                    showConfirmButton: false,
-                });
-		  }
-        })
+                {
+                    Swal.fire({
+                        title: 'Not Removed',
+                        timer: 500,
+                        showConfirmButton: false
+                    });
+                }
+            })
             .catch((err: Error) =>
             {
-                return Promise.reject(err);
+                console.log(err);
             });
-
     }
 	
     public render() : JSX.Element
@@ -337,8 +552,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                 <Reports.BUTTON
                     onClick={() =>
                     {
-                        const id = this.generateNewId();
-                        const newRow = {
+                        const id = this.generateNewId(); const newRow = {
                             id
                         };
                         this.dispatch(insertRow(newRow, {
@@ -348,24 +562,18 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                     }} >
                     New Row
                 </Reports.BUTTON>
-                <Reports.BUTTON
-                    onClick= {this.saveTable} style={{
-                        backgroundColor: "#008CBA"
-                    }}>Save Table
-                </Reports.BUTTON>
+                <Reports.BUTTON onClick= {this.saveTable} style={{
+                    backgroundColor: "#008CBA"
+                }}>Save Table </Reports.BUTTON>
                 {/* Search Sheet*/}
                 <Reports.SEARCH type='search' defaultValue={tableProps.searchText} onChange={(event) =>
                 {
                     this.dispatch(search(event.currentTarget.value));
-                }} className='top-element' placeholder="Find a Trade"/>
+                }} className='top-element' placeholder="Find a Trade" style={ {
+                    float: 'right'
+                }}/>
                 {/* Configurable Spreadsheet */}
-                <Reports.TABLE_SECTION>
-                    <Table
-                        {...this.state.tableProps}
-                        childComponents = {this.childComponents}
-                        dispatch={this.dispatch}
-                    />
-                </Reports.TABLE_SECTION>
+                <Reports.TABLE_SECTION> <Table {...this.state.tableProps} childComponents = {this.childComponents} dispatch={this.dispatch} /> </Reports.TABLE_SECTION>
             </Fragment>
         );
     }
@@ -378,6 +586,13 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                 tableProps: kaReducer(prevState.tableProps, action)
             }
         }));
+        if ((action.columnKey === "Ticker" || action.columnKey === "DOI") && action.type === "UpdateCellValue")
+        {
+            const cell = {
+                columnKey: action.columnKey,
+                rowKeyValue: action.rowKeyValue
+            }; this.getTicker(cell);
+        }
     }
 }
 export { SheetComponent };
