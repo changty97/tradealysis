@@ -112,7 +112,7 @@ async function getStockData(dateAndTicker: string): Promise<any>
             }
             else
             {
-                console.log("Failed to fetch VolPrem and PremHigh because there is no data on", yy, "-", mm, "-", dd,);
+                console.log(`Failed to fetch VolPrem and PremHigh because there is no data on ${yy}-${mm}-${dd}`);
             }
   
             function volumsum()
@@ -151,7 +151,7 @@ async function getStockData(dateAndTicker: string): Promise<any>
             }
             else
             {
-                console.log("Failed to fetch VolDOI, Open, Close, and PC because there is no data on", yy, "-", mm, "-", dd,);
+                console.log(`Failed to fetch VolDOI, Open, Close, and PC because there is no data on ${yy}-${mm}-${dd}`);
             }
         })
         .catch(console.error);
@@ -177,7 +177,7 @@ async function getStockData(dateAndTicker: string): Promise<any>
             }
             else
             {
-                console.log("Failed to fetch HOD, LOD, HODTime, and LODTime because there is no data on", yy, "-", mm, "-", dd,);
+                console.log(`Failed to fetch HOD, LOD, HODTime, and LODTime because there is no data on ${yy}-${mm}-${dd}`);
             }
             //find the time of highest price
             function findhightime()
@@ -241,7 +241,7 @@ async function getStockData(dateAndTicker: string): Promise<any>
             }
             else
             {
-                console.log("Failed to fetch AH because there is no data on", yy, "-", mm, "-", dd,);
+                console.log(`Failed to fetch AH because there is no data on ${yy}-${mm}-${dd}`);
             }
         })
         .catch(console.error);
