@@ -45,68 +45,60 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
     private async loadSheet(): Promise<void>
     {
         const theKey = localStorage.getItem("Key");
-        return api.get("/usernameFromKeyGET", {
+        return api.get("/stockdataGet", {
             params: {
-                key: `${theKey}`
+                key: theKey,
+                coll: `${this.state.reportsId}`
             }
         })
-            .then((uret: AxiosResponse<string>) =>
+            .then((response: AxiosResponse<string[]>) =>
             {
-                return api.get("stockdataGet", {
-                    params: {
-                        coll: `${uret.data}_${  this.state.reportsId}`
-                    }
-                })
-                    .then((response: AxiosResponse<string[]>) =>
+                const allArrVals = []; const theArr = response.data;
+                if (theArr && theArr.length > 0)
+                {
+                    this.dispatch(showLoading());
+                    for (let i = 0; i < theArr.length; i++)
                     {
-                        const allArrVals = []; const theArr = response.data;
-                        if (theArr && theArr.length > 0)
-                        {
-                            this.dispatch(showLoading());
-                            for (let i = 0; i < theArr.length; i++)
-                            {
-                                const valsToInsert = {
+                        const valsToInsert = {
  
-                                };
-                                for (const [key, value] of Object.entries(theArr[i]))
+                        };
+                        for (const [key, value] of Object.entries(theArr[i]))
+                        {
+                            const theKey = key;
+                            const theValue = value;
+                            if (theKey === '_id')
+                            {
+                                continue;
+                            }
+                            else if (theKey === 'id')
+                            {
+                                if (this.state.lastRowId < Number(value))
                                 {
-                                    const theKey = key;
-                                    const theValue = value;
-                                    if (theKey === '_id')
-                                    {
-                                        continue;
-                                    }
-                                    else if (theKey === 'id')
-                                    {
-                                        if (this.state.lastRowId < Number(value))
-                                        {
-                                            this.setState({
-                                                lastRowId: Number(value)
-                                            });
-                                        }
-                                    }
-                                    Object.defineProperty(valsToInsert, theKey, {
-                                        value: theValue,
-                                        writable: true,
-                                        enumerable: true
+                                    this.setState({
+                                        lastRowId: Number(value)
                                     });
                                 }
-                                allArrVals.push(valsToInsert);
                             }
-                            this.dispatch(updateData(allArrVals)); this.dispatch(hideLoading());
-                        }
-                        else
-                        {
-                            this.setState({
-                                lastRowId: -1
+                            Object.defineProperty(valsToInsert, theKey, {
+                                value: theValue,
+                                writable: true,
+                                enumerable: true
                             });
                         }
+                        allArrVals.push(valsToInsert);
+                    }
+                    this.dispatch(updateData(allArrVals)); this.dispatch(hideLoading());
+                }
+                else
+                {
+                    this.setState({
+                        lastRowId: -1
                     });
+                }
             }).catch((error) =>
             {
                 Promise.reject(error);
             });
-		
     }
 
     private generateNewId(): number
@@ -122,24 +114,16 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
     {
         const tableData = this.state.tableProps.data;
         const theKey = localStorage.getItem("Key");
-        api.get("usernameFromKeyGET", {
-            params: {
-                key: `${theKey}`
+        api.post("postTableDB", {
+            data: {
+                table: tableData,
+                key: theKey,
+                coll: `${this.state.reportsId}`
             }
-        })
-            .then((uret: AxiosResponse<string>) =>
-            {
-                api.post("postTableDB", {
-                    data: {
-                        table: tableData,
-                        coll: `${uret.data  }_${  this.state.reportsId}`
-                    }
-                });
-            })
-            .catch((error)=>
-            {
-                console.log('Error', error);
-            });
+        }).catch((error)=>
+        {
+            console.log('Error', error);
+        });
     }
 	
     getTicker(cell: any): void
@@ -212,7 +196,8 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
             .then((response) =>
             {
                 return response.data;
-            }).catch(function(error)
+            })
+            .catch((error)=>
             {
                 console.log('Error', error);
             });

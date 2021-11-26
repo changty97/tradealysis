@@ -158,15 +158,15 @@ export class ServiceController
     @POST
 	public async postTableDB(body: any): Promise<void>
 	{
-	    return await saveTable(body.data.table, body.data.coll);
+	    return await saveTable(body.data.table, body.data.key, body.data.coll);
 	}
 	
 	/** Get data from default stock table **/
 	@Path("/stockdataGet")
 	@GET
-    public async stockdataGet(@QueryParam("coll") coll:string):Promise<any[]>
+    public async stockdataGet(@QueryParam("key") key:string, @QueryParam("coll") coll:string):Promise<any[]>
     {
-	    return await theSaveData(coll);
+	    return await theSaveData(key, coll);
     }
 	
 	/** Get all user Sessions **/

@@ -720,6 +720,13 @@
 					{
 						"description": "",
 						"in": "query",
+						"name": "key",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"description": "",
+						"in": "query",
 						"name": "coll",
 						"required": true,
 						"type": "string"
