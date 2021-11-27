@@ -8,6 +8,7 @@ import { v4 as uuid } from "uuid";
 import { IoIosCloseCircle } from 'react-icons/io';
 import { api } from "../constants/globals";
 import Swal from 'sweetalert2';
+import { LoadingComponent } from "./LoadingComponent";
 
 class HomeComponent extends Component<any, IHomeComponent>
 {
@@ -16,7 +17,8 @@ class HomeComponent extends Component<any, IHomeComponent>
         super(props);
         this.state = {
             reportsId: null,
-            sessionList: []
+            sessionList: [],
+            loading: false
         };
         this.updateSessionList = this.updateSessionList.bind(this);
     }
@@ -29,6 +31,9 @@ class HomeComponent extends Component<any, IHomeComponent>
     private async updateSessionList(): Promise<void>
     {
         const theKey = localStorage.getItem("Key");
+
+        this.setState({ loading: true });
+
         return await api.get("userSessionsGet", {
             params: {
                 key: `${theKey}`,
@@ -42,6 +47,8 @@ class HomeComponent extends Component<any, IHomeComponent>
         }).catch((err) =>
         {
             console.error(err);
+        }).finally(() => {
+            this.setState({ loading: false });
         });
     }
 	
@@ -76,6 +83,9 @@ class HomeComponent extends Component<any, IHomeComponent>
                 {
                     localStorage.removeItem("reportsId");
                 }
+
+                this.setState({ loading: true });
+
 				 api.get("removeSessionForUser", {
                     params: {
                         key: `${theKey}`,
@@ -83,6 +93,7 @@ class HomeComponent extends Component<any, IHomeComponent>
                     }
                 }).then((response) =>
                 {
+                    this.setState({ loading: false });
                     Swal.fire(
                         {
                             title: `Removed: ${  sessionID}`,
@@ -114,6 +125,7 @@ class HomeComponent extends Component<any, IHomeComponent>
     {
         return (
             <Fragment>
+                {this.state.loading ? <LoadingComponent /> : null}
                 <Home.HEADER>Recent Files</Home.HEADER>
                 <Home.SECTION>
                     <Home.RIGHT_HOME>
