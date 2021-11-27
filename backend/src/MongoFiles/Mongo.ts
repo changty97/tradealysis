@@ -105,15 +105,22 @@ async function theSaveData(key:string, coll:string): Promise<any[]>
     }
 }
 
-async function getTradesByYear(coll: string, year: string): Promise<any>
+async function getTradesByYear(key: string, coll: string, year: string): Promise<any>
 {
     let client: MongoClient | null = null;
     let result = [];
 
     try
     {
+        const uname = await userFromKey(key);
+
+        if (!uname || uname === "")
+        {
+            throw new Error("Loading Data: Invalid User Error");
+        }
+
         client = await MongoClient.connect(mongoOptions.uri);
-        result = await client.db(mongoOptions.db).collection(coll).find({
+        result = await client.db(mongoOptions.db).collection(`${uname}_${coll}`).find({
             DOI: {
                 $regex: `[0-9]+/[0-9]+/${year}`,
                 $options: 'i'

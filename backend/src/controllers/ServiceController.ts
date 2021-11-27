@@ -196,9 +196,9 @@ export class ServiceController
 
 	@Path("/getTradesByYear")
 	@GET
-	public async getTradesByYear(@QueryParam("coll") coll: string, @QueryParam("year") year: string): Promise<any>
+	public async getTradesByYear(@QueryParam("key") key: string, @QueryParam("coll") coll: string, @QueryParam("year") year: string): Promise<any>
 	{
-	    return await getTradesByYear(coll, year);
+	    return await getTradesByYear(key, coll, year);
 	}
 }
 

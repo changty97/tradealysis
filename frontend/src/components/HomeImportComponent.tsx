@@ -43,25 +43,20 @@ class HomeImportComponent extends Component<any, IHomeImportComponentState>
 
         try
         {
+            const key: string = localStorage.getItem("Key") || "";
             const parsedData = (await api.post("parseCSV", formData)).data;
-
-            const username: string = (await api.get("usernameFromKeyGET", {
-                params: {
-                    key: localStorage.getItem("Key"),
-                }
-            })).data;
-
             const newCollName: string = (await api.get("createNewSessionForUser", {
                 params: {
-                    key: localStorage.getItem("Key"),
+                    key,
                     collectionName: this.state.selectedFile.name
                 }
             })).data;
 
             await api.post("postTableDB", {
                 data: {
+                    key,
                     table: parsedData,
-                    coll: `${username}_${newCollName}`
+                    coll: newCollName
                 }
             });
 
