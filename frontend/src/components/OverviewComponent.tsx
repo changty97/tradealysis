@@ -6,6 +6,7 @@ import { Bar, Line, Pie } from "react-chartjs-2";
 import { v4 as uuid } from "uuid";
 import { Overview } from "../cssComponents/Overview";
 import { api } from "../constants/globals";
+import { LoadingComponent } from "./LoadingComponent";
 
 const months: string[] = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dev"];
 
@@ -38,16 +39,19 @@ class OverviewComponent extends Component<any, IOverviewComponentState>
                 dailyAccumulatedProfits: [],
                 topSymbolsByPL: [],
                 topSymbolsByGainPerc: []
-            }
+            },
+            loading: false
         };
 
         this.getData = this.getData.bind(this);
         this.parseData = this.parseData.bind(this);
     }
 
-    componentDidMount(): void
+    async componentDidMount(): Promise<void>
     {
-        this.getData();
+        this.setState({ loading: true });
+        await this.getData();
+        this.setState({ loading: false });
     }
 
     async getData(): Promise<void>
@@ -122,6 +126,7 @@ class OverviewComponent extends Component<any, IOverviewComponentState>
     {
         return (
             <Fragment>
+                {this.state.loading ? <LoadingComponent /> : null}
                 <Reports.SECTION>
                     <Link to="/report"><Reports.BUTTON>Trade Report</Reports.BUTTON></Link>
                     <Link to="/overview"><Reports.BUTTON>Overview</Reports.BUTTON></Link>

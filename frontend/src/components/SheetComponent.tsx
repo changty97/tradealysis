@@ -19,6 +19,7 @@ import DeleteIcon from "../images/deleteImg.svg";
 import { Reports } from "../cssComponents/Reports";
 import { api } from "../constants/globals";
 import Swal from 'sweetalert2';
+import { LoadingComponent } from "./LoadingComponent";
 
 class SheetComponent extends Component<ISheetComponentProps, ISheetComponentState>
 {
@@ -28,7 +29,8 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
         this.state = {
             tableProps,
             lastRowId: -1,
-            reportsId: localStorage.getItem('reportsId')
+            reportsId: localStorage.getItem('reportsId'),
+            loading: false
         };
         this.dispatch = this.dispatch.bind(this);
         this.generateNewId = this.generateNewId.bind(this);
@@ -45,6 +47,9 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
     private async loadSheet(): Promise<void>
     {
         const theKey = localStorage.getItem("Key");
+
+        this.setState({ loading: true });
+
         return api.get("/stockdataGet", {
             params: {
                 key: theKey,
@@ -98,6 +103,8 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
             }).catch((error) =>
             {
                 Promise.reject(error);
+            }).finally(() => {
+                this.setState({ loading: false });
             });
     }
 
@@ -517,7 +524,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
     {
         return (
             <Fragment>
-                {/* Allows export to .csv file*/}
+                {this.state.loading ? <LoadingComponent /> : null}
                 <CSVLink
                     data={kaPropsUtils.getData(this.state.tableProps)}
                     headers={this.state.tableProps.columns.map(c => ({

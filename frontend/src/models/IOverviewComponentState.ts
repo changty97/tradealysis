@@ -3,6 +3,7 @@ interface IOverviewComponentState {
     month: number;
     data: any;
     results: IResults;
+    loading: boolean;
 };
 
 interface IResults {

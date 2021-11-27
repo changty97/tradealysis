@@ -3,6 +3,7 @@ import { Import } from "../cssComponents/Import";
 import { IHomeImportComponentState } from "../models/IHomeImportComponentState";
 import Dropzone from "react-dropzone";
 import { api } from "../constants/globals";
+import { LoadingComponent } from "./LoadingComponent";
 
 class HomeImportComponent extends Component<any, IHomeImportComponentState>
 {
@@ -11,7 +12,8 @@ class HomeImportComponent extends Component<any, IHomeImportComponentState>
         super(props);
 
         this.state = {
-            selectedFile: null
+            selectedFile: null,
+            loading: false
         };
 
         this.handleFileSelection = this.handleFileSelection.bind(this);
@@ -36,14 +38,16 @@ class HomeImportComponent extends Component<any, IHomeImportComponentState>
             return;
         }
 
-        const formData: FormData = new FormData();
-
-        formData.append("sourceName", "TDAmeritrade");
-        formData.append("file", this.state.selectedFile);
-
+        this.setState({ loading: true });
+        
         try
         {
+            const formData: FormData = new FormData();
             const key: string = localStorage.getItem("Key") || "";
+            
+            formData.append("sourceName", "TDAmeritrade");
+            formData.append("file", this.state.selectedFile);
+
             const parsedData = (await api.post("parseCSV", formData)).data;
             const newCollName: string = (await api.get("createNewSessionForUser", {
                 params: {
@@ -66,8 +70,11 @@ class HomeImportComponent extends Component<any, IHomeImportComponentState>
         {
             console.error(err);
         }
+        finally {
+            this.setState({ loading: false });
+            window.location.href = "/report";
+        }
 
-        window.location.href = "/report";
     }
 
     onDrop(files: any): void
@@ -87,6 +94,7 @@ class HomeImportComponent extends Component<any, IHomeImportComponentState>
         } = this.state;
         return (
             <Fragment>
+                {this.state.loading ? <LoadingComponent/> : null}
                 <Dropzone onDrop={this.onDrop} multiple={false}>
                     {({
                         getRootProps, getInputProps
