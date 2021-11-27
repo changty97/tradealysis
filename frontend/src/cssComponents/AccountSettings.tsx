@@ -3,108 +3,79 @@ import sty from "styled-components";
 
 class AccountSettings extends Component
 {
+	public static readonly AS_LABEL = sty.label `
+		font-size:22px;
+	`;
+
 	public static readonly SECTION = sty.section `
 		display: flex;
 		flex-direction: column;
-		justify-content: flex-start; 
-		align-items: flex-start;
-		width: 100%;
-		font-size: 20px;
-		overflow: auto;
-		margin-bottom: 10%;
-	`;
-	
-	public static readonly HORIZONTAL_LIST_LI_A = sty.a `
-		color: rgb(150, 0, 150);
-		text-decoration: none;
-	`;
-	
-	public static readonly FORM = sty.form `
-		background-color: rgb(240,240,240);
-		border-style: solid; 
-		border-color: black; 
-		border-width: 1px;
+		justify-content: center; 
+		align-items: center;
+		margin-top: 20px;
+		font-size: 16px; 
+		margin-bottom: 100px;
 		font-family: Arial, sans-serif;
 		text-align: center;
-		padding: 10px 40px 10px 40px; 
-		margin-left: 0%;
-		margin-right:0%;
-		margin-bottom: 10px;
-		border-radius:5px;
+		padding: 0px 100px 0px 100px; 
+		margin-left: 10%;
+		margin-right: 10%;
+		border-radius:12px;
+	`;
+	
+	public static readonly SECTION_INNER = sty.div `
+		padding: 1%;
+		padding-top: 30px;
+		padding-left: 200px;
+		padding-right: 200px;
+		padding-bottom: 30px;
+		box-shadow: 1px 1px 5px #aaaaaa;
+		border-radius:10px;
+		background-color: rgb(240,240,240);
 	`;
 	
 	public static readonly FORM_DIV = sty.div `
-		box-shadow: 1px 1px 5px #aaaaaa;
-		background-color: rgb(240,240,240);
-		font-family: Arial, sans-serif;
-		text-align: center;
-		padding: 10px 40px 10px 40px; 
-		margin-left: 0%;
-		margin-right:0%;
-		margin-bottom: 10px;
-		border-radius:4px;
+		margin-top: 5px;
+		display: flex;
+		flex-direction: row;
+		justify-content: center; 
+		align-items: center;
+	`;
+	
+	public static readonly FORM_DIV_ITEM1 = sty.div `
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-start;
+		align-content: flex-start;
 	`;
 	
 	public static readonly LABEL = sty.label `
-		float: left;
-		width: 8em;
-		clear: left;
-		text-align: left;
-		padding-right: 2.5em;
-		margin-top: 10%;
+		margin-top: 0.5em; 
+		padding: 7.5px;
+		text-decoration: none;
+		font-size: 16px;
+		cursor: pointer;
+		white-space: nowrap;
 	`;
 	
 	public static readonly INPUT = sty.input `
-		margin-top: 2em;
-		display: block; 
-		padding: 10px;
-		text-decoration: none;
-		font-size: 15px;
-		cursor: pointer;
-	`;
-	public static readonly INPUT_LAST_OF_TYPE = sty.input `
-		display: inline-block;
-		text-decoration: none;
-		font-size: 1.2vw;
-		background-color: #008CBA;
-		border: none;
-		color: black;
-		padding: 15px 32px;
-		text-align: center;
+		margin-top: 0.5em; 
+		padding: 5px;
 		text-decoration: none;
 		font-size: 16px;
-		margin: 4px auto 2px;
 		cursor: pointer;
-		border-radius: 2px;
+	`;
+	
+	public static readonly SUBMIT_BUTTON = sty.input `
+		padding: 7px;
+		margin-top: 12px;
+		font-size: 12px;
+		color: white;
+		background-color: rgb(0,80,160);
 		&:hover {
-			background-image: linear-gradient(rgba(0, 0, 0, 0.3) 0 0);
+			background-image: linear-gradient(rgba(0, 0, 0, 0.5) 0 0);
 			color: white;
 		}
 	`;
-	
-	public static readonly UL_HORIZ_LIST = sty.ul `
-		box-shadow: 1px 1px 5px #aaaaaa;
-		background-color: rgb(240,240,240);
-		list-style: none;	
-		margin: 0;
-		color:black;
-		font-weight: bold; 
-		font-size: 1.2em;
-		border-radius:3px;
-	`;
-	
-	public static readonly UL_HORIZ_LIST_LI = sty.li `
-		margin-left: 28%;
-		margin-top: 7px;
-		margin-bottom: 7px;
-	`;
-	
-	public static readonly ACCOUNT_LIST = sty.div `
-		margin-top: 50px; 
-		margin-right: auto;
-		margin-bottom: auto; 
-		margin-left: auto;
-	`;
-	
 }
 export { AccountSettings };

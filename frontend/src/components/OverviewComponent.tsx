@@ -52,15 +52,10 @@ class OverviewComponent extends Component<any, IOverviewComponentState>
 
     async getData(): Promise<void>
     {
-        const username: string = (await api.get("usernameFromKeyGET", {
-            params: {
-                key: localStorage.getItem("Key"),
-            }
-        })).data;
-
         this.parseData((await api.get("getTradesByYear", {
             params: {
-                coll: `${username}_${localStorage.getItem('reportsId')}`,
+                key: localStorage.getItem("Key"),
+                coll: localStorage.getItem('reportsId'),
                 year: this.state.year
             }
         })).data);
@@ -107,9 +102,12 @@ class OverviewComponent extends Component<any, IOverviewComponentState>
                 gainPerc
             });
         });
-        
-        results.avgGainPerTrade = results.total / results.totalTrades;
-        results.avgGainPerTradePerc = results.totalGainPerc / results.totalTrades;
+
+        if (results.totalTrades)
+        {
+            results.avgGainPerTrade = results.total / results.totalTrades;
+            results.avgGainPerTradePerc = results.totalGainPerc / results.totalTrades;
+        }
 
         results.topSymbolsByPL.sort((firstEl: any, secondEl: any) => secondEl.PL - firstEl.PL);
         results.topSymbolsByGainPerc.sort((firstEl: any, secondEl: any) => secondEl.gainPerc - firstEl.gainPerc);

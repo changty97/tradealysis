@@ -1,5 +1,6 @@
 import { MongoClient } from "mongodb";
 import { mongoOptions } from "../constants/globals";
+import { userFromKey } from "./MongoLogin";
 
 async function removeItem(idVal:number, coll:string):Promise<void>
 {
@@ -26,13 +27,17 @@ async function removeItem(idVal:number, coll:string):Promise<void>
 		
 }
 
-async function saveTable(dataArray: any, coll:string): Promise<void>
+async function saveTable(dataArray: any, key:string, coll:string): Promise<void>
 {
     let client: MongoClient | null = null;
     try
     {
         client = await MongoClient.connect(mongoOptions.uri);
-
+        const uname = await userFromKey(key);
+        if (!uname || uname === "")
+        {
+            throw new Error("Saving Data: Invalid User Error");
+        }
         for (let i = 0; i < dataArray.length; i++)
         {
             const valsToInsert = {
@@ -48,7 +53,7 @@ async function saveTable(dataArray: any, coll:string): Promise<void>
                 });
             }
             const descriptorID = Object.getOwnPropertyDescriptor(valsToInsert, 'id');
-            await client.db(mongoOptions.db).collection(coll).updateOne(
+            await client.db(mongoOptions.db).collection(`${uname  }_${  coll}`).updateOne(
                 {
                     id: descriptorID ? descriptorID.value : i
                 },
@@ -74,14 +79,19 @@ async function saveTable(dataArray: any, coll:string): Promise<void>
     return;
 }
 
-async function theSaveData(coll:string): Promise<any[]>
+async function theSaveData(key:string, coll:string): Promise<any[]>
 {
     let client: MongoClient | null = null;
 	
     try
     {
         client = await MongoClient.connect(mongoOptions.uri);
-        const x = await client.db(mongoOptions.db).collection(coll).find({
+        const uname = await userFromKey(key);
+        if (!uname || uname === "")
+        {
+            throw new Error("Loading Data: Invalid User Error");
+        }
+        const x = await client.db(mongoOptions.db).collection(`${uname  }_${  coll}`).find({
         }).toArray();
         if (client)
         {
@@ -95,15 +105,22 @@ async function theSaveData(coll:string): Promise<any[]>
     }
 }
 
-async function getTradesByYear(coll: string, year: string): Promise<any>
+async function getTradesByYear(key: string, coll: string, year: string): Promise<any>
 {
     let client: MongoClient | null = null;
     let result = [];
 
     try
     {
+        const uname = await userFromKey(key);
+
+        if (!uname || uname === "")
+        {
+            throw new Error("Loading Data: Invalid User Error");
+        }
+
         client = await MongoClient.connect(mongoOptions.uri);
-        result = await client.db(mongoOptions.db).collection(coll).find({
+        result = await client.db(mongoOptions.db).collection(`${uname}_${coll}`).find({
             DOI: {
                 $regex: `[0-9]+/[0-9]+/${year}`,
                 $options: 'i'
