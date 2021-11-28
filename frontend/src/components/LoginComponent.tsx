@@ -22,6 +22,7 @@ class LoginComponent extends Component<any, any>
 	    {
 	        const str1 = document.getElementById(`username`); 
 			const str2 = document.getElementById(`password`);
+			let redirect = false;
 	        if (str1 && str2)
 	        {
 	            const str1Value = (str1 as HTMLInputElement).value;
@@ -38,7 +39,7 @@ class LoginComponent extends Component<any, any>
                             invalidLoginLabel.style.color = "green";
                         }
                         this.setLocalStorageStateKey(val);
-                        window.location.href = "/";
+						redirect = true;
 					}
 					else
                     {
@@ -55,6 +56,9 @@ class LoginComponent extends Component<any, any>
 				{
 					(str1 as HTMLInputElement).value = '';
                     (str2 as HTMLInputElement).value = '';
+					if(redirect) {
+						window.location.href = "/";
+					}
 				});
 	        }
 	    }
