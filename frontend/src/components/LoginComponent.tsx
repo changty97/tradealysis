@@ -20,46 +20,53 @@ class LoginComponent extends Component<any, any>
     {
         if (document)
 	    {
-	        const str1 = document.getElementById(`username`); 
-			const str2 = document.getElementById(`password`);
-			let redirect = false;
+	        const str1 = document.getElementById(`username`);
+            const str2 = document.getElementById(`password`);
+            let redirect = false;
 	        if (str1 && str2)
 	        {
 	            const str1Value = (str1 as HTMLInputElement).value;
 	            const str2Value = (str2 as HTMLInputElement).value;
-	            api.post('loginKeyPOST', { theData: { username: `${str1Value}`, password: `${str2Value}`, }, })
-                .then(res => ((res.data as unknown) as string))
-				.then((val:string) =>
-	            {
-					const invalidLoginLabel = document.getElementById('Invalid_Login_Mssg');
-					if(val && val !== "") {
-						if (invalidLoginLabel)
-                        {
-                            invalidLoginLabel.innerHTML = "Logging In...";
-                            invalidLoginLabel.style.color = "green";
-                        }
-                        this.setLocalStorageStateKey(val);
-						redirect = true;
-					}
-					else
-                    {
-                        this.setLocalStorageStateKey("");
-                        if (invalidLoginLabel)
-                        {
-                            invalidLoginLabel.innerHTML = "Incorrect Username or Password";
-                            invalidLoginLabel.style.color = "red";
-                        }
+	            api.post('loginKeyPOST', {
+                    theData: {
+                        username: `${str1Value}`,
+                        password: `${str2Value}`
                     }
+                })
+                    .then(res => ((res.data as unknown) as string))
+                    .then((val:string) =>
+	            {
+                        const invalidLoginLabel = document.getElementById('Invalid_Login_Mssg');
+                        if (val && val !== "")
+                        {
+                            if (invalidLoginLabel)
+                            {
+                                invalidLoginLabel.innerHTML = "Logging In...";
+                                invalidLoginLabel.style.color = "green";
+                            }
+                            this.setLocalStorageStateKey(val);
+                            redirect = true;
+                        }
+                        else
+                        {
+                            this.setLocalStorageStateKey("");
+                            if (invalidLoginLabel)
+                            {
+                                invalidLoginLabel.innerHTML = "Incorrect Username or Password";
+                                invalidLoginLabel.style.color = "red";
+                            }
+                        }
 	            })
-                .catch((err: Error) => console.error("LoginComponent.loginKey(): " + err))
-				.finally(() => 
-				{
-					(str1 as HTMLInputElement).value = '';
-                    (str2 as HTMLInputElement).value = '';
-					if(redirect) {
-						window.location.href = "/";
-					}
-				});
+                    .catch((err: Error) => console.error(`LoginComponent.loginKey(): ${  err}`))
+                    .finally(() =>
+                    {
+                        (str1 as HTMLInputElement).value = '';
+                        (str2 as HTMLInputElement).value = '';
+                        if (redirect)
+                        {
+                            window.location.href = "/";
+                        }
+                    });
 	        }
 	    }
     }

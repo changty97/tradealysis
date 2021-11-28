@@ -11,6 +11,8 @@ import { accountValuesFromKey, doesThisAccountExist, sameAccount, modifyAccountN
 import { allUserSessions, createNewSession, removeSession } from "../MongoFiles/MongoReportSessions";
 import { IStockData } from "../models/IStockData";
 
+import { Mutex, Semaphore, withTimeout } from 'async-mutex';
+
 const badRequestExampleResponse: BadRequestError = {
     name: "BadRequestError",
     message: "Your request payload was not in the expected format.",
@@ -22,6 +24,13 @@ const badRequestExampleResponse: BadRequestError = {
 @Path("/")
 export class ServiceController
 {
+	private modifyAccountMutex: Mutex;
+	
+	constructor()
+	{
+	    this.modifyAccountMutex = new Mutex();
+	}
+	
     /**
 	 *
 	 * @param sourceName
@@ -30,14 +39,14 @@ export class ServiceController
 	 */
     @Path("/parseCSV")
     @POST
-    public async parseCSV(@FormParam("sourceName") sourceName: string, @FileParam("file") file: Express.Multer.File): Promise<ITableData[]>
-    {
-        const parser: CSVParser = new CSVParser(sourceName);
+	public async parseCSV(@FormParam("sourceName") sourceName: string, @FileParam("file") file: Express.Multer.File): Promise<ITableData[]>
+	{
+	    const parser: CSVParser = new CSVParser(sourceName);
 
-        await parser.parse(file);
+	    await parser.parse(file);
 
-        return parser.filter();
-    }
+	    return parser.filter();
+	}
 
 	@Path("/stockapi/:ID")
 	@GET
@@ -95,7 +104,28 @@ export class ServiceController
 	@POST
 	public async createAccountPost(body: any) : Promise<boolean>
 	{
-	    return await createAccount(body.userInfo.username, body.userInfo.password, body.userInfo.fName, body.userInfo.lName, body.userInfo.email, body.userInfo.phone, body.userInfo.bdate);
+	    let res = false;
+	    try
+	    {
+	        await this.modifyAccountMutex.acquire();
+	        res = await createAccount(body.userInfo.username, body.userInfo.password, body.userInfo.fName, body.userInfo.lName, body.userInfo.email, body.userInfo.phone, body.userInfo.bdate);
+	    }
+	    catch (err)
+	    {
+	        if (this.modifyAccountMutex.isLocked)
+	        {       // Keep this here incase error, lock released
+	            await this.modifyAccountMutex.release();
+	        }
+	        return Promise.reject(err);
+	    }
+	    finally
+	    {
+	        if (this.modifyAccountMutex.isLocked)
+	        {
+	            await this.modifyAccountMutex.release();
+	        }
+	    }
+	    return res;
 	}
 	
 	@Path("/accountData")
@@ -124,7 +154,26 @@ export class ServiceController
 	@GET
 	public async changeTheAccountName(@QueryParam("key") key:string, @QueryParam("newAccountName") newAccountName:string):Promise<void>
 	{
-	    return await modifyAccountName(key, newAccountName);
+	    try
+	    {
+	        await this.modifyAccountMutex.acquire();
+	        return await modifyAccountName(key, newAccountName);
+	    }
+	    catch (err)
+	    {
+	        if (this.modifyAccountMutex.isLocked)
+	        {        // Keep this here incase error, lock released
+	            await this.modifyAccountMutex.release();
+	        }
+	        return Promise.reject(err);
+	    }
+	    finally
+	    {
+	        if (this.modifyAccountMutex.isLocked)
+	        {
+	            await this.modifyAccountMutex.release();
+	        }
+	    }
 	}
 	
 	@Path("/changePassword")

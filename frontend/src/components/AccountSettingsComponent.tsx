@@ -123,7 +123,7 @@ class AccountSettingsComponent extends Component<any, IAccountSettingsState>
 				  timer: 1000
                 }).then(() =>
                 {
-                    this.getDataFromBackEnd(); return;
+                    window.location.href = "/account";
                 });
             }
         }
@@ -172,6 +172,7 @@ class AccountSettingsComponent extends Component<any, IAccountSettingsState>
                                                     icon: 'error',
                                                     timer: 1000,
                                                     showCancelButton: false,
+                                                    showConfirmButton: false
                                                 }).then(() =>
                                                 {
                                                     return false;
@@ -184,9 +185,25 @@ class AccountSettingsComponent extends Component<any, IAccountSettingsState>
                                                         key: theKey,
                                                         newAccountName: newUsername,
                                                     }
-                                                }).then(() =>
+                                                }).then((created) =>
                                                 {
-                                                    return true;
+                                                    if (created)
+                                                    {
+                                                        return true;
+                                                    }
+                                                    else
+                                                    {
+                                                        return Swal.fire({
+                                                            title: "Sorry, Username already in Use",
+                                                            icon: 'error',
+                                                            timer: 1000,
+                                                            showCancelButton: false,
+                                                            showConfirmButton: false
+                                                        }).then(() =>
+                                                        {
+                                                            return false;
+                                                        });
+                                                    }
                                                 });
                                             }
                                         }
