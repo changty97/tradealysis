@@ -32,7 +32,9 @@ class HomeComponent extends Component<any, IHomeComponent>
     {
         const theKey = localStorage.getItem("Key");
 
-        this.setState({ loading: true });
+        this.setState({
+            loading: true
+        });
 
         return await api.get("userSessionsGet", {
             params: {
@@ -47,8 +49,11 @@ class HomeComponent extends Component<any, IHomeComponent>
         }).catch((err) =>
         {
             console.error(err);
-        }).finally(() => {
-            this.setState({ loading: false });
+        }).finally(() =>
+        {
+            this.setState({
+                loading: false
+            });
         });
     }
 	
@@ -84,7 +89,9 @@ class HomeComponent extends Component<any, IHomeComponent>
                     localStorage.removeItem("reportsId");
                 }
 
-                this.setState({ loading: true });
+                this.setState({
+                    loading: true
+                });
 
 				 api.get("removeSessionForUser", {
                     params: {
@@ -93,7 +100,9 @@ class HomeComponent extends Component<any, IHomeComponent>
                     }
                 }).then((response) =>
                 {
-                    this.setState({ loading: false });
+                    this.setState({
+                        loading: false
+                    });
                     Swal.fire(
                         {
                             title: `Removed: ${  sessionID}`,

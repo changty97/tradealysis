@@ -1,7 +1,8 @@
 import { Component } from "react";
 import sty from "styled-components";
 
-class Loading extends Component {
+class Loading extends Component
+{
     public static readonly ANIMATION = sty.object `		
         z-index: 50000;
         position: absolute;
@@ -34,4 +35,4 @@ class Loading extends Component {
     `;
 }
 
-export { Loading }
+export { Loading };
