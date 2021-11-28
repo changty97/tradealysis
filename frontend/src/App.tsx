@@ -42,20 +42,20 @@ class App extends Component<IReportsProps, IAppState>
                     key: `${theKey}`,
                 }
             })
-            .then((res:AxiosResponse<string>) =>
-            {
-                if (!res || !res.data || res.data === "")
+                .then((res:AxiosResponse<string>) =>
                 {
-                    this.logout();
-                }
-				else 
-				{
-					this.setState({
-						username: res.data
-					});
-				}
-            })
-            .catch((err: Error) =>  console.error("Error @ App.componentDidMount():" + err));
+                    if (!res || !res.data || res.data === "")
+                    {
+                        this.logout();
+                    }
+                    else
+                    {
+                        this.setState({
+                            username: res.data
+                        });
+                    }
+                })
+                .catch((err: Error) =>  console.error(`Error @ App.componentDidMount():${  err}`));
         }
     }
 	
