@@ -38,8 +38,6 @@ class LoginComponent extends Component<any, any>
                             invalidLoginLabel.style.color = "green";
                         }
                         this.setLocalStorageStateKey(val);
-						(str1 as HTMLInputElement).value = '';
-                        (str2 as HTMLInputElement).value = '';
                         window.location.href = "/";
 					}
 					else
@@ -49,11 +47,15 @@ class LoginComponent extends Component<any, any>
                         {
                             invalidLoginLabel.innerHTML = "Incorrect Username or Password";
                             invalidLoginLabel.style.color = "red";
-							(str2 as HTMLInputElement).value = '';
                         }
                     }
 	            })
-                .catch((err: Error) => console.error("LoginComponent.loginKey(): " + err));
+                .catch((err: Error) => console.error("LoginComponent.loginKey(): " + err))
+				.finally(() => 
+				{
+					(str1 as HTMLInputElement).value = '';
+                    (str2 as HTMLInputElement).value = '';
+				});
 	        }
 	    }
     }
