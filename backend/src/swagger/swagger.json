@@ -264,9 +264,9 @@
 				]
 			}
 		},
-		"/loginKeyPOST": {
-			"post": {
-				"operationId": "ServiceLoginKeyPOST",
+		"/loginKeyGET": {
+			"get": {
+				"operationId": "ServiceLoginKeyGET",
 				"produces": [
 					"application/json"
 				],
@@ -285,18 +285,20 @@
 					}
 				},
 				"description": "",
-				"consumes": [
-					"application/json"
-				],
 				"parameters": [
 					{
-						"description": "",
-						"in": "body",
-						"name": "body",
+						"description": ":string - username entered into login page",
+						"in": "query",
+						"name": "username",
 						"required": true,
-						"schema": {
-							"type": "object"
-						}
+						"type": "string"
+					},
+					{
+						"description": ":string - password entered into login page (clear text no encryption)",
+						"in": "query",
+						"name": "password",
+						"required": true,
+						"type": "string"
 					}
 				]
 			}

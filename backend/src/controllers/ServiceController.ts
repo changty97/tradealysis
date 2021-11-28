@@ -66,11 +66,11 @@ export class ServiceController
 	 * @returns ObjectId toString value of user that maps to uname,pssd. If the username,password
 	 *          does not map to a user, it returns a empty str
 	 */
-	@Path("/loginKeyPOST")
-	@POST
-	public async loginKeyPOST(body: any): Promise<string>
+	@Path("/loginKeyGET")
+	@GET
+	public async loginKeyGET(@QueryParam("username") username: string, @QueryParam("password") password: string): Promise<string>
 	{
-	    return await correctLoginKey(body.data.username, body.data.password);
+	    return await correctLoginKey(username, password);
 	}
 
 	
