@@ -48,7 +48,9 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
     {
         const theKey = localStorage.getItem("Key");
 
-        this.setState({ loading: true });
+        this.setState({
+            loading: true
+        });
 
         return api.get("/stockdataGet", {
             params: {
@@ -103,8 +105,11 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
             }).catch((error) =>
             {
                 Promise.reject(error);
-            }).finally(() => {
-                this.setState({ loading: false });
+            }).finally(() =>
+            {
+                this.setState({
+                    loading: false
+                });
             });
     }
 

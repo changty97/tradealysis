@@ -49,9 +49,13 @@ class OverviewComponent extends Component<any, IOverviewComponentState>
 
     async componentDidMount(): Promise<void>
     {
-        this.setState({ loading: true });
+        this.setState({
+            loading: true
+        });
         await this.getData();
-        this.setState({ loading: false });
+        this.setState({
+            loading: false
+        });
     }
 
     async getData(): Promise<void>

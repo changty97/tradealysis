@@ -38,7 +38,9 @@ class HomeImportComponent extends Component<any, IHomeImportComponentState>
             return;
         }
 
-        this.setState({ loading: true });
+        this.setState({
+            loading: true
+        });
         
         try
         {
@@ -70,8 +72,11 @@ class HomeImportComponent extends Component<any, IHomeImportComponentState>
         {
             console.error(err);
         }
-        finally {
-            this.setState({ loading: false });
+        finally
+        {
+            this.setState({
+                loading: false
+            });
             window.location.href = "/report";
         }
 

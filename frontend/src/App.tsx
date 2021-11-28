@@ -18,7 +18,8 @@ import { FooterComponent } from "./components/FooterComponent";
 import { FooterLoginComponent } from "./components/FooterLoginComponent";
 import { LandingComponent } from "./components/LandingComponent";
 import { IAppState } from './models/IAppState';
-import axios from "axios";
+import { api } from "./constants/globals";
+import { AxiosResponse } from 'axios';
 
 class App extends Component<IReportsProps, IAppState>
 {
@@ -33,28 +34,28 @@ class App extends Component<IReportsProps, IAppState>
 	
     componentDidMount() : void
     {
-        const theKey = localStorage.getItem("Key");
+        const theKey:string|null = localStorage.getItem("Key");
         if (theKey)
         {
-            axios.get('http://localhost:3001/usernameFromKeyGET', {
+            api.get('/usernameFromKeyGET', {
                 params: {
                     key: `${theKey}`,
                 }
             })
-                .then((res) =>
+                .then((res:AxiosResponse<string>) =>
                 {
                     if (!res || !res.data || res.data === "")
                     {
                         this.logout();
                     }
-                    this.setState({
-                        username: res.data
-                    });
+                    else
+                    {
+                        this.setState({
+                            username: res.data
+                        });
+                    }
                 })
-                .catch((err: Error) =>
-                {
-                    return Promise.reject(err);
-                });
+                .catch((err: Error) =>  console.error(`Error @ App.componentDidMount():${  err}`));
         }
     }
 	
