@@ -34,28 +34,30 @@ class App extends Component<IReportsProps, IAppState>
 	
     componentDidMount() : void
     {
-        this.getUserNameOrLogoutIfNotValid();
+        const theKey:string|null = localStorage.getItem("Key");
+        if (theKey)
+        {
+            api.get('/usernameFromKeyGET', {
+                params: {
+                    key: `${theKey}`,
+                }
+            })
+            .then((res:AxiosResponse<string>) =>
+            {
+                if (!res || !res.data || res.data === "")
+                {
+                    this.logout();
+                }
+				else 
+				{
+					this.setState({
+						username: res.data
+					});
+				}
+            })
+            .catch((err: Error) =>  console.error("Error @ App.componentDidMount():" + err));
+        }
     }
-	
-	private async getUserNameOrLogoutIfNotValid() : Promise<void>{
-		const theKey = localStorage.getItem("Key");
-		try 
-		{
-			const res:AxiosResponse<string> = await api.get('/usernameFromKeyGET', { params: { key: `${theKey}`, } });
-			if (!res || !res.data || res.data === "")  
-			{ 
-				this.logout(); 
-			}
-			else 
-			{
-				this.setState({ username: res.data, });
-			}
-		}
-		catch(err) 
-		{
-			 return Promise.reject(err);
-		}
-	}
 	
     private logout() : void
     {
