@@ -18,7 +18,8 @@ import { FooterComponent } from "./components/FooterComponent";
 import { FooterLoginComponent } from "./components/FooterLoginComponent";
 import { LandingComponent } from "./components/LandingComponent";
 import { IAppState } from './models/IAppState';
-import axios from "axios";
+import { api } from "./constants/globals";
+import { AxiosResponse } from 'axios';
 
 class App extends Component<IReportsProps, IAppState>
 {
@@ -33,30 +34,28 @@ class App extends Component<IReportsProps, IAppState>
 	
     componentDidMount() : void
     {
-        const theKey = localStorage.getItem("Key");
-        if (theKey)
-        {
-            axios.get('http://localhost:3001/usernameFromKeyGET', {
-                params: {
-                    key: `${theKey}`,
-                }
-            })
-                .then((res) =>
-                {
-                    if (!res || !res.data || res.data === "")
-                    {
-                        this.logout();
-                    }
-                    this.setState({
-                        username: res.data
-                    });
-                })
-                .catch((err: Error) =>
-                {
-                    return Promise.reject(err);
-                });
-        }
+        this.getUserNameOrLogoutIfNotValid();
     }
+	
+	private async getUserNameOrLogoutIfNotValid() : Promise<void>{
+		const theKey = localStorage.getItem("Key");
+		try 
+		{
+			const res:AxiosResponse<string> = await api.get('/usernameFromKeyGET', { params: { key: `${theKey}`, } });
+			if (!res || !res.data || res.data === "")  
+			{ 
+				this.logout(); 
+			}
+			else 
+			{
+				this.setState({ username: res.data, });
+			}
+		}
+		catch(err) 
+		{
+			 return Promise.reject(err);
+		}
+	}
 	
     private logout() : void
     {
