@@ -1,6 +1,5 @@
 import { MongoClient, Db, Collection } from "mongodb";
-import { mongoOptions } from "../constants/globals";
-import { userMongoOptions } from "../constants/globals";
+import { userMongoOptions, mongoOptions } from "../constants/globals";
 import { userFromKey } from "./MongoLogin";
 
 async function allUserSessions(key: string):Promise<string[]>
@@ -193,4 +192,101 @@ async function removeSession(key:string, session:string):Promise<string>
     return sessionName;
 }
 
-export { allUserSessions, createNewSession, removeSession };
+
+async function changeTheSessionName(key:string, oldName:string, newName:string):Promise<boolean>
+{
+    let client: MongoClient | null = null;
+    let client2: MongoClient | null = null;
+    const uname:string = await userFromKey(key);
+    try
+    {
+        if (oldName.trim() === "" || newName.trim() === "" || uname === "")
+        {
+            return false;
+        }
+        if (oldName === newName) // changing name to newname is the same as doing nothing. We are done
+        {
+            return true;
+        }
+        client = await MongoClient.connect(userMongoOptions.uri);
+        client2 = await MongoClient.connect(mongoOptions.uri);
+        const db: Db = client.db(userMongoOptions.db);
+        const db2: Db = client2.db(mongoOptions.db);
+        const theCollectionKeyTable: Collection = db.collection(userMongoOptions.collections['userKey']);
+        const theCollectionSessionTable: Collection = db.collection(userMongoOptions.collections['userSessions']);
+        const userSessions:string[] = await allUserSessions(key);
+        let foundOldName = false;
+        let foundNewName = false;
+        let idxToRemove = -1;
+        for (let i = 0; i < userSessions.length && !foundNewName; i++)
+        {
+            if (userSessions[i] === newName)
+            {
+                foundNewName = true;
+            }
+            else if (userSessions[i] === oldName)
+            {
+                idxToRemove = i; foundOldName = true;
+            }
+        }
+        if (foundNewName) // we cant change the name to an existing session name
+        {
+            return false;
+        }
+        else
+        {
+            if (foundOldName)
+            {
+                const theOldSessionCollection = `${uname  }_${  oldName}`;
+                const theNewSessionCollection = `${uname  }_${  newName}`;
+					
+                const userObjID = await theCollectionKeyTable.distinct("user_obj_id", {
+                    "key": key
+                });
+                if (userObjID && userObjID.length !== 0)
+                {
+                    const updateVal = await theCollectionSessionTable.updateOne( {
+                        "user_obj_id": userObjID[0],
+                        "session_ids": oldName
+                    }, {
+                        $set: {
+                            "session_ids.$": newName
+                        }
+                    },);
+                    if (updateVal && updateVal.acknowledged)
+                    {
+                        let oldCollection: Collection|null = db2.collection(theOldSessionCollection);
+                        try
+                        {
+                            const oldCollection: Collection = db2.collection(theOldSessionCollection);
+                            await oldCollection.rename(theNewSessionCollection);
+                            return true;
+                        }
+                        catch (e)
+                        {
+                            oldCollection = null;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+    }
+    catch (err)
+    {
+        return Promise.reject(err);
+    }
+    finally
+    {
+        if (client)
+        {
+            client.close();
+        }
+        if (client2)
+        {
+            client2.close();
+        }
+    }
+}
+
+export { allUserSessions, createNewSession, removeSession, changeTheSessionName };

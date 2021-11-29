@@ -21,6 +21,9 @@ class HomeComponent extends Component<any, IHomeComponent>
             loading: false
         };
         this.updateSessionList = this.updateSessionList.bind(this);
+		this.clickReportIcon = this.clickReportIcon.bind(this);
+		this.deleteReportIcon = this.clickReportIcon.bind(this);
+		this.changeReportName = this.changeReportName.bind(this);
     }
 
     componentDidMount(): void
@@ -130,6 +133,47 @@ class HomeComponent extends Component<any, IHomeComponent>
             });
     }
 
+	private changeReportName(sessionID: string):void {
+		let theNewFileName = "";
+		const theKey = localStorage.getItem("Key");
+		Swal.fire({
+		  title: "Change File Name: '" + sessionID + "'",
+		  input: 'text',
+		  showCancelButton: true,
+		  showLoaderOnConfirm: true,
+		  confirmButtonText: 'Change',
+		  preConfirm: (newFileName:string) => {
+			return api.get("/changeSessionName", {
+				params: { key: theKey, sid: `${sessionID}`, newSid:`${newFileName}` }
+			})
+			  .then((response:AxiosResponse<boolean>) => {
+				if (response && !response.data) {
+				  throw new Error("Invalid Entry")
+				}
+				theNewFileName = newFileName;
+				return;
+			  })
+			  .catch((error:Error) => { Swal.showValidationMessage( `Request Failed: ${error}` ) })
+		  },
+		  allowOutsideClick: () => !Swal.isLoading()
+		}).then((result) => {
+		  if (result.isConfirmed) {
+			  if(localStorage.getItem("reportsId") === sessionID) {
+				  localStorage.setItem("reportsId", theNewFileName);
+			  }
+			  Swal.fire({
+                title: `Changed ${sessionID} to ${theNewFileName}`,
+                timer: 600,
+                showConfirmButton: false
+              })
+			  .then(() =>
+			  {
+				  this.updateSessionList();
+			  });
+		  }
+		});
+	}
+	
     render(): JSX.Element
     {
         return (
@@ -151,10 +195,10 @@ class HomeComponent extends Component<any, IHomeComponent>
 								   <div>
                                         <IoIosCloseCircle size={17} onClick={() => this.deleteReportIcon(session)}/>
                                     </div>
-								   <div onClick={() => this.clickReportIcon(session)}>
+								   <div>
                                         <br/>
-                                        <Home.DATA_ICON src={icon} alt={theKey}/>
-                                        <Home.DATA_ICON_TEXT_DIV>{session}</Home.DATA_ICON_TEXT_DIV>
+                                        <Home.DATA_ICON src={icon} alt={theKey} onClick={() => this.clickReportIcon(session)} />
+                                        <Home.DATA_ICON_TEXT_DIV onClick={() => this.changeReportName(session)}>{session}</Home.DATA_ICON_TEXT_DIV>
                                     </div>
                                 </Home.DATA_ICON_DIV>
                             );

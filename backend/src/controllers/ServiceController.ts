@@ -8,7 +8,7 @@ import { createAccount } from "../MongoFiles/MongoCreateAccount";
 import { getStockData, retrieveYahooData } from "../stockapi";
 import { ITableData } from "../models/ITableData";
 import { accountValuesFromKey, doesThisAccountExist, sameAccount, modifyAccountName, changePssd, changeUserAccount } from "../MongoFiles/MongoAccountSettings";
-import { allUserSessions, createNewSession, removeSession } from "../MongoFiles/MongoReportSessions";
+import { allUserSessions, createNewSession, removeSession, changeTheSessionName } from "../MongoFiles/MongoReportSessions";
 import { IStockData } from "../models/IStockData";
 
 import { Mutex, Semaphore, withTimeout } from 'async-mutex';
@@ -25,10 +25,13 @@ const badRequestExampleResponse: BadRequestError = {
 export class ServiceController
 {
 	private modifyAccountMutex: Mutex;
+	private modifySessionName: Mutex;
 	
 	constructor()
 	{
 	    this.modifyAccountMutex = new Mutex();
+		 // a bit overboard only allowing session name change at a time though it protect account name changes if users are logged into multiple places
+	    this.modifySessionName = new Mutex();
 	}
 	
     /**
@@ -109,6 +112,7 @@ export class ServiceController
 	    {
 	        await this.modifyAccountMutex.acquire();
 	        res = await createAccount(body.userInfo.username, body.userInfo.password, body.userInfo.fName, body.userInfo.lName, body.userInfo.email, body.userInfo.phone, body.userInfo.bdate);
+	        return res;
 	    }
 	    catch (err)
 	    {
@@ -125,7 +129,6 @@ export class ServiceController
 	            await this.modifyAccountMutex.release();
 	        }
 	    }
-	    return res;
 	}
 	
 	@Path("/accountData")
@@ -243,6 +246,31 @@ export class ServiceController
 	    return await removeSession(key, session);
 	}
 
+	@Path("/changeSessionName")
+	@GET
+	public async changeSessionName(@QueryParam("key") key:string, @QueryParam("sid") sid:string, @QueryParam("newSid") newSid:string): Promise<boolean>
+	{
+		
+	    let res = false;
+	    try
+	    {
+	        await this.modifySessionName.acquire();
+	        res = await changeTheSessionName(key, sid, newSid);
+	        return res;
+	    }
+	    catch (err)
+	    {
+	        return Promise.reject(err);
+	    }
+	    finally
+	    {
+	        if (this.modifySessionName.isLocked)
+	        {
+	            await this.modifySessionName.release();
+	        }
+	    }
+	}
+	
 	@Path("/getTradesByYear")
 	@GET
 	public async getTradesByYear(@QueryParam("key") key: string, @QueryParam("coll") coll: string, @QueryParam("year") year: string): Promise<any>

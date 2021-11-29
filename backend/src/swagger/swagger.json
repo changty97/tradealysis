@@ -845,6 +845,52 @@
 				]
 			}
 		},
+		"/changeSessionName": {
+			"get": {
+				"operationId": "ServiceChangeSessionName",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"type": "boolean"
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"schema": {
+							"$ref": "#/definitions/BadRequestError"
+						}
+					}
+				},
+				"description": "",
+				"parameters": [
+					{
+						"description": "",
+						"in": "query",
+						"name": "key",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"description": "",
+						"in": "query",
+						"name": "sid",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"description": "",
+						"in": "query",
+						"name": "newSid",
+						"required": true,
+						"type": "string"
+					}
+				]
+			}
+		},
 		"/getTradesByYear": {
 			"get": {
 				"operationId": "ServiceGetTradesByYear",
