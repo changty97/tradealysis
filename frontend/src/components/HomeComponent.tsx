@@ -22,7 +22,6 @@ class HomeComponent extends Component<any, IHomeComponent>
         };
         this.updateSessionList = this.updateSessionList.bind(this);
 		this.clickReportIcon = this.clickReportIcon.bind(this);
-		this.deleteReportIcon = this.clickReportIcon.bind(this);
 		this.changeReportName = this.changeReportName.bind(this);
     }
 
