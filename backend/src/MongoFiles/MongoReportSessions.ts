@@ -139,8 +139,15 @@ async function removeSession(key:string, session:string):Promise<string>
     let client: MongoClient | null = null;
     let client2: MongoClient | null = null;
     let sessionName = "";
+	
+    console.log("CALLED ");
     try
     {
+        const uname = await userFromKey(key);
+        if (uname || uname === "")
+        {
+            return sessionName;
+        }
         client = await MongoClient.connect(userMongoOptions.uri);
         const db: Db = client.db(userMongoOptions.db);
         const theCollectionKeyTable: Collection = db.collection(userMongoOptions.collections['userKey']);
@@ -165,15 +172,17 @@ async function removeSession(key:string, session:string):Promise<string>
             );
             client2 = await MongoClient.connect(mongoOptions.uri);
             const db2: Db = client2.db(mongoOptions.db);
-			
+            let deleteTable: Collection | null = null;
             try
             {
-                const deleteTable: Collection | null = await db2.collection(`${sessionName  }_stock_data`);
+                const theCollNameToDel = `${uname  }_${  sessionName}`;
+                console.log(`Deleting ${  theCollNameToDel  } in ${  mongoOptions.db}`);
+                deleteTable = await db2.collection(`${theCollNameToDel}`);
                 await deleteTable.drop();
             }
             catch (error) // exception thrown if deleteTable collection does not exist. No worry
             {
-                console.log("");
+                deleteTable = null;
             }
         }
     }

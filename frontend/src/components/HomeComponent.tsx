@@ -21,6 +21,7 @@ class HomeComponent extends Component<any, IHomeComponent>
             loading: false
         };
         this.updateSessionList = this.updateSessionList.bind(this);
+		this.deleteReportIcon = this.deleteReportIcon.bind(this);
     }
 
     componentDidMount(): void
