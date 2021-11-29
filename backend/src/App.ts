@@ -4,7 +4,7 @@ import { PATH_TO_CONTROLLERS } from "./constants/globals";
 import cors from 'cors';
 
 const app: express.Application = express();
-const allowedToMakeRequests = ['http://localhost:3000', 'http://localhost:3001'];
+const allowedToMakeRequests = ['https://tradealysis.tk', 'http://localhost:3000', 'http://localhost:3001'];
 const options: cors.CorsOptions = {
     origin: allowedToMakeRequests
 };
