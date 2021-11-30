@@ -3,6 +3,7 @@ import { AxiosResponse } from "axios";
 import { Home } from "../cssComponents/Home";
 import DataIcon from "../images/dataIcon3.jpg";
 import DataIcon_S from "../images/dataIcon3_Selected.jpg";
+import DataIcon_New from "../images/dataIcon3_new.jpg";
 import { IHomeComponent } from "../models/IHomeComponent";
 import { v4 as uuid } from "uuid";
 import { IoIosCloseCircle } from 'react-icons/io';
@@ -21,7 +22,7 @@ class HomeComponent extends Component<any, IHomeComponent>
             loading: false
         };
         this.updateSessionList = this.updateSessionList.bind(this);
-		this.deleteReportIcon = this.deleteReportIcon.bind(this);
+        this.deleteReportIcon = this.deleteReportIcon.bind(this);
     }
 
     componentDidMount(): void
@@ -93,7 +94,6 @@ class HomeComponent extends Component<any, IHomeComponent>
                 this.setState({
                     loading: true
                 });
-
 				 api.get("removeSessionForUser", {
                     params: {
                         key: `${theKey}`,
@@ -154,7 +154,7 @@ class HomeComponent extends Component<any, IHomeComponent>
                     {
                         if (response && !response.data)
                         {
-				  throw new Error("Invalid Entry");
+							throw new Error("Invalid Entry");
                         }
                         theNewFileName = newFileName;
                         return;
@@ -170,7 +170,7 @@ class HomeComponent extends Component<any, IHomeComponent>
 		  if (result.isConfirmed)
             {
 			  if (localStorage.getItem("reportsId") === sessionID)
-                {
+              {
 				  localStorage.setItem("reportsId", theNewFileName);
 			  }
 			  Swal.fire({
@@ -185,8 +185,25 @@ class HomeComponent extends Component<any, IHomeComponent>
 		  }
         });
     }
+    
+	private createNewSession():void {
+		alert("Clicked");
+		const theKey = localStorage.getItem("Key");
+		api.get("/createNewSessionForUser", {
+			params:{ 
+				key: theKey,
+				collectionName: " ",
+			}
+		})
+		.then((res:AxiosResponse<string>) => {
+			this.updateSessionList();
+		})
+		.catch((err:Error) => {
+			console.error(err);
+		});
+	}
 	
-    render(): JSX.Element
+	render(): JSX.Element
     {
         return (
             <Fragment>
@@ -209,12 +226,13 @@ class HomeComponent extends Component<any, IHomeComponent>
                                     </div>
 								   <div>
                                         <br/>
-                                        <Home.DATA_ICON src={icon} alt={theKey} onClick={() => this.clickReportIcon(session)} />
+										<Home.DATA_ICON src={icon} alt={theKey} onClick={() => this.clickReportIcon(session)} />
                                         <Home.DATA_ICON_TEXT_DIV onClick={() => this.changeReportName(session)}>{session}</Home.DATA_ICON_TEXT_DIV>
                                     </div>
                                 </Home.DATA_ICON_DIV>
                             );
                         })}
+						<Home.DATA_ICON_DIV> <div><br/><Home.DATA_ICON src={DataIcon_New} alt={"New"} onClick={() => this.createNewSession()} /></div></Home.DATA_ICON_DIV>
                     </Home.RIGHT_HOME>
                 </Home.SECTION>
             </Fragment>

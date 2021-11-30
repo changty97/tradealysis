@@ -98,7 +98,7 @@ async function createNewSession(key:string, newCollectionName:string):Promise<st
 
             if (userObjIDArr && userObjIDArr.length !== 0) // no userObjId for user based on key
             {
-                theNewCollectionName = newCollectionName;
+                theNewCollectionName = newCollectionName.trim();
                 const sessions = (await theCollectionSessionsTable.distinct(
                     "session_ids", {
                         "user_obj_id": userObjIDArr[0]
@@ -134,17 +134,16 @@ async function createNewSession(key:string, newCollectionName:string):Promise<st
     return theNewCollectionName;
 }
 
+
 async function removeSession(key:string, session:string):Promise<string>
 {
     let client: MongoClient | null = null;
     let client2: MongoClient | null = null;
     let sessionName = "";
-	
-    console.log("CALLED ");
     try
     {
         const uname = await userFromKey(key);
-        if (uname || uname === "")
+        if (!uname || uname === "")
         {
             return sessionName;
         }
@@ -175,9 +174,7 @@ async function removeSession(key:string, session:string):Promise<string>
             let deleteTable: Collection | null = null;
             try
             {
-                const theCollNameToDel = `${uname  }_${  sessionName}`;
-                console.log(`Deleting ${  theCollNameToDel  } in ${  mongoOptions.db}`);
-                deleteTable = await db2.collection(`${theCollNameToDel}`);
+                deleteTable = await db2.collection(`${uname  }_${  sessionName}`);
                 await deleteTable.drop();
             }
             catch (error) // exception thrown if deleteTable collection does not exist. No worry
@@ -238,48 +235,40 @@ async function changeTheSessionName(key:string, oldName:string, newName:string):
                 idxToRemove = i; foundOldName = true;
             }
         }
-        if (foundNewName) // we cant change the name to an existing session name
+        if (foundOldName && !foundNewName)
         {
-            return false;
-        }
-        else
-        {
-            if (foundOldName)
+            const theOldSessionCollection = `${uname  }_${  oldName}`;
+            const theNewSessionCollection = `${uname  }_${  newName}`;
+            const userObjID = await theCollectionKeyTable.distinct("user_obj_id", {
+                "key": key
+            });
+            if (userObjID && userObjID.length !== 0)
             {
-                const theOldSessionCollection = `${uname  }_${  oldName}`;
-                const theNewSessionCollection = `${uname  }_${  newName}`;
-					
-                const userObjID = await theCollectionKeyTable.distinct("user_obj_id", {
-                    "key": key
-                });
-                if (userObjID && userObjID.length !== 0)
-                {
-                    const updateVal = await theCollectionSessionTable.updateOne( {
-                        "user_obj_id": userObjID[0],
-                        "session_ids": oldName
-                    }, {
-                        $set: {
-                            "session_ids.$": newName
-                        }
-                    },);
-                    if (updateVal && updateVal.acknowledged)
-                    {
-                        let oldCollection: Collection|null = db2.collection(theOldSessionCollection);
-                        try
-                        {
-                            const oldCollection: Collection = db2.collection(theOldSessionCollection);
-                            await oldCollection.rename(theNewSessionCollection);
-                            return true;
-                        }
-                        catch (e)
-                        {
-                            oldCollection = null;
-                        }
+                const updateVal = await theCollectionSessionTable.updateOne( {
+                    "user_obj_id": userObjID[0],
+                    "session_ids": oldName
+                }, {
+                    $set: {
+                        "session_ids.$": newName
                     }
+                },);
+                if (updateVal && updateVal.acknowledged)
+                {
+                    let oldCollection: Collection|null = db2.collection(theOldSessionCollection);
+                    try
+                    {
+                        const oldCollection: Collection = db2.collection(theOldSessionCollection);
+                        await oldCollection.rename(theNewSessionCollection);
+                    }
+                    catch (e) // expected error if someone has not saved the table with at least 1 item
+                    {
+                        oldCollection = null;
+                    }
+                    return true;
                 }
             }
-            return false;
         }
+        return false;
     }
     catch (err)
     {
