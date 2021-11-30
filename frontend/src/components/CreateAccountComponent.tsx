@@ -80,16 +80,16 @@ class CreateAccountComponent extends Component<any, any>
                             {
                                 if (res.data)
                                 {
-									Swal.fire({
+                                    Swal.fire({
 									  icon: 'success',
 									  title: 'Account Created. Sign In!',
 									  showConfirmButton: false,
 									  timer: 750
-									}).then(() =>
-									{
-										window.location.href = "/login";
-										return;
-									});
+                                    }).then(() =>
+                                    {
+                                        window.location.href = "/login";
+                                        return;
+                                    });
                                 }
                                 else
                                 {
