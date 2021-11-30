@@ -203,10 +203,9 @@ async function changeTheSessionName(key:string, oldName:string, newName:string):
 {
     let client: MongoClient | null = null;
     let client2: MongoClient | null = null;
-    const uname:string = await userFromKey(key);
     try
     {
-        if (oldName.trim() === "" || newName.trim() === "" || uname === "")
+        if (oldName.trim() === "" || newName.trim() === "")
         {
             return false;
         }
@@ -214,57 +213,62 @@ async function changeTheSessionName(key:string, oldName:string, newName:string):
         {
             return true;
         }
-        client = await MongoClient.connect(userMongoOptions.uri);
-        client2 = await MongoClient.connect(mongoOptions.uri);
-        const db: Db = client.db(userMongoOptions.db);
-        const db2: Db = client2.db(mongoOptions.db);
-        const theCollectionKeyTable: Collection = db.collection(userMongoOptions.collections['userKey']);
-        const theCollectionSessionTable: Collection = db.collection(userMongoOptions.collections['userSessions']);
-        const userSessions:string[] = await allUserSessions(key);
-        let foundOldName = false;
-        let foundNewName = false;
-        let idxToRemove = -1;
-        for (let i = 0; i < userSessions.length && !foundNewName; i++)
+        const uname:string = await userFromKey(key);
+        if (uname && uname !== "")
         {
-            if (userSessions[i] === newName)
+            client = await MongoClient.connect(userMongoOptions.uri);
+            client2 = await MongoClient.connect(mongoOptions.uri);
+            const db: Db = client.db(userMongoOptions.db);
+            const db2: Db = client2.db(mongoOptions.db);
+            const theCollectionKeyTable: Collection = db.collection(userMongoOptions.collections['userKey']);
+            const theCollectionSessionTable: Collection = db.collection(userMongoOptions.collections['userSessions']);
+            const userSessions:string[] = await allUserSessions(key);
+            let foundOldName = false;
+            let foundNewName = false;
+
+            for (let i = 0; i < userSessions.length && !foundNewName; i++)
             {
-                foundNewName = true;
-            }
-            else if (userSessions[i] === oldName)
-            {
-                idxToRemove = i; foundOldName = true;
-            }
-        }
-        if (foundOldName && !foundNewName)
-        {
-            const theOldSessionCollection = `${uname  }_${  oldName}`;
-            const theNewSessionCollection = `${uname  }_${  newName}`;
-            const userObjID = await theCollectionKeyTable.distinct("user_obj_id", {
-                "key": key
-            });
-            if (userObjID && userObjID.length !== 0)
-            {
-                const updateVal = await theCollectionSessionTable.updateOne( {
-                    "user_obj_id": userObjID[0],
-                    "session_ids": oldName
-                }, {
-                    $set: {
-                        "session_ids.$": newName
-                    }
-                },);
-                if (updateVal && updateVal.acknowledged)
+                if (userSessions[i] === newName)
                 {
-                    let oldCollection: Collection|null = db2.collection(theOldSessionCollection);
-                    try
+                    foundNewName = true;
+                    break;
+                }
+                else if (userSessions[i] === oldName)
+                {
+                    foundOldName = true;
+                }
+            }
+            if (foundOldName && !foundNewName)
+            {
+                const theOldSessionCollection = `${uname  }_${  oldName}`;
+                const theNewSessionCollection = `${uname  }_${  newName}`;
+                const userObjID = await theCollectionKeyTable.distinct("user_obj_id", {
+                    "key": key
+                });
+                if (userObjID && userObjID.length !== 0)
+                {
+                    const updateVal = await theCollectionSessionTable.updateOne( {
+                        "user_obj_id": userObjID[0],
+                        "session_ids": oldName
+                    }, {
+                        $set: {
+                            "session_ids.$": newName
+                        }
+                    },);
+                    if (updateVal && updateVal.acknowledged)
                     {
-                        const oldCollection: Collection = db2.collection(theOldSessionCollection);
-                        await oldCollection.rename(theNewSessionCollection);
+                        let oldCollection: Collection|null = db2.collection(theOldSessionCollection);
+                        try
+                        {
+                            const oldCollection: Collection = db2.collection(theOldSessionCollection);
+                            await oldCollection.rename(theNewSessionCollection);
+                        }
+                        catch (e) // expected error if someone has not saved the table with at least 1 item
+                        {
+                            oldCollection = null;
+                        }
+                        return true;
                     }
-                    catch (e) // expected error if someone has not saved the table with at least 1 item
-                    {
-                        oldCollection = null;
-                    }
-                    return true;
                 }
             }
         }
