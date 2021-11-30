@@ -60,11 +60,12 @@ class App extends Component<IReportsProps, IAppState>
 						const pssd:string = "pass1";
 						const aes:AES256 = AES256.getInstance();
 						
-						const salt = aes.generateSalt();              // needed by CrpytJS
-						const key = aes.generateKey(pssd, salt);      // key using salt. Not going to store this 
-						const sKey = salt.toString()+key.toString();  // we will store this in our db. First 32 chars is salt val, followed by 64 key vals 
+						//const salt = aes.generateSalt();              // needed by CrpytJS
+						//const key = aes.generateKeyWithSalt(pssd, salt);      // key using salt. Not going to store this 
 						
-						const ec = aes.encryption(mssg, pssd, sKey);  // how to encrypt 
+						const sKey = aes.generateKey(pssd)  // we will store this in our db. First 32 chars is salt val, followed by 64 key vals 
+						
+						const ec = aes.encryption(mssg, sKey);  // how to encrypt 
 						const dc = aes.decryption(ec, pssd);          // how to decrypt 
 						
 						console.log("CypherText: " + ec);
