@@ -223,21 +223,14 @@ async function changeTheSessionName(key:string, oldName:string, newName:string):
             const theCollectionKeyTable: Collection = db.collection(userMongoOptions.collections['userKey']);
             const theCollectionSessionTable: Collection = db.collection(userMongoOptions.collections['userSessions']);
             const userSessions:string[] = await allUserSessions(key);
+
             let foundOldName = false;
             let foundNewName = false;
+            foundNewName = userSessions.some((sessions: string) => {
+			   foundOldName = (sessions !== oldName) ? foundOldName : true;
+			   return (sessions === newName);
+            });
 
-            for (let i = 0; i < userSessions.length && !foundNewName; i++)
-            {
-                if (userSessions[i] === newName)
-                {
-                    foundNewName = true;
-                    break;
-                }
-                else if (userSessions[i] === oldName)
-                {
-                    foundOldName = true;
-                }
-            }
             if (foundOldName && !foundNewName)
             {
                 const theOldSessionCollection = `${uname  }_${  oldName}`;
