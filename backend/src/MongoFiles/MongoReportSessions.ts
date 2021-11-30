@@ -1,6 +1,5 @@
 import { MongoClient, Db, Collection } from "mongodb";
-import { mongoOptions } from "../constants/globals";
-import { userMongoOptions } from "../constants/globals";
+import { userMongoOptions, mongoOptions } from "../constants/globals";
 import { userFromKey } from "./MongoLogin";
 
 async function allUserSessions(key: string):Promise<string[]>
@@ -99,7 +98,7 @@ async function createNewSession(key:string, newCollectionName:string):Promise<st
 
             if (userObjIDArr && userObjIDArr.length !== 0) // no userObjId for user based on key
             {
-                theNewCollectionName = newCollectionName;
+                theNewCollectionName = newCollectionName.trim();
                 const sessions = (await theCollectionSessionsTable.distinct(
                     "session_ids", {
                         "user_obj_id": userObjIDArr[0]
@@ -135,6 +134,7 @@ async function createNewSession(key:string, newCollectionName:string):Promise<st
     return theNewCollectionName;
 }
 
+
 async function removeSession(key:string, session:string):Promise<string>
 {
     let client: MongoClient | null = null;
@@ -142,6 +142,11 @@ async function removeSession(key:string, session:string):Promise<string>
     let sessionName = "";
     try
     {
+        const uname = await userFromKey(key);
+        if (!uname || uname === "")
+        {
+            return sessionName;
+        }
         client = await MongoClient.connect(userMongoOptions.uri);
         const db: Db = client.db(userMongoOptions.db);
         const theCollectionKeyTable: Collection = db.collection(userMongoOptions.collections['userKey']);
@@ -166,15 +171,15 @@ async function removeSession(key:string, session:string):Promise<string>
             );
             client2 = await MongoClient.connect(mongoOptions.uri);
             const db2: Db = client2.db(mongoOptions.db);
-			
+            let deleteTable: Collection | null = null;
             try
             {
-                const deleteTable: Collection | null = await db2.collection(`${sessionName  }_stock_data`);
+                deleteTable = await db2.collection(`${uname  }_${  sessionName}`);
                 await deleteTable.drop();
             }
             catch (error) // exception thrown if deleteTable collection does not exist. No worry
             {
-                console.log("");
+                deleteTable = null;
             }
         }
     }
@@ -193,4 +198,90 @@ async function removeSession(key:string, session:string):Promise<string>
     return sessionName;
 }
 
-export { allUserSessions, createNewSession, removeSession };
+
+async function changeTheSessionName(key:string, oldName:string, newName:string):Promise<boolean>
+{
+    let client: MongoClient | null = null;
+    let client2: MongoClient | null = null;
+    try
+    {
+        if (oldName.trim() === "" || newName.trim() === "")
+        {
+            return false;
+        }
+        if (oldName === newName) // changing name to newname is the same as doing nothing. We are done
+        {
+            return true;
+        }
+        const uname:string = await userFromKey(key);
+        if (uname && uname !== "")
+        {
+            client = await MongoClient.connect(userMongoOptions.uri);
+            client2 = await MongoClient.connect(mongoOptions.uri);
+            const db: Db = client.db(userMongoOptions.db);
+            const db2: Db = client2.db(mongoOptions.db);
+            const theCollectionKeyTable: Collection = db.collection(userMongoOptions.collections['userKey']);
+            const theCollectionSessionTable: Collection = db.collection(userMongoOptions.collections['userSessions']);
+            const userSessions:string[] = await allUserSessions(key);
+
+            let foundOldName = false;
+            let foundNewName = false;
+            foundNewName = userSessions.some((sessions: string) => {
+			   foundOldName = (sessions !== oldName) ? foundOldName : true;
+			   return (sessions === newName);
+            });
+
+            if (foundOldName && !foundNewName)
+            {
+                const theOldSessionCollection = `${uname  }_${  oldName}`;
+                const theNewSessionCollection = `${uname  }_${  newName}`;
+                const userObjID = await theCollectionKeyTable.distinct("user_obj_id", {
+                    "key": key
+                });
+                if (userObjID && userObjID.length !== 0)
+                {
+                    const updateVal = await theCollectionSessionTable.updateOne( {
+                        "user_obj_id": userObjID[0],
+                        "session_ids": oldName
+                    }, {
+                        $set: {
+                            "session_ids.$": newName
+                        }
+                    },);
+                    if (updateVal && updateVal.acknowledged)
+                    {
+                        let oldCollection: Collection|null = db2.collection(theOldSessionCollection);
+                        try
+                        {
+                            const oldCollection: Collection = db2.collection(theOldSessionCollection);
+                            await oldCollection.rename(theNewSessionCollection);
+                        }
+                        catch (e) // expected error if someone has not saved the table with at least 1 item
+                        {
+                            oldCollection = null;
+                        }
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    catch (err)
+    {
+        return Promise.reject(err);
+    }
+    finally
+    {
+        if (client)
+        {
+            client.close();
+        }
+        if (client2)
+        {
+            client2.close();
+        }
+    }
+}
+
+export { allUserSessions, createNewSession, removeSession, changeTheSessionName };

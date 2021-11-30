@@ -70,6 +70,7 @@ class Home extends Component
 		align-content: flex-start;
 		width: 100%;
 		margin: 0 5%;
+		overflow: auto;
 	`;
 	public static readonly DATA_ICON_DIV = sty.div `
 		display:flex;
@@ -84,11 +85,12 @@ class Home extends Component
 		font-size: 2.2vh;
 		text-decoration: none;
 	`;
-
+	
 	public static readonly DATA_ICON = sty.img `
 		width: 8vw;
 		height: auto; 
 	`;
+
 	public static readonly DATA_ICON_MAP = sty.map `
 		padding: 10px;
 	`;

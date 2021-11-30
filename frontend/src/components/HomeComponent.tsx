@@ -3,6 +3,7 @@ import { AxiosResponse } from "axios";
 import { Home } from "../cssComponents/Home";
 import DataIcon from "../images/dataIcon3.jpg";
 import DataIcon_S from "../images/dataIcon3_Selected.jpg";
+import DataIcon_New from "../images/dataIcon3_new.jpg";
 import { IHomeComponent } from "../models/IHomeComponent";
 import { v4 as uuid } from "uuid";
 import { IoIosCloseCircle } from 'react-icons/io';
@@ -21,6 +22,7 @@ class HomeComponent extends Component<any, IHomeComponent>
             loading: false
         };
         this.updateSessionList = this.updateSessionList.bind(this);
+        this.deleteReportIcon = this.deleteReportIcon.bind(this);
     }
 
     componentDidMount(): void
@@ -92,7 +94,6 @@ class HomeComponent extends Component<any, IHomeComponent>
                 this.setState({
                     loading: true
                 });
-
 				 api.get("removeSessionForUser", {
                     params: {
                         key: `${theKey}`,
@@ -130,6 +131,81 @@ class HomeComponent extends Component<any, IHomeComponent>
             });
     }
 
+    private changeReportName(sessionID: string):void
+    {
+        let theNewFileName = "";
+        const theKey = localStorage.getItem("Key");
+        Swal.fire({
+		  title: `Change File Name: '${  sessionID  }'`,
+		  input: 'text',
+		  showCancelButton: true,
+		  showLoaderOnConfirm: true,
+		  confirmButtonText: 'Change',
+		  preConfirm: (newFileName:string) =>
+            {
+                return api.get("/changeSessionName", {
+                    params: {
+                        key: theKey,
+                        sid: `${sessionID}`,
+                        newSid: `${newFileName}`
+                    }
+                })
+			  .then((response:AxiosResponse<boolean>) =>
+                    {
+                        if (response && !response.data)
+                        {
+                            throw new Error("Invalid Entry");
+                        }
+                        theNewFileName = newFileName;
+                        return;
+			  })
+			  .catch((error:Error) =>
+                    {
+                        Swal.showValidationMessage( `Request Failed: ${error}` );
+                    });
+		  },
+		  allowOutsideClick: () => !Swal.isLoading()
+        }).then((result) =>
+        {
+		  if (result.isConfirmed)
+            {
+			  if (localStorage.getItem("reportsId") === sessionID)
+                {
+				  localStorage.setItem("reportsId", theNewFileName);
+			  }
+			  Swal.fire({
+                    title: `Changed ${sessionID} to ${theNewFileName}`,
+                    timer: 600,
+                    showConfirmButton: false
+                })
+			  .then(() =>
+			  {
+				  this.updateSessionList();
+			  });
+		  }
+        });
+    }
+    
+    private createNewSession():void
+    {
+        alert("Clicked");
+        const theKey = localStorage.getItem("Key");
+        api.get("/createNewSessionForUser", {
+            params: {
+                key: theKey,
+                collectionName: " ",
+            }
+        })
+            .then((res:AxiosResponse<string>) =>
+            {
+                this.updateSessionList();
+            })
+            .catch((err:Error) =>
+            {
+                console.error(err);
+            });
+    }
+	
     render(): JSX.Element
     {
         return (
@@ -151,14 +227,15 @@ class HomeComponent extends Component<any, IHomeComponent>
 								   <div>
                                         <IoIosCloseCircle size={17} onClick={() => this.deleteReportIcon(session)}/>
                                     </div>
-								   <div onClick={() => this.clickReportIcon(session)}>
+								   <div>
                                         <br/>
-                                        <Home.DATA_ICON src={icon} alt={theKey}/>
-                                        <Home.DATA_ICON_TEXT_DIV>{session}</Home.DATA_ICON_TEXT_DIV>
+                                        <Home.DATA_ICON src={icon} alt={theKey} onClick={() => this.clickReportIcon(session)} />
+                                        <Home.DATA_ICON_TEXT_DIV onClick={() => this.changeReportName(session)}>{session}</Home.DATA_ICON_TEXT_DIV>
                                     </div>
                                 </Home.DATA_ICON_DIV>
                             );
                         })}
+                        <Home.DATA_ICON_DIV> <div><br/><Home.DATA_ICON src={DataIcon_New} alt={"New"} onClick={() => this.createNewSession()} /></div></Home.DATA_ICON_DIV>
                     </Home.RIGHT_HOME>
                 </Home.SECTION>
             </Fragment>
