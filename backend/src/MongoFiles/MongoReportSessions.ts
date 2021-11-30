@@ -104,7 +104,7 @@ async function createNewSession(key:string, newCollectionName:string):Promise<st
                         "user_obj_id": userObjIDArr[0]
                     }
                 ));
-                theNewCollectionName = (theNewCollectionName && theNewCollectionName.trim() === "") ? "myData" : theNewCollectionName;
+                theNewCollectionName = (theNewCollectionName === "" ) ? "myData" : theNewCollectionName;
                 theNewCollectionName = newSessionName(theNewCollectionName, sessions);
 				
                 await theCollectionSessionsTable.updateOne(
@@ -226,7 +226,8 @@ async function changeTheSessionName(key:string, oldName:string, newName:string):
 
             let foundOldName = false;
             let foundNewName = false;
-            foundNewName = userSessions.some((sessions: string) => {
+            foundNewName = userSessions.some((sessions: string) =>
+            {
 			   foundOldName = (sessions !== oldName) ? foundOldName : true;
 			   return (sessions === newName);
             });

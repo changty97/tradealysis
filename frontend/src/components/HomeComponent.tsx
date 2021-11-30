@@ -188,12 +188,11 @@ class HomeComponent extends Component<any, IHomeComponent>
     
     private createNewSession():void
     {
-        alert("Clicked");
         const theKey = localStorage.getItem("Key");
         api.get("/createNewSessionForUser", {
             params: {
                 key: theKey,
-                collectionName: " ",
+                collectionName: "myData",
             }
         })
             .then((res:AxiosResponse<string>) =>
