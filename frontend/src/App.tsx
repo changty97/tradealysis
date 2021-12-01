@@ -20,8 +20,8 @@ import { LandingComponent } from "./components/LandingComponent";
 import { IAppState } from './models/IAppState';
 import { api } from "./constants/globals";
 import { AxiosResponse } from 'axios';
-import { AES256} from "./Encryption/AES256";
-//import * as crypto from "crypto-js";
+import { AES256 } from "./Encryption/AES256";
+import * as crypto from "crypto-js";
 
 class App extends Component<IReportsProps, IAppState>
 {
@@ -33,6 +33,21 @@ class App extends Component<IReportsProps, IAppState>
 	    };
         this.logout = this.logout.bind(this);
     }
+	
+    private encryptTest(): void
+    {
+	    const mssg = `Hello How are you doing today?`;
+        const pssd = "pass1";
+        const hashPssd = crypto.SHA3(pssd, {outputLength: 512}).toString();
+			
+
+		const aes:AES256 = AES256.getInstance();				
+        const sKey = aes.generateKey(hashPssd);  // we will store this in our db. First 32 chars is salt val, followed by 64 key vals				
+        const ec = aes.encryption(mssg, sKey);  // how to encrypt
+		const dcb = aes.decryption(ec, sKey);          // how to decrypt
+        console.log(`CypherText: ${  ec}\nDecrypt: ${  dcb}`);
+
+	} 
 	
     componentDidMount() : void
     {
@@ -55,22 +70,8 @@ class App extends Component<IReportsProps, IAppState>
                         this.setState({
                             username: res.data
                         });
-						
-						const mssg:string = `Hello How are you doing today?`; 
-						const pssd:string = "pass1";
-						const aes:AES256 = AES256.getInstance();
-						
-						//const salt = aes.generateSalt();              // needed by CrpytJS
-						//const key = aes.generateKeyWithSalt(pssd, salt);      // key using salt. Not going to store this 
-						
-						const sKey = aes.generateKey(pssd)  // we will store this in our db. First 32 chars is salt val, followed by 64 key vals 
-						
-						const ec = aes.encryption(mssg, sKey);  // how to encrypt 
-						const dc = aes.decryption(ec, pssd);          // how to decrypt 
-						
-						console.log("CypherText: " + ec);
-						console.log("Decrypt: " + dc);
-						console.log(sKey);
+                        this.encryptTest();
+                     
 						
                     }
                 })
