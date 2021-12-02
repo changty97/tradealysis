@@ -7,8 +7,8 @@ import { v4 as uuid } from "uuid";
 import { Overview } from "../cssComponents/Overview";
 import { api } from "../constants/globals";
 import { LoadingComponent } from "./LoadingComponent";
-
-const months: string[] = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dev"];
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const formatter: Intl.NumberFormat = new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -22,9 +22,12 @@ class OverviewComponent extends Component<any, IOverviewComponentState>
         super(props);
 
         this.state = {
-            year: "21",
-            month: 1,
-            data: [],
+            minDate: null,
+            maxDate: null,
+            selectedStartDate: null,
+            selectedEndDate: null,
+            rawData: [],
+            filteredData: [],
             results: {
                 total: 0,
                 wins: 0,
@@ -52,7 +55,9 @@ class OverviewComponent extends Component<any, IOverviewComponentState>
         this.setState({
             loading: true
         });
+
         await this.getData();
+
         this.setState({
             loading: false
         });
@@ -60,17 +65,50 @@ class OverviewComponent extends Component<any, IOverviewComponentState>
 
     async getData(): Promise<void>
     {
-        this.parseData((await api.get("getTradesByYear", {
+        const rawData: any = (await api.get("/stockdataGet", {
             params: {
                 key: localStorage.getItem("Key"),
-                coll: localStorage.getItem('reportsId'),
-                year: this.state.year
+                coll: localStorage.getItem('reportsId')
             }
-        })).data);
+        })).data;
+
+        const dates: number[] = [];
+
+        // Sort every trade by date in ascending order.
+        rawData.sort((firstEl: any, secondEl: any) => {
+            let first: number;
+
+            if (firstEl.DOI) {
+                first = Date.parse(firstEl.DOI);
+                dates.push(first);
+            } else {
+                return false;
+            }
+
+            return firstEl.DOI - secondEl.DOI
+        });
+
+        const minDate = new Date(Math.min(...dates));
+        const maxDate = new Date(Math.max(...dates));
+
+        this.setState({ 
+            minDate,
+            maxDate,
+            selectedStartDate: minDate,
+            selectedEndDate: maxDate,
+            rawData
+        });
+
+        this.parseData();
     }
 
-    parseData(data: any): void
+    parseData(): void
     {
+        if (!this.state.selectedStartDate || !this.state.selectedEndDate) {
+            return;
+        }
+
+        let data: any = [...this.state.rawData];
         const results: IResults = {
             total: 0,
             wins: 0,
@@ -86,6 +124,12 @@ class OverviewComponent extends Component<any, IOverviewComponentState>
             topSymbolsByPL: [],
             topSymbolsByGainPerc: []
         };
+
+        // Narrow data to the selected date range.
+        data = data.filter((el: any) => {
+            const date: Date = (new Date(Date.parse(el.DOI)));
+            return el.DOI && date >= this.state.selectedStartDate! && date <= this.state.selectedEndDate!
+        })
 
         data.forEach((row: any, index: number) =>
         {
@@ -121,7 +165,7 @@ class OverviewComponent extends Component<any, IOverviewComponentState>
         results.topSymbolsByGainPerc.sort((firstEl: any, secondEl: any) => secondEl.gainPerc - firstEl.gainPerc);
 
         this.setState({
-            data,
+            filteredData: data,
             results
         });
     }
@@ -131,44 +175,32 @@ class OverviewComponent extends Component<any, IOverviewComponentState>
         return (
             <Fragment>
                 {this.state.loading ? <LoadingComponent /> : null}
-                <Reports.SECTION>
+                <Overview.SECTION>
                     <Link to="/report"><Reports.BUTTON>Trade Report</Reports.BUTTON></Link>
                     <Link to="/overview"><Reports.BUTTON>Overview</Reports.BUTTON></Link>
                     <Link to="/strategies"><Reports.BUTTON>Strategies</Reports.BUTTON></Link>
                     <Overview.ROW>
-                        <div className="yearSelection">
-                            <input
-                                placeholder="Year"
-                                value={this.state.year}
-                                onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                                {
-                                    this.setState({
-                                        year: event.target.value
-                                    });
-                                }}
-                            />
-                        </div>
-                        <div className="monthSelection">
-                            {months.map((month: string, index: number) =>
-                            {
-                                return (
-                                    <Reports.BUTTON
-                                        key={uuid()}
-                                        onClick={() =>
-                                        {
-                                            this.setState({
-                                                month: index + 1
-                                            });
-
-                                            this.getData();
-                                        }}
-                                        disabled={this.state.month === index + 1}
-                                    >
-                                        {month}
-                                    </Reports.BUTTON>
-                                );
-                            })}
-                        </div>
+                        <DatePicker
+                            dateFormat="yyyy-MM-dd"
+                            onChange={([selectedStartDate, selectedEndDate]: [Date, Date]) => {
+                                this.setState({
+                                    selectedStartDate,
+                                    selectedEndDate
+                                }, this.parseData);
+                            }}
+                            selected={this.state.selectedStartDate}
+                            startDate={this.state.selectedStartDate}
+                            endDate={this.state.selectedEndDate}
+                            minDate={this.state.minDate}
+                            maxDate={this.state.maxDate}
+                            customInput={
+                                <Reports.BUTTON>
+                                    {this.state.selectedStartDate?.toISOString().split('T')[0] || ""} - {this.state.selectedEndDate?.toISOString().split('T')[0] || ""}
+                                </Reports.BUTTON>
+                            }
+                            selectsRange
+                            withPortal
+                        />
                     </Overview.ROW>
                     <Overview.ROW>
                         <Overview.LEFT>
@@ -382,7 +414,7 @@ class OverviewComponent extends Component<any, IOverviewComponentState>
                             </Overview.ROW>
                         </Overview.RIGHT>
                     </Overview.ROW>
-                </Reports.SECTION>
+                </Overview.SECTION>
             </Fragment>
         );
     }

@@ -3,6 +3,11 @@ import sty from "styled-components";
 
 class Overview extends Component
 {
+    public static readonly SECTION = sty.section ` 
+		height: 70vh;
+		margin: 0.5% 2%;
+	`;
+
 	public static readonly LEFT = sty.div `
         float: left;
         width: 80%;

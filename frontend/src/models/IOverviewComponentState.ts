@@ -1,7 +1,10 @@
 interface IOverviewComponentState {
-    year: string;
-    month: number;
-    data: any;
+    minDate: Date | null;
+    maxDate: Date | null;
+    selectedStartDate: Date | null;
+    selectedEndDate: Date | null;
+    rawData: any;
+    filteredData: any;
     results: IResults;
     loading: boolean;
 };
