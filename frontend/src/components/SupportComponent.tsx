@@ -1,8 +1,8 @@
 import { Component, Fragment } from "react";
-//import { Support } from "../cssComponents/Support";
+import { Support } from "../cssComponents/Support";
 import * as emailjs from 'emailjs-com';
 import { init } from 'emailjs-com';
-import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
+import { Button, FormGroup } from 'reactstrap';
 //import { ISupportProps } from "../models/ISupportProps";
 //import { ISupportState } from "../models/ISupportState";
 init("user_EXb9DCu4js07untJgFSES");
@@ -64,12 +64,13 @@ class SupportComponent extends Component
     {
         return (
             <Fragment>
-                <>
+                <Support.SECTION>
+                    <>
                     <h1 className="p-heading1">Get in Touch</h1>
-                    <Form onSubmit={this.handleSubmit.bind(this)}>
+                    <Support.FORM onSubmit={this.handleSubmit.bind(this)}>
                         <FormGroup controlId="formBasicEmail">
-                            <Label className="text-muted">Email address</Label>
-                            <Input
+                            <Support.LABEL className="text-muted">Email address</Support.LABEL>
+                            <Support.INPUT
                                 type="email"
                                 name="email"
                                 value={this.state.email}
@@ -79,8 +80,8 @@ class SupportComponent extends Component
                             />
                         </FormGroup>
                         <FormGroup controlId="formBasicName">
-                            <Label className="text-muted">Name</Label>
-                            <Input
+                            <Support.LABEL className="text-muted">Name</Support.LABEL>
+                            <Support.INPUT
                                 type="text"
                                 name="name"
                                 value={this.state.name}
@@ -90,8 +91,8 @@ class SupportComponent extends Component
                             />
                         </FormGroup>
                         <FormGroup controlId="formBasicSubject">
-                            <Label className="text-muted">Subject</Label>
-                            <Input
+                            <Support.LABEL className="text-muted">Subject</Support.LABEL>
+                            <Support.INPUT
                                 type="text"
                                 name="subject"
                                 className="text-primary"
@@ -101,8 +102,8 @@ class SupportComponent extends Component
                             />
                         </FormGroup>
                         <FormGroup controlId="formBasicMessage">
-                            <Label className="text-muted">Message</Label>
-                            <Input
+                            <Support.LABEL className="text-muted">Message</Support.LABEL>
+                            <Support.INPUT_TWO
                                 type="textarea"
                                 name="message"
                                 className="text-primary"
@@ -113,8 +114,9 @@ class SupportComponent extends Component
                         <Button variant="primary" type="submit">
               Submit
                         </Button>
-                    </Form>
-                </>
+                    </Support.FORM>
+                    </>
+                    </Support.SECTION>
             </Fragment>
         );
     }
