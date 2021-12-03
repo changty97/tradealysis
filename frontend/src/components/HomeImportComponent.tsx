@@ -43,6 +43,8 @@ class HomeImportComponent extends Component<any, IHomeImportComponentState>
     
     async importFile(): Promise<void>
     {
+        let success: boolean = false;
+
         if (!this.state.selectedFile)
         {
             return;
@@ -77,6 +79,7 @@ class HomeImportComponent extends Component<any, IHomeImportComponentState>
             });
 
             localStorage.setItem("reportsId", newCollName);
+            success = true;
         }
         catch (err)
         {
@@ -87,7 +90,10 @@ class HomeImportComponent extends Component<any, IHomeImportComponentState>
             this.setState({
                 loading: false
             });
-            window.location.href = "/report";
+
+            if (success) {
+                window.location.href = "/report";
+            }
         }
 
     }

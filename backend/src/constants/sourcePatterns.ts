@@ -15,6 +15,11 @@ const sourcePatterns: ISourcePatterns = {
             // "Profits and Losses",
             // "Account Summary"
         ]
+    },
+    Tradealysis: {
+        translations: {
+        },
+        sections: []
     }
 };
 
