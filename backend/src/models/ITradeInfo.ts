@@ -4,6 +4,7 @@ export interface ITradeInfo {
         sell: ITradeAction;
         DOI: string;
         position: string;
+        quantity: number;
     };
 }
 

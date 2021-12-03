@@ -20,6 +20,10 @@ class Import extends Component
 		max-width: 75%; max-height: 11vh;
 		min-width: 46vw; min-height: 8vh;
 	`;
+
+	public static readonly SELECT_DROPDOWN = sty.select `
+		display: inline-block;
+	`;
 	
 	public static readonly FORM_TOP_DIV = sty.div `
 		font-size: 160%;

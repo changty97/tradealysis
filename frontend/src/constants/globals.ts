@@ -4,4 +4,6 @@ const api: AxiosInstance = axios.create({
     baseURL: process.env.REACT_APP_SERVICE_URL
 });
 
-export { api };
+const sources: string[] = ["TDAmeritrade", "Tradealysis"];
+
+export { api, sources };

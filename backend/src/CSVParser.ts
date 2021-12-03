@@ -23,6 +23,45 @@ class CSVParser
 
     public async parse(file: Express.Multer.File): Promise<void>
     {
+        switch (this.source)
+        {
+        case "TDAmeritrade":
+            await this.parseTDAmeritrade(file);
+            break;
+        case "Tradealysis":
+            await this.parseTradealysis(file);
+            break;
+        }
+    }
+
+    public filter(): ITableData[]
+    {
+        let filtered: ITableData[] = [];
+
+        switch (this.source)
+        {
+        case "TDAmeritrade":
+            filtered = this.filterTDAmeritrade();
+            break;
+        case "Tradealysis":
+            filtered = this.parsedData["main"];
+            break;
+        }
+
+        return filtered;
+    }
+
+    private async parseTradealysis(file: Express.Multer.File): Promise<void>
+    {
+        this.parsedData["main"] = await csv({
+            ignoreEmpty: true,
+            flatKeys: true
+        })
+            .fromString(file.buffer.toString());
+    }
+
+    private async parseTDAmeritrade(file: Express.Multer.File): Promise<void>
+    {
         const sectionedData: ISectionedContent = {
         };
         const promises: PromiseLike<void>[] = [];
@@ -57,7 +96,8 @@ class CSVParser
         Object.entries(sectionedData).forEach(([section, content]: [string, string]) =>
         {
             promises.push(csv({
-                ignoreEmpty: true
+                ignoreEmpty: true,
+                flatKeys: true
             })
                 .fromString(content)
                 .then((json: ITableData[]) =>
@@ -69,7 +109,7 @@ class CSVParser
         await Promise.all(promises);
     }
 
-    public filter(): ITableData[]
+    private filterTDAmeritrade(): ITableData[]
     {
         const stocksInfo: ITradeInfo = {
         };
@@ -99,7 +139,8 @@ class CSVParser
                     },
                     DOI: "",
                     // If the first instance of a stock trade is a sale, the user is shorting the stock.
-                    position: action === "SELL" ? "Short" : "Long"
+                    position: action === "SELL" ? "Short" : "Long",
+                    quantity: Math.abs(quantity)
                 };
             }
 
@@ -127,13 +168,15 @@ class CSVParser
             const PLPerc: number = PL / (stocksInfo[symbol].sell.totalStocks * avgEntryPrice);
 
             return {
-                DOI: stocksInfo[symbol].DOI.split(' ')[0],
+                DOI: new Date(Date.parse(stocksInfo[symbol].DOI)).toISOString().split('T')[0],
                 "P/L": PL.toFixed(2),
                 "P/L %": (100 * PLPerc).toFixed(2),
+                Broker: "TDAmeritrade",
                 Ticker: symbol,
                 Position: stocksInfo[symbol].position,
-                "Average Entry Price": avgEntryPrice.toFixed(2),
-                "Average Exit Price": avgExitPrice.toFixed(2)
+                "# Shares": stocksInfo[symbol].quantity.toString(),
+                "Avg. Entry": avgEntryPrice.toFixed(2),
+                "Avg. Exit": avgExitPrice.toFixed(2)
             };
         });
     }

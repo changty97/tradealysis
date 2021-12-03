@@ -4,6 +4,8 @@ import { IHomeImportComponentState } from "../models/IHomeImportComponentState";
 import Dropzone from "react-dropzone";
 import { api } from "../constants/globals";
 import { LoadingComponent } from "./LoadingComponent";
+import { sources } from "../constants/globals";
+import { v4 as uuid } from "uuid";
 
 class HomeImportComponent extends Component<any, IHomeImportComponentState>
 {
@@ -12,11 +14,13 @@ class HomeImportComponent extends Component<any, IHomeImportComponentState>
         super(props);
 
         this.state = {
+            selectedSource: sources[0],
             selectedFile: null,
             loading: false
         };
 
         this.handleFileSelection = this.handleFileSelection.bind(this);
+        this.handleSourceSelection = this.handleSourceSelection.bind(this);
         this.importFile = this.importFile.bind(this);
         this.onDrop = this.onDrop.bind(this);
     }
@@ -30,9 +34,17 @@ class HomeImportComponent extends Component<any, IHomeImportComponentState>
             });
         }
     }
+
+    handleSourceSelection(event: React.ChangeEvent<HTMLSelectElement>): void {
+        this.setState({
+            selectedSource: event.target.value
+        });
+    }
     
     async importFile(): Promise<void>
     {
+        let success: boolean = false;
+
         if (!this.state.selectedFile)
         {
             return;
@@ -47,7 +59,7 @@ class HomeImportComponent extends Component<any, IHomeImportComponentState>
             const formData: FormData = new FormData();
             const key: string = localStorage.getItem("Key") || "";
             
-            formData.append("sourceName", "TDAmeritrade");
+            formData.append("sourceName", this.state.selectedSource);
             formData.append("file", this.state.selectedFile);
 
             const parsedData = (await api.post("parseCSV", formData)).data;
@@ -67,6 +79,7 @@ class HomeImportComponent extends Component<any, IHomeImportComponentState>
             });
 
             localStorage.setItem("reportsId", newCollName);
+            success = true;
         }
         catch (err)
         {
@@ -77,7 +90,10 @@ class HomeImportComponent extends Component<any, IHomeImportComponentState>
             this.setState({
                 loading: false
             });
-            window.location.href = "/report";
+
+            if (success) {
+                window.location.href = "/report";
+            }
         }
 
     }
@@ -105,6 +121,20 @@ class HomeImportComponent extends Component<any, IHomeImportComponentState>
                         getRootProps, getInputProps
                     }) => (
                         <section>
+                            <br/>
+                            <div style={{ textAlign: "center" }}>
+                                <div style={{ fontWeight: "bold", fontSize: "16px" }}>Type of file:</div>
+                                <br/>
+                                <Import.SELECT_DROPDOWN value={this.state.selectedSource} onChange={this.handleSourceSelection}>
+                                    {sources.map((sourceName: string) => {
+                                        return (
+                                            <option key={uuid()} value={sourceName}>
+                                                {sourceName}
+                                            </option>
+                                        );
+                                    })}
+                                </Import.SELECT_DROPDOWN>
+                            </div>
                             <Import.IMPORT_DIV {...getRootProps({
                             })} onSubmit={e => e.preventDefault()}>
                                 <input {...getInputProps()} onChange={this.handleFileSelection} />
