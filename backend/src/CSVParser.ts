@@ -99,7 +99,8 @@ class CSVParser
                     },
                     DOI: "",
                     // If the first instance of a stock trade is a sale, the user is shorting the stock.
-                    position: action === "SELL" ? "Short" : "Long"
+                    position: action === "SELL" ? "Short" : "Long",
+                    quantity: Math.abs(quantity)
                 };
             }
 
@@ -132,8 +133,9 @@ class CSVParser
                 "P/L %": (100 * PLPerc).toFixed(2),
                 Ticker: symbol,
                 Position: stocksInfo[symbol].position,
-                "Average Entry Price": avgEntryPrice.toFixed(2),
-                "Average Exit Price": avgExitPrice.toFixed(2)
+                "# Shares": stocksInfo[symbol].quantity.toString(),
+                "Avg. Entry": avgEntryPrice.toFixed(2),
+                "Avg. Exit": avgExitPrice.toFixed(2)
             };
         });
     }
