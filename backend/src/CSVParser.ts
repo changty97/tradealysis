@@ -127,7 +127,7 @@ class CSVParser
             const PLPerc: number = PL / (stocksInfo[symbol].sell.totalStocks * avgEntryPrice);
 
             return {
-                DOI: stocksInfo[symbol].DOI.split(' ')[0],
+                DOI: new Date(Date.parse(stocksInfo[symbol].DOI)).toISOString().split('T')[0],
                 "P/L": PL.toFixed(2),
                 "P/L %": (100 * PLPerc).toFixed(2),
                 Ticker: symbol,
