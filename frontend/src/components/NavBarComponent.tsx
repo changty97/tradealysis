@@ -38,7 +38,7 @@ class NavBarComponent extends Component<NavBarComponentProps, NavBarComponentSta
 	                                <Header.LINK_1 to="/report">Reports</Header.LINK_1>
 	                            </Header.HEADER_BUTTONS_LIST_LI>
                                 <Header.HEADER_BUTTONS_LIST_LI>
-	                                <Header.LINK_1 to="/input1">Import</Header.LINK_1>
+	                                <Header.LINK_1 to="/import">Import</Header.LINK_1>
 	                            </Header.HEADER_BUTTONS_LIST_LI>
 	                        </Header.HEADER_BUTTONS_LIST>
 	                    </div>
