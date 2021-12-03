@@ -75,23 +75,27 @@ class OverviewComponent extends Component<any, IOverviewComponentState>
         const dates: number[] = [];
 
         // Sort every trade by date in ascending order.
-        rawData.sort((firstEl: any, secondEl: any) => {
+        rawData.sort((firstEl: any, secondEl: any) =>
+        {
             let first: number;
 
-            if (firstEl.DOI) {
+            if (firstEl.DOI)
+            {
                 first = Date.parse(firstEl.DOI);
                 dates.push(first);
-            } else {
+            }
+            else
+            {
                 return false;
             }
 
-            return firstEl.DOI - secondEl.DOI
+            return firstEl.DOI - secondEl.DOI;
         });
 
         const minDate = new Date(Math.min(...dates));
         const maxDate = new Date(Math.max(...dates));
 
-        this.setState({ 
+        this.setState({
             minDate,
             maxDate,
             selectedStartDate: minDate,
@@ -104,7 +108,8 @@ class OverviewComponent extends Component<any, IOverviewComponentState>
 
     parseData(): void
     {
-        if (!this.state.selectedStartDate || !this.state.selectedEndDate) {
+        if (!this.state.selectedStartDate || !this.state.selectedEndDate)
+        {
             return;
         }
 
@@ -126,10 +131,11 @@ class OverviewComponent extends Component<any, IOverviewComponentState>
         };
 
         // Narrow data to the selected date range.
-        data = data.filter((el: any) => {
+        data = data.filter((el: any) =>
+        {
             const date: Date = (new Date(Date.parse(el.DOI)));
-            return el.DOI && date >= this.state.selectedStartDate! && date <= this.state.selectedEndDate!
-        })
+            return el.DOI && date >= this.state.selectedStartDate! && date <= this.state.selectedEndDate!;
+        });
 
         data.forEach((row: any, index: number) =>
         {
@@ -180,27 +186,30 @@ class OverviewComponent extends Component<any, IOverviewComponentState>
                     <Link to="/overview"><Reports.BUTTON>Overview</Reports.BUTTON></Link>
                     <Link to="/strategies"><Reports.BUTTON>Strategies</Reports.BUTTON></Link>
                     <Overview.ROW>
-                        <DatePicker
-                            dateFormat="yyyy-MM-dd"
-                            onChange={([selectedStartDate, selectedEndDate]: [Date, Date]) => {
-                                this.setState({
-                                    selectedStartDate,
-                                    selectedEndDate
-                                }, this.parseData);
-                            }}
-                            selected={this.state.selectedStartDate}
-                            startDate={this.state.selectedStartDate}
-                            endDate={this.state.selectedEndDate}
-                            minDate={this.state.minDate}
-                            maxDate={this.state.maxDate}
-                            customInput={
-                                <Reports.BUTTON>
-                                    {this.state.selectedStartDate?.toISOString().split('T')[0] || ""} - {this.state.selectedEndDate?.toISOString().split('T')[0] || ""}
-                                </Reports.BUTTON>
-                            }
-                            selectsRange
-                            withPortal
-                        />
+                        <div style={{ margin: "auto", padding: "10px" }}>
+                            <DatePicker
+                                dateFormat="yyyy-MM-dd"
+                                onChange={([selectedStartDate, selectedEndDate]: [Date, Date]) =>
+                                {
+                                    this.setState({
+                                        selectedStartDate,
+                                        selectedEndDate
+                                    }, this.parseData);
+                                }}
+                                selected={this.state.selectedStartDate}
+                                startDate={this.state.selectedStartDate}
+                                endDate={this.state.selectedEndDate}
+                                minDate={this.state.minDate}
+                                maxDate={this.state.maxDate}
+                                customInput={
+                                    <Overview.DATE_RANGE>
+                                        {this.state.selectedStartDate?.toISOString().split('T')[0] || "-"} to {this.state.selectedEndDate?.toISOString().split('T')[0] || "-"}
+                                    </Overview.DATE_RANGE>
+                                }
+                                selectsRange
+                                withPortal
+                            />
+                        </div>
                     </Overview.ROW>
                     <Overview.ROW>
                         <Overview.LEFT>
@@ -344,73 +353,70 @@ class OverviewComponent extends Component<any, IOverviewComponentState>
                         </Overview.LEFT>
                         <Overview.RIGHT>
                             <Overview.ROW>
-                                <Overview.TABLE>
-                                    <Overview.CAPTION>Top symbols by P/L</Overview.CAPTION>
-                                    <Overview.THEAD>
-                                        <Overview.TR>
-                                            <Overview.TH>
-                                                Symbol
-                                            </Overview.TH>
-                                            <Overview.TH>
-                                                P/L
-                                            </Overview.TH>
-                                        </Overview.TR>
-                                    </Overview.THEAD>
-                                    <Overview.TBODY>
-                                        {this.state.results.topSymbolsByPL.map((row: any) =>
-                                        {
-                                            return (
-                                                <Overview.TR key={uuid()}>
-                                                    <Overview.TD_COLORED
-                                                        value={row.PL}
-                                                    >
-                                                        {row.symbol}
-                                                    </Overview.TD_COLORED>
-                                                    <Overview.TD_COLORED
-                                                        value={row.PL}
-                                                    >
-                                                        {formatter.format(row.PL.toFixed(2))}
-                                                    </Overview.TD_COLORED>
-                                                </Overview.TR>
-                                            );
-                                        })}
-                                    </Overview.TBODY>
-                                </Overview.TABLE>
-                            </Overview.ROW>
-                            <br />
-                            <Overview.ROW>
-                                <Overview.TABLE>
-                                    <Overview.CAPTION>Top symbols by Gain %</Overview.CAPTION>
-                                    <Overview.THEAD>
-                                        <Overview.TR>
-                                            <Overview.TH>
-                                                Symbol
-                                            </Overview.TH>
-                                            <Overview.TH>
-                                                Average Gain %
-                                            </Overview.TH>
-                                        </Overview.TR>
-                                    </Overview.THEAD>
-                                    <Overview.TBODY>
-                                        {this.state.results.topSymbolsByGainPerc.map((row: any) =>
-                                        {
-                                            return (
-                                                <Overview.TR key={uuid()}>
-                                                    <Overview.TD_COLORED
-                                                        value={row.gainPerc}
-                                                    >
-                                                        {row.symbol}
-                                                    </Overview.TD_COLORED>
-                                                    <Overview.TD_COLORED
-                                                        value={row.gainPerc}
-                                                    >
-                                                        {row.gainPerc.toFixed(2)}%
-                                                    </Overview.TD_COLORED>
-                                                </Overview.TR>
-                                            );
-                                        })}
-                                    </Overview.TBODY>
-                                </Overview.TABLE>
+                                    <Overview.TABLE>
+                                        <Overview.CAPTION>Symbols by P/L</Overview.CAPTION>
+                                        <Overview.THEAD>
+                                            <Overview.TR>
+                                                <Overview.TH>
+                                                    Symbol
+                                                </Overview.TH>
+                                                <Overview.TH>
+                                                    P/L
+                                                </Overview.TH>
+                                            </Overview.TR>
+                                        </Overview.THEAD>
+                                        <Overview.TBODY>
+                                            {this.state.results.topSymbolsByPL.map((row: any) =>
+                                            {
+                                                return (
+                                                    <Overview.TR key={uuid()}>
+                                                        <Overview.TD_COLORED
+                                                            value={row.PL}
+                                                        >
+                                                            {row.symbol}
+                                                        </Overview.TD_COLORED>
+                                                        <Overview.TD_COLORED
+                                                            value={row.PL}
+                                                        >
+                                                            {formatter.format(row.PL.toFixed(2))}
+                                                        </Overview.TD_COLORED>
+                                                    </Overview.TR>
+                                                );
+                                            })}
+                                        </Overview.TBODY>
+                                    </Overview.TABLE>
+                                    <Overview.TABLE>
+                                        <Overview.CAPTION>Symbols by Gain %</Overview.CAPTION>
+                                        <Overview.THEAD>
+                                            <Overview.TR>
+                                                <Overview.TH>
+                                                    Symbol
+                                                </Overview.TH>
+                                                <Overview.TH>
+                                                    Gain %
+                                                </Overview.TH>
+                                            </Overview.TR>
+                                        </Overview.THEAD>
+                                        <Overview.TBODY>
+                                            {this.state.results.topSymbolsByGainPerc.map((row: any) =>
+                                            {
+                                                return (
+                                                    <Overview.TR key={uuid()}>
+                                                        <Overview.TD_COLORED
+                                                            value={row.gainPerc}
+                                                        >
+                                                            {row.symbol}
+                                                        </Overview.TD_COLORED>
+                                                        <Overview.TD_COLORED
+                                                            value={row.gainPerc}
+                                                        >
+                                                            {row.gainPerc.toFixed(2)}%
+                                                        </Overview.TD_COLORED>
+                                                    </Overview.TR>
+                                                );
+                                            })}
+                                        </Overview.TBODY>
+                                    </Overview.TABLE>
                             </Overview.ROW>
                         </Overview.RIGHT>
                     </Overview.ROW>
