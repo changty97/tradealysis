@@ -95,6 +95,47 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                         allArrVals.push(valsToInsert);
                     }
                     this.dispatch(updateData(allArrVals)); this.dispatch(hideLoading());
+
+                    // fetch data for each loaded row
+
+                    console.log("bEFORE IF LOOP");
+                    console.log(this.state.tableProps.data);
+                    if (this.state.tableProps.data)
+                    {
+                        const dataLen = this.state.tableProps.data.length;
+                        if (dataLen > 0)
+                        {
+                        //let i = this.state.tableProps.data[0].rowKeyValue;
+                            console.log(this.state.tableProps.data[1]);
+
+                            const lastItemsID = Object.getOwnPropertyDescriptor(this.state.tableProps.data[dataLen - 1], 'id')!.value;
+                            console.log("right before for loop");
+
+                            const theVal = Object.getOwnPropertyDescriptor(this.state.tableProps.data[0], 'id')!.value;
+                            console.log(theVal);
+                            for (let i = theVal; i < lastItemsID!;)
+                            {
+                                console.log("fetching...");
+                                const cell = {
+                                    columnKey: this.state.tableProps.data[i]["Ticker"],
+                                    rowKeyValue: i
+                                };
+                                this.getTicker(cell);
+
+                                i = Object.getOwnPropertyDescriptor(this.state.tableProps.data[i + 1], 'id')!.value;
+                            }
+                        }
+
+                        /*
+                        for (var i=0; i < this.state.tableProps.data.length; i++) {
+                            const cell = {
+                                columnKey: this.state.tableProps.data[i]["Ticker"],
+                                rowKeyValue: i
+                            };
+                            this.getTicker(cell);
+                        }
+                        */
+                    }
                 }
                 else
                 {
@@ -162,12 +203,16 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                             {
                                 if (row.DOI !== undefined && this.isValidDate(row.DOI))
                                 {
+                                    console.log(row.Ticker);
+                                    console.log(row.DOI);
+                                    console.log("...");
                                     const pastData = this.getPastData(row.Ticker, row.DOI);
                                     this.setCells(pastData, cell);
+                                    //const todayData = this.getTodayData(row.Ticker);
+                                    //this.setCells(todayData, cell);
                                 }
                                 else
                                 {
-                                    console.log("no doi");
                                     const todayData = this.getTodayData(row.Ticker);
                                     this.setCells(todayData, cell);
                                 }
@@ -199,7 +244,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
     
     getPastData(ticker: string, date: string): any
     {
-        return api.get(`/stockapi/:ID${ticker}/${date}`, {
+        return api.get(`/stockapi/${ticker}/${date}`, {
             params: {
                 ID: ticker,
                 date: date

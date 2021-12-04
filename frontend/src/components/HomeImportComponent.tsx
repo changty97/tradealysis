@@ -35,7 +35,8 @@ class HomeImportComponent extends Component<any, IHomeImportComponentState>
         }
     }
 
-    handleSourceSelection(event: React.ChangeEvent<HTMLSelectElement>): void {
+    handleSourceSelection(event: React.ChangeEvent<HTMLSelectElement>): void
+    {
         this.setState({
             selectedSource: event.target.value
         });
@@ -43,7 +44,7 @@ class HomeImportComponent extends Component<any, IHomeImportComponentState>
     
     async importFile(): Promise<void>
     {
-        let success: boolean = false;
+        let success = false;
 
         if (!this.state.selectedFile)
         {
@@ -91,7 +92,8 @@ class HomeImportComponent extends Component<any, IHomeImportComponentState>
                 loading: false
             });
 
-            if (success) {
+            if (success)
+            {
                 window.location.href = "/report";
             }
         }
@@ -122,11 +124,17 @@ class HomeImportComponent extends Component<any, IHomeImportComponentState>
                     }) => (
                         <section>
                             <br/>
-                            <div style={{ textAlign: "center" }}>
-                                <div style={{ fontWeight: "bold", fontSize: "16px" }}>Type of file:</div>
+                            <div style={{
+                                textAlign: "center"
+                            }}>
+                                <div style={{
+                                    fontWeight: "bold",
+                                    fontSize: "16px"
+                                }}>Type of file:</div>
                                 <br/>
                                 <Import.SELECT_DROPDOWN value={this.state.selectedSource} onChange={this.handleSourceSelection}>
-                                    {sources.map((sourceName: string) => {
+                                    {sources.map((sourceName: string) =>
+                                    {
                                         return (
                                             <option key={uuid()} value={sourceName}>
                                                 {sourceName}

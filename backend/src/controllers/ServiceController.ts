@@ -51,6 +51,7 @@ export class ServiceController
 	    return parser.filter();
 	}
 
+    
 	@Path("/stockapi/:ID")
 	@GET
     public async getStockNow(@PathParam("ID") ticker: string): Promise<any>
@@ -58,6 +59,7 @@ export class ServiceController
         const date: Date = new Date();
         return await this.getStockThen(ticker, date.toISOString().split('T')[0]);
     }
+	
 
 	@Path("/stockapi/:ID/:date")
 	@GET
@@ -71,6 +73,29 @@ export class ServiceController
 	        ...alphaFinData
 	    };
 	}
+	
+	
+	/*
+	@Path("/stockapi/:ID")
+	@GET
+    public async getLiveData(@PathParam("ID") ticker: string): Promise<any>
+    {
+	    const yahooData: IStockData = await retrieveYahooData(ticker);
+	    return {
+	        ...yahooData
+	    };
+    }
+
+	@Path("/stockapi/:ID/:date")
+	@GET
+	public async getStockThen(@PathParam("ID") ticker: string, @PathParam("date") date: string): Promise<IStockData>
+	{
+	    const alphaFinData: IStockData = await getStockData(`${date}-${ticker}`);
+	    return {
+	        ...alphaFinData
+	    };
+	}
+	*/
 
 	/**
 	 * @param username:string - username entered into login page
