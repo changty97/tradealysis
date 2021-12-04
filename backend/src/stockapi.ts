@@ -32,8 +32,6 @@ function printFetch(symbol:string, yy:number, mm:number, dd:number)
 
 async function getStockData(dateAndTicker: string): Promise<any>
 {
-    
-    const currentdate = new Date();
     // Store the stock symbol
     const StockSymbol = dateAndTicker.substring(11).toUpperCase();
     const Ticker = StockSymbol;  //Symbol
@@ -350,7 +348,7 @@ function retrieveFloatYahooData(ticker: string): Promise<number>
         })
         .catch(function(error: any)
         {
-            return Promise.reject(error);
+            return undefined;
         });
 }
 
