@@ -276,20 +276,23 @@ export class ServiceController
 		
 		IF YOUR PASSWORD IN USERTABLE COLLECTION IS PLAINTEXT, DO THE FOLLOWING:
 			PASS CLEARTEXT PSSD INTO THIS Method
-			WHATEVER IS RETURNED SHOULD BE INSERTED WHERE YOUR CLEARTEXT PASSWORD IS 
+			WHATEVER IS RETURNED SHOULD BE INSERTED WHERE YOUR CLEARTEXT PASSWORD IS
 			IN THE USER TABLE
 	**/
 	@Path("/tempGetHashPassword")
 	@GET
-	public async tempGetHashPassword(@QueryParam("pssd") pssd:string):Promise<string> {
-		let res:string="";
-		try {
-			res = MyCrypto.getInstance().getSHA3(pssd, 128);
-		}
-		catch(err) {
-			return Promise.reject(err);
-		}
-		return res;
+	public async tempGetHashPassword(@QueryParam("pssd") pssd:string):Promise<string>
+	{
+	    let res = "";
+	    try
+	    {
+	        res = MyCrypto.getInstance().getSHA3(pssd, 128);
+	    }
+	    catch (err)
+	    {
+	        return Promise.reject(err);
+	    }
+	    return res;
 	}
 }
 
