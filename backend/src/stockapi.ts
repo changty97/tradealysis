@@ -24,9 +24,9 @@ function printFetch(symbol:string, yy:number, mm:number, dd:number)
     const date = (`0${  currentDate.getDate()}`).slice(-2);
     const month = (`0${  currentDate.getMonth() + 1}`).slice(-2);
     const year = currentDate.getFullYear();
-    const hours = currentDate.getHours();
-    const minutes = currentDate.getMinutes();
-    const seconds = currentDate.getSeconds();
+    const hours = (`0${  currentDate.getHours()}`).slice(-2);
+    const minutes = (`0${  currentDate.getMinutes()}`).slice(-2);
+    const seconds = (`0${  currentDate.getSeconds()}`).slice(-2);
     console.log(`Fetched ${symbol} ${yy}-${mm}-${dd} data at ${year  }-${  month  }-${  date  } ${  hours  }:${  minutes  }:${  seconds}`);
 }
 
@@ -34,11 +34,16 @@ async function getStockData(dateAndTicker: string): Promise<any>
 {
     
     const currentdate = new Date();
-    // Store the stock symbol
-    const StockSymbol = dateAndTicker.substring(11).toUpperCase();
-    const Ticker = StockSymbol;  //Symbol
 
-    // Define varibles to store fetched data
+    // Parse the dateAndTicker string with format of "YYYY-MM-DD-StockSymbol"
+    const DateTickerString:string[] = dateAndTicker.split("-");
+    const yy = Number(DateTickerString[0]);
+    const mm = Number(DateTickerString[1]);
+    const dd = Number(DateTickerString[2]);
+    const StockSymbol = DateTickerString[3].toUpperCase();
+
+    // Define varibles to store fetched
+    const Ticker = StockSymbol;     //Symbol
     let Industry:string;            //Industry
     let Exchange:string;            //Exchange
     let Price:number;               //Current price
@@ -60,12 +65,6 @@ async function getStockData(dateAndTicker: string): Promise<any>
     let FromTimestamp:number;       //Starting timestamp of speficifed time range
     let ToTimestamp:number;         //Ending timestamp of speficifed time range
     let Interval:string;            //Time interval between two consecutive data points in the time series.
-
-    // Store the speficied year, month, and day input in ID with format "YYYY-MM-DD-StockSymbol"
-    const yy = Number(dateAndTicker.substring(0, 4));
-    const mm = Number(dateAndTicker.substring(5, 7));
-    const dd = Number(dateAndTicker.substring(8, 10));
-    const specifiedDate = dateAndTicker.substring(0, 10);
 
     //Company Overview API URL provided by Alpha Vantage.
     //This API returns the company information, financial ratios, and other key metrics for the equity specified.
