@@ -214,7 +214,7 @@ class OverviewComponent extends Component<any, IOverviewComponentState>
                                     <Overview.DATE_RANGE>
                                         {
                                             this.state.rawData.length
-                                                ? `${this.state.selectedStartDate?.toISOString().split('T')[0] || "-"} to ${this.state.selectedEndDate?.toISOString().split('T')[0] || "-"}`
+                                                ? `${this.state.selectedStartDate?.toLocaleDateString() || "-"} to ${this.state.selectedEndDate?.toLocaleDateString() || "-"}`
                                                 : "No trades found!"
                                         }
                                     </Overview.DATE_RANGE>
