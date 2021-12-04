@@ -1,6 +1,6 @@
 import { MongoClient, ObjectId, Db, Collection } from "mongodb";
 import { userMongoOptions } from "../constants/globals";
-
+import { MyCrypto } from "../Encryption/MyCrypto";
 /**
  * Method returns key based on username, passwork pair
  * @return key:string associated with username, password pair or "" if username, password pair not in db
@@ -14,10 +14,11 @@ async function correctLoginKey(username: string, password: string): Promise<stri
         const db: Db = client.db(userMongoOptions.db);
         const theCollectionUserTable: Collection = db.collection(userMongoOptions.collections['userTable']);
         const theCollectionKeyTable:  Collection = db.collection(userMongoOptions.collections['userKey']);
+        const myCrypt:MyCrypto = MyCrypto.getInstance();
 
         return theCollectionUserTable.distinct("_id", {
             "uname": username,
-            "pssd": password
+            "pssd": myCrypt.getSHA3(password, 128)
         }).then((results: ObjectId[] ) =>
         {
             if (results !== null && results.length !== 0)
@@ -28,7 +29,7 @@ async function correctLoginKey(username: string, password: string): Promise<stri
                     }
                 ).then((results2: ObjectId[] ) =>
                 {
-                    return (results2 !== null) ? results2[0].toString() : "";
+                    return (results2) ? results2[0].toString() : "";
                 });
             }
             return "";

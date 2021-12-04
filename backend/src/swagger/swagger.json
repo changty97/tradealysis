@@ -891,9 +891,9 @@
 				]
 			}
 		},
-		"/getTradesByYear": {
+		"/tempGetHashPassword": {
 			"get": {
-				"operationId": "ServiceGetTradesByYear",
+				"operationId": "ServiceTempGetHashPassword",
 				"produces": [
 					"application/json"
 				],
@@ -901,7 +901,7 @@
 					"200": {
 						"description": "Ok",
 						"schema": {
-							"type": "object"
+							"type": "string"
 						}
 					},
 					"400": {
@@ -911,26 +911,12 @@
 						}
 					}
 				},
-				"description": "",
+				"description": "DEV METHOD (TO BE REMOVED)\r\n\r\nIF YOUR PASSWORD IN USERTABLE COLLECTION IS PLAINTEXT, DO THE FOLLOWING:\r\n\tPASS CLEARTEXT PSSD INTO THIS Method\r\n\tWHATEVER IS RETURNED SHOULD BE INSERTED WHERE YOUR CLEARTEXT PASSWORD IS \r\n\tIN THE USER TABLE",
 				"parameters": [
 					{
 						"description": "",
 						"in": "query",
-						"name": "key",
-						"required": true,
-						"type": "string"
-					},
-					{
-						"description": "",
-						"in": "query",
-						"name": "coll",
-						"required": true,
-						"type": "string"
-					},
-					{
-						"description": "",
-						"in": "query",
-						"name": "year",
+						"name": "pssd",
 						"required": true,
 						"type": "string"
 					}

@@ -10,8 +10,8 @@ import { ITableData } from "../models/ITableData";
 import { accountValuesFromKey, doesThisAccountExist, sameAccount, modifyAccountName, changePssd, changeUserAccount } from "../MongoFiles/MongoAccountSettings";
 import { allUserSessions, createNewSession, removeSession, changeTheSessionName } from "../MongoFiles/MongoReportSessions";
 import { IStockData } from "../models/IStockData";
-
 import { Mutex, Semaphore, withTimeout } from 'async-mutex';
+import { MyCrypto } from "../Encryption/MyCrypto";
 
 const badRequestExampleResponse: BadRequestError = {
     name: "BadRequestError",
@@ -269,6 +269,27 @@ export class ServiceController
 	            await this.modifySessionName.release();
 	        }
 	    }
+	}
+
+	/**
+		DEV METHOD (TO BE REMOVED)
+		
+		IF YOUR PASSWORD IN USERTABLE COLLECTION IS PLAINTEXT, DO THE FOLLOWING:
+			PASS CLEARTEXT PSSD INTO THIS Method
+			WHATEVER IS RETURNED SHOULD BE INSERTED WHERE YOUR CLEARTEXT PASSWORD IS 
+			IN THE USER TABLE
+	**/
+	@Path("/tempGetHashPassword")
+	@GET
+	public async tempGetHashPassword(@QueryParam("pssd") pssd:string):Promise<string> {
+		let res:string="";
+		try {
+			res = MyCrypto.getInstance().getSHA3(pssd, 128);
+		}
+		catch(err) {
+			return Promise.reject(err);
+		}
+		return res;
 	}
 }
 

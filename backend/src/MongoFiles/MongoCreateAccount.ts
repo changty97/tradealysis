@@ -1,7 +1,7 @@
 import { MongoClient, Db, Collection } from "mongodb";
 import { userMongoOptions } from "../constants/globals";
 import { userExists } from "./MongoLogin";
-
+import { MyCrypto } from "../Encryption/MyCrypto";
 /**
  * Create account method:
  * 1. checks if user exists (by username). If it does, method returns 0 and we are done
@@ -30,9 +30,13 @@ async function createAccount(username: string, password: string, fName: string, 
         {
             if (!res)
             {
+                const myCrypt:MyCrypto = MyCrypto.getInstance();
+                const pssdHash:string = myCrypt.getSHA3(password, 128);
+                const theKey = myCrypt.generateKey(pssdHash);
+				
                 return theCollectionUserTable.insertOne({
                     "uname": username,
-                    "pssd": password
+                    "pssd": pssdHash
                 }).then((res2)=>
                 {
                     if (res2 && res2.insertedId)
@@ -50,7 +54,7 @@ async function createAccount(username: string, password: string, fName: string, 
                         {
                             if (res3 && res3.insertedId)
                             {
-                                const originalKey = `${username}_key`;
+                                const originalKey = theKey;
                                 return theCollectionKeyTable.insertOne({
                                     "key": originalKey,
                                     "user_obj_id": res2.insertedId.toString(),
