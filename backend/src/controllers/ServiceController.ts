@@ -2,7 +2,7 @@ import { FileParam, FormParam, GET, POST,  Path, QueryParam, PathParam } from "t
 import { Produces, Response } from "typescript-rest-swagger";
 import { BadRequestError } from "typescript-rest/dist/server/model/errors";
 import { CSVParser } from "../CSVParser";
-import { getTradesByYear, removeItem, saveTable, theSaveData } from "../MongoFiles/Mongo";
+import { removeItem, saveTable, theSaveData } from "../MongoFiles/Mongo";
 import { correctLoginKey, userFromKey } from "../MongoFiles/MongoLogin";
 import { createAccount } from "../MongoFiles/MongoCreateAccount";
 import { getStockData, retrieveYahooData } from "../stockapi";
@@ -269,13 +269,6 @@ export class ServiceController
 	            await this.modifySessionName.release();
 	        }
 	    }
-	}
-	
-	@Path("/getTradesByYear")
-	@GET
-	public async getTradesByYear(@QueryParam("key") key: string, @QueryParam("coll") coll: string, @QueryParam("year") year: string): Promise<any>
-	{
-	    return await getTradesByYear(key, coll, year);
 	}
 }
 

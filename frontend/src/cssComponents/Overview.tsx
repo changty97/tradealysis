@@ -3,6 +3,32 @@ import sty from "styled-components";
 
 class Overview extends Component
 {
+    public static readonly DATE_RANGE = sty.button `
+        text-decoration: none;
+		font-size: 1.2vw;
+		background-color: #e7e7e7;
+		border: none;
+		color: black;
+		padding: 15px 32px;
+		text-align: center;
+		text-decoration: none;
+		display: inline-block;
+		margin: 4px 2px;
+		cursor: pointer;
+		border-radius: 2px;
+		&:hover {
+			background-image: linear-gradient(rgba(0, 0, 0, 0.4) 0 0);
+		} 
+        font-weight: bold;
+        fond-size: 26px;
+    `;
+
+    public static readonly SECTION = sty.section ` 
+		height: 70vh;
+		margin: 0.5% 2%;
+        overflow-y: auto;
+	`;
+
 	public static readonly LEFT = sty.div `
         float: left;
         width: 80%;
@@ -45,6 +71,7 @@ class Overview extends Component
 
     public static readonly TABLE = sty.table `
         font-size: 16px;
+        padding: 15px;
 	`;
 
     public static readonly THEAD = sty.thead `
