@@ -48,9 +48,10 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
     {
         const theKey = localStorage.getItem("Key");
 
-        this.setState({
+        // Probably don't want this loading the entire time tbh
+        /*this.setState({
             loading: true
-        });
+        });*/
 
         return api.get("/stockdataGet", {
             params: {
@@ -58,7 +59,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                 coll: `${this.state.reportsId}`
             }
         })
-            .then((response: AxiosResponse<string[]>) =>
+            .then(async (response: AxiosResponse<string[]>) =>
             {
                 const allArrVals = []; const theArr = response.data;
                 if (theArr && theArr.length > 0)
@@ -120,7 +121,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                                     columnKey: this.state.tableProps.data[i]["Ticker"],
                                     rowKeyValue: i
                                 };
-                                this.getTicker(cell);
+                                await this.getTicker(cell);
 
                                 i = Object.getOwnPropertyDescriptor(this.state.tableProps.data[i + 1], 'id')!.value;
                             }
@@ -146,11 +147,11 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
             }).catch((error) =>
             {
                 Promise.reject(error);
-            }).finally(() =>
+            /*}).finally(() =>
             {
                 this.setState({
                     loading: false
-                });
+                });*/
             });
     }
 
@@ -179,7 +180,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
         });
     }
 	
-    getTicker(cell: any): void
+    async getTicker(cell: any): Promise<void>
     {
         if (this.state.tableProps.data)
         {
@@ -206,14 +207,14 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                                     console.log(row.Ticker);
                                     console.log(row.DOI);
                                     console.log("...");
-                                    const pastData = this.getPastData(row.Ticker, row.DOI);
+                                    const pastData = await this.getPastData(row.Ticker, row.DOI);
                                     this.setCells(pastData, cell);
                                     //const todayData = this.getTodayData(row.Ticker);
                                     //this.setCells(todayData, cell);
                                 }
                                 else
                                 {
-                                    const todayData = this.getTodayData(row.Ticker);
+                                    const todayData = await this.getTodayData(row.Ticker);
                                     this.setCells(todayData, cell);
                                 }
                             }
@@ -229,27 +230,19 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
 	
     getTodayData(ticker: string): any
     {
-        return api.get(`/stockapi/${ticker}`, {
-            params: {
-                ID: ticker
-            }
-        }).then((response) =>
-        {
-            return response.data;
-        }).catch(function(error)
-        {
-            console.log('Error', error);
-        });
+        return api.get(`/stockapi/${ticker}`)
+            .then((response) =>
+            {
+                return response.data;
+            }).catch(function(error)
+            {
+                console.log('Error', error);
+            });
     }
     
     getPastData(ticker: string, date: string): any
     {
-        return api.get(`/stockapi/${ticker}/${date}`, {
-            params: {
-                ID: ticker,
-                date: date
-            }
-        })
+        return api.get(`/stockapi/${ticker}/${date}`)
             .then((response) =>
             {
                 return response.data;
