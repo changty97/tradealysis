@@ -1,7 +1,8 @@
 import { Component, Fragment } from "react";
 import { AccountSettings } from "../cssComponents/AccountSettings";
-import { api } from "../constants/globals";
+import { api, FE_KEY } from "../constants/globals";
 import Swal from 'sweetalert2';
+
 
 class CreateAccountComponent extends Component<any, any>
 {
@@ -65,6 +66,7 @@ class CreateAccountComponent extends Component<any, any>
                     api.post('createAccountPost',
                         {
                             userInfo: {
+                                FE_KEY: FE_KEY,
                                 username: userName.value,
                                 password: passWord.value,
                                 fName: firstName.value,

@@ -95,7 +95,8 @@ class OverviewComponent extends Component<any, IOverviewComponentState>
         let minDate: Date | null = null;
         let maxDate: Date | null = null;
 
-        if (dates.length) {
+        if (dates.length)
+        {
             minDate = new Date(Math.min(...dates));
             maxDate = new Date(Math.max(...dates));
         }
@@ -213,9 +214,9 @@ class OverviewComponent extends Component<any, IOverviewComponentState>
                                 customInput={
                                     <Overview.DATE_RANGE>
                                         {
-                                            this.state.rawData.length
-                                                ? `${this.state.selectedStartDate?.toLocaleDateString() || "-"} to ${this.state.selectedEndDate?.toLocaleDateString() || "-"}`
-                                                : "No trades found!"
+                                            this.state.rawData.length ?
+                                                `${this.state.selectedStartDate?.toLocaleDateString() || "-"} to ${this.state.selectedEndDate?.toLocaleDateString() || "-"}` :
+                                                "No trades found!"
                                         }
                                     </Overview.DATE_RANGE>
                                 }

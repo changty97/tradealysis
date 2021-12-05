@@ -10,8 +10,10 @@ import { ITableData } from "../models/ITableData";
 import { accountValuesFromKey, doesThisAccountExist, sameAccount, modifyAccountName, changePssd, changeUserAccount } from "../MongoFiles/MongoAccountSettings";
 import { allUserSessions, createNewSession, removeSession, changeTheSessionName } from "../MongoFiles/MongoReportSessions";
 import { IStockData } from "../models/IStockData";
-
 import { Mutex, Semaphore, withTimeout } from 'async-mutex';
+import { MyCrypto } from "../Encryption/MyCrypto";
+import { BE_KEY } from "../constants/globals";
+import * as crypto from "crypto-js";
 
 const badRequestExampleResponse: BadRequestError = {
     name: "BadRequestError",
@@ -111,15 +113,11 @@ export class ServiceController
 	    try
 	    {
 	        await this.modifyAccountMutex.acquire();
-	        res = await createAccount(body.userInfo.username, body.userInfo.password, body.userInfo.fName, body.userInfo.lName, body.userInfo.email, body.userInfo.phone, body.userInfo.bdate);
+	        res = await createAccount(body.userInfo.FE_KEY,  body.userInfo.username, body.userInfo.password, body.userInfo.fName, body.userInfo.lName, body.userInfo.email, body.userInfo.phone, body.userInfo.bdate);
 	        return res;
 	    }
 	    catch (err)
 	    {
-	        if (this.modifyAccountMutex.isLocked)
-	        {       // Keep this here incase error, lock released
-	            await this.modifyAccountMutex.release();
-	        }
 	        return Promise.reject(err);
 	    }
 	    finally
@@ -133,9 +131,9 @@ export class ServiceController
 	
 	@Path("/accountData")
 	@GET
-	public async accountData(@QueryParam("key") key: string):Promise<any>
+	public async accountData(@QueryParam("FE_KEY") FE_KEY: string, @QueryParam("key") key: string):Promise<any>
 	{
-	    return await accountValuesFromKey(key);
+	    return await accountValuesFromKey(FE_KEY, key);
 	}
 	
 	/** For Account Settings. Sees if @param account is the same name as uname associated with @param key **/
@@ -188,10 +186,11 @@ export class ServiceController
 	
 	@Path("/changeExtraAccountData")
 	@GET
-	public async changeExtraAccountData(@QueryParam("key") key:string, @QueryParam("firstName") firstName:string, @QueryParam("lastName") lastName:string,
+	public async changeExtraAccountData(@QueryParam("FE_KEY") FE_KEY:string,
+										@QueryParam("key") key:string, @QueryParam("firstName") firstName:string, @QueryParam("lastName") lastName:string,
 									    @QueryParam("email") email:string, @QueryParam("phone") phone:string, @QueryParam("bdate") bdate:string): Promise<boolean>
 	{
-	    return await changeUserAccount(key, firstName, lastName, email, phone, bdate);
+	    return await changeUserAccount(FE_KEY, key, firstName, lastName, email, phone, bdate);
 	}
 	
 	/** Remove data item based on id **/
@@ -269,6 +268,45 @@ export class ServiceController
 	            await this.modifySessionName.release();
 	        }
 	    }
+	}
+
+	/**
+		DEV METHOD (TO BE REMOVED)
+		
+		IF YOUR PASSWORD IN USERTABLE COLLECTION IS PLAINTEXT, DO THE FOLLOWING:
+			PASS CLEARTEXT PSSD INTO THIS Method
+			WHATEVER IS RETURNED SHOULD BE INSERTED WHERE YOUR CLEARTEXT PASSWORD IS
+			IN THE USER TABLE
+	**/
+	@Path("/tempGetHashPassword")
+	@GET
+	public async tempGetHashPassword(@QueryParam("pssd") pssd:string):Promise<string>
+	{
+	    let res = "";
+	    try
+	    {
+	        res = MyCrypto.getInstance().getSHA3(pssd, 128);
+	    }
+	    catch (err)
+	    {
+	        return Promise.reject(err);
+	    }
+	    return res;
+	}
+
+	/** DEV METHOD (TO BE REMOVED) **/
+	@Path("/testencryptKEY")
+	@GET
+	public async testencryptKEY(@QueryParam("FE_KEY")FE_KEY:string, @QueryParam("mssg")mssg:string):Promise<string>
+	{
+	    return MyCrypto.getInstance().encryptMultKeys(mssg, [FE_KEY, BE_KEY]);
+	}
+	/** DEV METHOD (TO BE REMOVED) **/
+	@Path("/testdecryptKEY")
+	@GET
+	public async testdecryptKEY(@QueryParam("FE_KEY")FE_KEY:string, @QueryParam("mssg")mssg:string):Promise<string>
+	{
+	    return MyCrypto.getInstance().decryptMultKeys(mssg, [FE_KEY, BE_KEY]);
 	}
 }
 

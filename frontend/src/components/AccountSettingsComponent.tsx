@@ -1,7 +1,7 @@
 import { Component, Fragment } from "react";
 import { AccountSettings } from "../cssComponents/AccountSettings";
 import { IAccountSettingsState } from "../models/IAccountSettingsState";
-import { api } from "../constants/globals";
+import { api, FE_KEY } from "../constants/globals";
 import Swal from 'sweetalert2';
 
 class AccountSettingsComponent extends Component<any, IAccountSettingsState>
@@ -39,6 +39,7 @@ class AccountSettingsComponent extends Component<any, IAccountSettingsState>
 	    }
         api.get("accountData", {
 	        params: {
+                FE_KEY: FE_KEY,
 	            key: `${theKey}`,
 	            }
 	        }
@@ -113,7 +114,7 @@ class AccountSettingsComponent extends Component<any, IAccountSettingsState>
         {
             const wasUserNameUpdated = await this.updateUserName(theKey, userName.value);
             const wasPssdUpdated = await this.updatePssd(theKey, passWord.value, newPassWord.value);
-            const wasAccountDataUpdate = await this.updateUserData(theKey, firstName.value, lastName.value, emailAddr.value, phoneNum.value, myBdate.value);
+            const wasAccountDataUpdate = await this.updateUserData(FE_KEY, theKey, firstName.value, lastName.value, emailAddr.value, phoneNum.value, myBdate.value);
             if (wasUserNameUpdated && wasPssdUpdated && wasAccountDataUpdate)
             {
                 return Swal.fire({
@@ -264,10 +265,11 @@ class AccountSettingsComponent extends Component<any, IAccountSettingsState>
         }
     }
 	
-    public async updateUserData(theKey:string, theFirstName:string, theLastName: string, theEmail:string, thePhone:string, theBdate:string) : Promise<boolean>
+    public async updateUserData(FE_KEY:string, theKey:string, theFirstName:string, theLastName: string, theEmail:string, thePhone:string, theBdate:string) : Promise<boolean>
     {
         return await api.get('/changeExtraAccountData', {
             params: {
+                FE_KEY: FE_KEY,
                 key: theKey,
                 firstName: theFirstName,
                 lastName: theLastName,

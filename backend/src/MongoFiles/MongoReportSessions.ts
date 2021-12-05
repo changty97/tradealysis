@@ -11,7 +11,7 @@ async function allUserSessions(key: string):Promise<string[]>
         const db: Db = client.db(userMongoOptions.db);
         const theCollectionKeyTable: Collection = db.collection(userMongoOptions.collections['userKey']);
         const theCollectionSessionsTable: Collection = db.collection(userMongoOptions.collections['userSessions']);
-
+		
         return theCollectionKeyTable.distinct("user_obj_id", {
             "key": key
         }).then((results) =>

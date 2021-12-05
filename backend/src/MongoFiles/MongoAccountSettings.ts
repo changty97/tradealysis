@@ -1,10 +1,13 @@
 import { MongoClient, ObjectId, Db, Collection } from "mongodb";
 import { userMongoOptions, mongoOptions } from "../constants/globals";
 import { userFromKey } from "./MongoLogin";
+import { MyCrypto } from "../Encryption/MyCrypto";
+import { BE_KEY } from "../constants/globals";
 
-async function accountValuesFromKey(key: string):Promise<any>
+async function accountValuesFromKey(FE_KEY:string, key: string):Promise<any>
 {
     let client: MongoClient | null = null;
+    const myCrypt:MyCrypto = MyCrypto.getInstance();
     try
     {
         client = await MongoClient.connect(userMongoOptions.uri);
@@ -21,6 +24,12 @@ async function accountValuesFromKey(key: string):Promise<any>
             });
             delete item._id;
             delete item.user_obj_id;
+            const theKey = myCrypt.decryptMultKeys(key, [FE_KEY, BE_KEY]);
+            item.fName = myCrypt.decryption(item.fName, theKey);
+            item.lName = myCrypt.decryption(item.lName, theKey);
+            item.email = myCrypt.decryption(item.email, theKey);
+            item.phone = myCrypt.decryption(item.phone, theKey);
+            item.bdate = myCrypt.decryption(item.bdate, theKey);
             return item;
         }
         return null;
@@ -145,7 +154,9 @@ async function changePssd(key:string, oldPassword:string, newPassword:string):Pr
             const db: Db = client.db(userMongoOptions.db);
             const theCollectionKeyTable: Collection = db.collection(userMongoOptions.collections['userKey']);
             const theCollectionUserTable: Collection = db.collection(userMongoOptions.collections['userTable']);
+            const mc = MyCrypto.getInstance();
 			
+            const oldPasswordHash:string = mc.getSHA3(oldPassword, 128);
             const userObjID = await theCollectionKeyTable.distinct("user_obj_id", {
                 "key": key
             });
@@ -155,15 +166,15 @@ async function changePssd(key:string, oldPassword:string, newPassword:string):Pr
                     "_id": new ObjectId(userObjID[0]),
                     "uname": user,
                 });
-                if (item.length > 0 && (item[0] === oldPassword) && (newPassword && newPassword.length > 0))
+                if (item.length > 0 && (item[0] === oldPasswordHash) && (newPassword && newPassword.length > 0))
                 {
                     await theCollectionUserTable.updateOne({
                         "_id": new ObjectId(userObjID[0]),
                         "uname": user,
-                        "pssd": oldPassword
+                        "pssd": oldPasswordHash
                     }, {
                         $set: {
-                            "pssd": newPassword
+                            "pssd": mc.getSHA3(newPassword, 128)
                         }
                     });
                     retVal = true;
@@ -182,8 +193,7 @@ async function changePssd(key:string, oldPassword:string, newPassword:string):Pr
     return retVal;
 }
 
-
-async function changeUserAccount(key:string, firstName:string, lastName:string, email:string, phone:string, bdate:string):Promise<boolean>
+async function changeUserAccount(FE_KEY:string, key:string, firstName:string, lastName:string, email:string, phone:string, bdate:string):Promise<boolean>
 {
     let retVal = false;
     let client: MongoClient | null = null;
@@ -199,15 +209,17 @@ async function changeUserAccount(key:string, firstName:string, lastName:string, 
         });
         if (userObjID && userObjID.length > 0)
         {
+            const myCrypt = MyCrypto.getInstance();
+            const theKey = myCrypt.decryptMultKeys(key, [FE_KEY, BE_KEY]);
             await theCollectionUserAccountTable.updateOne({
                 "user_obj_id": userObjID[0]
             }, {
                 $set: {
-                    "fName": firstName,
-                    "lName": lastName,
-                    "email": email,
-                    "phone": phone,
-                    "bdate": bdate,
+                    "fName": myCrypt.encryption(firstName, theKey),
+                    "lName": myCrypt.encryption(lastName, theKey),
+                    "email": myCrypt.encryption(email, theKey),
+                    "phone": myCrypt.encryption(phone, theKey),
+                    "bdate": myCrypt.encryption(bdate, theKey),
 					
                 }
             });

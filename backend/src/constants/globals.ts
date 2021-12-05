@@ -1,5 +1,5 @@
 import { IMongoOptions, IMongoOptionsMult } from "../models/IMongoOptions";
-
+import { MyCrypto } from "../Encryption/MyCrypto";
 const PATH_TO_CONTROLLERS = "./dist/controllers/*.js";
 const PORT: string = process.env.PORT;
 
@@ -18,7 +18,8 @@ const userMongoOptions: IMongoOptionsMult = {
 	    "userAccount": process.env.USERACCOUNT_COLLECTION,
 	    "userSessions": process.env.USERSESSIONS_COLLECTION,
     }
-  
 };
 
-export { PATH_TO_CONTROLLERS, PORT, mongoOptions, userMongoOptions };
+const BE_KEY:string = ((process.env.REACT_APP_BE_KEY) ? process.env.REACT_APP_BE_KEY : "") as string;
+
+export { PATH_TO_CONTROLLERS, PORT, mongoOptions, userMongoOptions, BE_KEY };
