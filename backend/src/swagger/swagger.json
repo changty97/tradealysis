@@ -395,6 +395,13 @@
 					{
 						"description": "",
 						"in": "query",
+						"name": "FE_KEY",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"description": "",
+						"in": "query",
 						"name": "key",
 						"required": true,
 						"type": "string"
@@ -577,6 +584,13 @@
 				},
 				"description": "",
 				"parameters": [
+					{
+						"description": "",
+						"in": "query",
+						"name": "FE_KEY",
+						"required": true,
+						"type": "string"
+					},
 					{
 						"description": "",
 						"in": "query",
@@ -917,6 +931,84 @@
 						"description": "",
 						"in": "query",
 						"name": "pssd",
+						"required": true,
+						"type": "string"
+					}
+				]
+			}
+		},
+		"/testencryptKEY": {
+			"get": {
+				"operationId": "ServiceTestencryptKEY",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"type": "string"
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"schema": {
+							"$ref": "#/definitions/BadRequestError"
+						}
+					}
+				},
+				"description": "DEV METHOD (TO BE REMOVED) *",
+				"parameters": [
+					{
+						"description": "",
+						"in": "query",
+						"name": "FE_KEY",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"description": "",
+						"in": "query",
+						"name": "mssg",
+						"required": true,
+						"type": "string"
+					}
+				]
+			}
+		},
+		"/testdecryptKEY": {
+			"get": {
+				"operationId": "ServiceTestdecryptKEY",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"type": "string"
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"schema": {
+							"$ref": "#/definitions/BadRequestError"
+						}
+					}
+				},
+				"description": "DEV METHOD (TO BE REMOVED) *",
+				"parameters": [
+					{
+						"description": "",
+						"in": "query",
+						"name": "FE_KEY",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"description": "",
+						"in": "query",
+						"name": "mssg",
 						"required": true,
 						"type": "string"
 					}

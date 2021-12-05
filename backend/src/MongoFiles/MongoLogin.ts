@@ -1,6 +1,7 @@
 import { MongoClient, ObjectId, Db, Collection } from "mongodb";
 import { userMongoOptions } from "../constants/globals";
 import { MyCrypto } from "../Encryption/MyCrypto";
+import { BE_KEY } from "../constants/globals";
 /**
  * Method returns key based on username, passwork pair
  * @return key:string associated with username, password pair or "" if username, password pair not in db
@@ -21,7 +22,7 @@ async function correctLoginKey(username: string, password: string): Promise<stri
             "pssd": myCrypt.getSHA3(password, 128)
         }).then((results: ObjectId[] ) =>
         {
-            if (results !== null && results.length !== 0)
+            if (results && results.length !== 0)
             {
                 return theCollectionKeyTable.distinct(
                     "key", {
@@ -29,7 +30,7 @@ async function correctLoginKey(username: string, password: string): Promise<stri
                     }
                 ).then((results2: ObjectId[] ) =>
                 {
-                    return (results2) ? results2[0].toString() : "";
+                    return (results2 && results2[0]) ? results2[0].toString() : "";
                 });
             }
             return "";
@@ -65,7 +66,7 @@ async function userFromKey(key: string):Promise<string>
             "key": key
         }).then((results: ObjectId[] ) =>
         {
-            if (results !== null && results.length !== 0)
+            if (results && results.length !== 0)
             {
                 return theCollectionUserTable.distinct(
                     "uname", {
@@ -73,7 +74,7 @@ async function userFromKey(key: string):Promise<string>
                     }
                 ).then((results2: ObjectId[] ) =>
                 {
-                    return (results2 !== null) ? results2[0].toString() : "";
+                    return (results2 && results2[0]) ? results2[0].toString() : "";
                 });
             }
             return "";

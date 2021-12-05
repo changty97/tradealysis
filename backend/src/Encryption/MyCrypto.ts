@@ -98,6 +98,10 @@ class MyCrypto
 	   let retVal = "";
 	   try
 	    {
+		   if (!message || !sKey || message.length === 0 || sKey.length === 0)
+	        {
+			   return retVal;
+		   }
 		   retVal = this.encryptionUTF(message, sKey);
 	   }
 	   catch (err)
@@ -112,6 +116,10 @@ class MyCrypto
 	   let retVal = "";
 	   try
 	    {
+		   if (!cypherText || !sKey || cypherText.length === 0 || sKey.length === 0)
+	        {
+	            return retVal;
+		   }
 		   retVal = this.decryptionUTF(cypherText, sKey);
 	   }
 	   catch (err)
@@ -120,16 +128,36 @@ class MyCrypto
 	   }
 	   return retVal;
 	}
-
-	/** Returns Crypto Word Array  USE WHEN FIRST CREATING SKEY  **/
-	private generateSalt()
+	
+	public encryptMultKeys(plainText:string, sKey:string[]):string
 	{
-	    return crypto.lib.WordArray.random(128 / 8);
+	    let txt:string = plainText;
+	    for (let i = 0; i < sKey.length; i++)
+	    {
+	        txt = this.encryption(txt, sKey[i]);
+	    }
+	    return txt;
+	}
+	
+	public decryptMultKeys(cypherText:string, sKey:string[]):string
+	{
+	    let txt:string = cypherText;
+	    for (let i = sKey.length - 1; i >= 0; i--)
+	    {
+	        txt = this.decryption(txt, sKey[i]);
+	    }
+	    return txt;
 	}
 	
 	public generateKey(password:string)
 	{
 	    return this.generateKeyWithSalt(password, this.generateSalt());
+	}
+
+	/** Returns Crypto Word Array  USE WHEN FIRST CREATING SKEY  **/
+	private generateSalt()
+	{
+	    return crypto.lib.WordArray.random(128 / 8);
 	}
 	
 	/** Returns Crypto Word Array USE WHEN FIRST CREATING SKEY **/
