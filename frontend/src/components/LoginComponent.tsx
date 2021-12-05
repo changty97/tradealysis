@@ -1,6 +1,6 @@
 import { Component, Fragment } from "react";
 import { Login } from "../cssComponents/Login";
-import { api } from "../constants/globals";
+import { api/**, FE_KEY**/ } from "../constants/globals";
 
 class LoginComponent extends Component<any, any>
 {
@@ -27,7 +27,8 @@ class LoginComponent extends Component<any, any>
 	        {
 	            const str1Value = (str1 as HTMLInputElement).value;
 	            const str2Value = (str2 as HTMLInputElement).value;
-	            api.post('loginKeyPOST', {
+	      
+                api.post('loginKeyPOST', {
                     theData: {
                         username: `${str1Value}`,
                         password: `${str2Value}`

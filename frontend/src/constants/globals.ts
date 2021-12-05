@@ -6,4 +6,6 @@ const api: AxiosInstance = axios.create({
 
 const sources: string[] = ["TDAmeritrade", "Tradealysis"];
 
-export { api, sources };
+const FE_KEY:string = ((process.env.REACT_APP_FE_KEY) ? process.env.REACT_APP_FE_KEY:"") as string;
+
+export { api, sources, FE_KEY };
