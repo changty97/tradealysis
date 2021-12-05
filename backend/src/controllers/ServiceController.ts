@@ -32,7 +32,6 @@ export class ServiceController
 	constructor()
 	{
 	    this.modifyAccountMutex = new Mutex();
-		 // a bit overboard only allowing session name change at a time though it protect account name changes if users are logged into multiple places
 	    this.modifySessionName = new Mutex();
 	}
 	
@@ -162,10 +161,6 @@ export class ServiceController
 	    }
 	    catch (err)
 	    {
-	        if (this.modifyAccountMutex.isLocked)
-	        {        // Keep this here incase error, lock released
-	            await this.modifyAccountMutex.release();
-	        }
 	        return Promise.reject(err);
 	    }
 	    finally
@@ -227,7 +222,6 @@ export class ServiceController
 	{
 	    return await allUserSessions(key);
 	}
-
 
 	/** Create a new session for a user. This adds a session for a user **/
 	@Path("/createNewSessionForUser")
