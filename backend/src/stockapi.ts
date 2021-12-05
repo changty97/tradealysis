@@ -51,6 +51,7 @@ async function getStockData(dateAndTicker: string): Promise<any>
     let W52L:number;                //Lowest price within 52 weeks
     let VolAvg:number;              //Realtime volume
     let Outstanding:number;         //Outstanding shares
+    let Float:number;               //Float shares
     let VolDOI:number;              //Volume on the specified transaction date
     let VolPreM:number;             //Premarket volume
     let PC:number;                  //previous close price on the specified transaction date
@@ -244,6 +245,34 @@ async function getStockData(dateAndTicker: string): Promise<any>
             }
         })
         .catch(console.error);
+
+
+    //Fetch float data from floatchecker
+    const floatUrl = `https://www.floatchecker.com/stock?float=${StockSymbol}`;
+    await axios(floatUrl)
+        .then(AxiosResponse =>
+        {
+            const query = AxiosResponse.data;
+            const preText = /Yahoo Finance, /;
+            const postText = /on Finviz/;
+            if ( query.search(preText) == -1 || query.search(postText) == -1)
+            {
+                console.log("Searched string is not found");
+            }
+            else
+            {
+                if ( query.substring(query.search(postText) - 1, query.search(postText) - 2 ) == "B")
+                {
+                    Float = Number(query.substring(query.search(preText) + 14, query.search(postText) - 2)) * 1000;
+                }
+                else
+                {
+                    Float = Number(query.substring(query.search(preText) + 14, query.search(postText) - 2));
+                }
+            }
+
+        })
+        .catch(console.error);
    
     printFetch(StockSymbol, yy, mm, dd);
     
@@ -264,6 +293,7 @@ async function getStockData(dateAndTicker: string): Promise<any>
         LODTime: LODTime,          //LOD time
         Close: Close,              //To be confirmed
         AH: AH,                    //The price after hours
+        Float: Float,              //The float data
     };
 
     return apidata;
