@@ -156,7 +156,7 @@ async function changePssd(key:string, oldPassword:string, newPassword:string):Pr
             const theCollectionUserTable: Collection = db.collection(userMongoOptions.collections['userTable']);
             const mc = MyCrypto.getInstance();
 			
-            const oldPasswordHash:string = mc.getSHA3(oldPassword, 128);
+            const oldPasswordHash:string = mc.getSHA3(oldPassword);
             const userObjID = await theCollectionKeyTable.distinct("user_obj_id", {
                 "key": key
             });
@@ -174,7 +174,7 @@ async function changePssd(key:string, oldPassword:string, newPassword:string):Pr
                         "pssd": oldPasswordHash
                     }, {
                         $set: {
-                            "pssd": mc.getSHA3(newPassword, 128)
+                            "pssd": mc.getSHA3(newPassword)
                         }
                     });
                     retVal = true;

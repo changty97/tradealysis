@@ -1,6 +1,8 @@
 import { MongoClient } from "mongodb";
 import { mongoOptions } from "../constants/globals";
 import { userFromKey } from "./MongoLogin";
+import { MyCrypto } from "../Encryption/MyCrypto";
+import { BE_KEY } from "../constants/globals";
 
 async function removeItem(idVal:number, coll:string):Promise<void>
 {
@@ -27,7 +29,7 @@ async function removeItem(idVal:number, coll:string):Promise<void>
 		
 }
 
-async function saveTable(dataArray: any, key:string, coll:string): Promise<void>
+async function saveTable(dataArray: any, FE_KEY:string, key:string, coll:string): Promise<void>
 {
     let client: MongoClient | null = null;
     try
@@ -36,16 +38,22 @@ async function saveTable(dataArray: any, key:string, coll:string): Promise<void>
         const uname = await userFromKey(key);
         if (!uname || uname === "")
         {
-            throw new Error("Saving Data: Invalid User Error");
+            return;
         }
         for (let i = 0; i < dataArray.length; i++)
         {
+            const myCrypt = MyCrypto.getInstance();
+            const theUserKey = myCrypt.decryptMultKeys(key, [FE_KEY, BE_KEY]);
             const valsToInsert = {
             };
             for (const [key, value] of Object.entries(dataArray[i]))
             {
                 const theKey = key;
-                const theValue = value;
+                let theValue = value;
+                if (theKey !== 'id' && theKey !== '_id')
+                {
+                    theValue = myCrypt.encryption(theValue as string, theUserKey);
+                }
                 Object.defineProperty(valsToInsert, theKey, {
                     value: theValue,
                     writable: true,
@@ -79,7 +87,7 @@ async function saveTable(dataArray: any, key:string, coll:string): Promise<void>
     return;
 }
 
-async function theSaveData(key:string, coll:string): Promise<any[]>
+async function theSaveData(FE_KEY:string, key:string, coll:string): Promise<any[]>
 {
     let client: MongoClient | null = null;
 	
@@ -89,19 +97,37 @@ async function theSaveData(key:string, coll:string): Promise<any[]>
         const uname = await userFromKey(key);
         if (!uname || uname === "")
         {
-            throw new Error("Loading Data: Invalid User Error");
+            return [];
         }
         const x = await client.db(mongoOptions.db).collection(`${uname  }_${  coll}`).find({
         }).toArray();
-        if (client)
+        const myCrypt = MyCrypto.getInstance();
+        const theUserKey = myCrypt.decryptMultKeys(key, [FE_KEY, BE_KEY]);
+        for (let i = 0; i < x.length; i++)
         {
-            client.close();
+            for (const [key, value] of Object.entries(x[i]))
+            {
+                const theKey = key;
+                let theValue = value;
+                if (theKey !== 'id' && theKey !== '_id')
+                {
+                    theValue = myCrypt.decryption(theValue as string, theUserKey);
+                    x[i][`${theKey}`] = theValue;
+                }
+            }
         }
         return x;
     }
     catch (err)
     {
         return Promise.reject(err);
+    }
+    finally
+    {
+        if (client)
+        {
+            client.close();
+        }
     }
 }
 

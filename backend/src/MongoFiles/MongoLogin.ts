@@ -19,7 +19,7 @@ async function correctLoginKey(username: string, password: string): Promise<stri
 
         return theCollectionUserTable.distinct("_id", {
             "uname": username,
-            "pssd": myCrypt.getSHA3(password, 128)
+            "pssd": myCrypt.getSHA3(password)
         }).then((results: ObjectId[] ) =>
         {
             if (results && results.length !== 0)

@@ -86,10 +86,10 @@ class MyCrypto
 	    return MyCrypto.inst;
 	}
 	
-	public getSHA3(text:string, theOutputSize:number):string
+	public getSHA3(text:string):string
 	{
 	    return crypto.SHA3(text, {
-	        outputLength: theOutputSize
+	        outputLength: 256
 	    }).toString();
 	}
 	

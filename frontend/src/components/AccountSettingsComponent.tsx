@@ -114,7 +114,7 @@ class AccountSettingsComponent extends Component<any, IAccountSettingsState>
         {
             const wasUserNameUpdated = await this.updateUserName(theKey, userName.value);
             const wasPssdUpdated = await this.updatePssd(theKey, passWord.value, newPassWord.value);
-            const wasAccountDataUpdate = await this.updateUserData(FE_KEY, theKey, firstName.value, lastName.value, emailAddr.value, phoneNum.value, myBdate.value);
+            const wasAccountDataUpdate = await this.updateUserData(theKey, firstName.value, lastName.value, emailAddr.value, phoneNum.value, myBdate.value);
             if (wasUserNameUpdated && wasPssdUpdated && wasAccountDataUpdate)
             {
                 return Swal.fire({
@@ -131,7 +131,7 @@ class AccountSettingsComponent extends Component<any, IAccountSettingsState>
         return;
     }
 	
-    public async updateUserName(theKey: string|null, newUsername: string) : Promise<boolean>
+    private async updateUserName(theKey: string|null, newUsername: string) : Promise<boolean>
     {
         return api.get('/usernameFromKeyGET', {
             params: {
@@ -219,7 +219,7 @@ class AccountSettingsComponent extends Component<any, IAccountSettingsState>
         });
     }
 	
-    public async updatePssd(theKey: string, oldPssd:string, newPssd:string):Promise<boolean>
+    private async updatePssd(theKey: string, oldPssd:string, newPssd:string):Promise<boolean>
     {
         if (oldPssd === newPssd && oldPssd === "")
         {
@@ -265,7 +265,7 @@ class AccountSettingsComponent extends Component<any, IAccountSettingsState>
         }
     }
 	
-    public async updateUserData(FE_KEY:string, theKey:string, theFirstName:string, theLastName: string, theEmail:string, thePhone:string, theBdate:string) : Promise<boolean>
+    private async updateUserData(theKey:string, theFirstName:string, theLastName: string, theEmail:string, thePhone:string, theBdate:string) : Promise<boolean>
     {
         return await api.get('/changeExtraAccountData', {
             params: {

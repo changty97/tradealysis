@@ -204,15 +204,15 @@ export class ServiceController
     @POST
 	public async postTableDB(body: any): Promise<void>
 	{
-	    return await saveTable(body.data.table, body.data.key, body.data.coll);
+	    return await saveTable(body.data.table, body.data.FE_KEY, body.data.key, body.data.coll);
 	}
 	
 	/** Get data from default stock table **/
 	@Path("/stockdataGet")
 	@GET
-    public async stockdataGet(@QueryParam("key") key:string, @QueryParam("coll") coll:string):Promise<any[]>
+    public async stockdataGet(@QueryParam("FE_KEY") FE_KEY:string, @QueryParam("key") key:string, @QueryParam("coll") coll:string):Promise<any[]>
     {
-	    return await theSaveData(key, coll);
+	    return await theSaveData(FE_KEY, key, coll);
     }
 	
 	/** Get all user Sessions **/
@@ -279,7 +279,7 @@ export class ServiceController
 	    let res = "";
 	    try
 	    {
-	        res = MyCrypto.getInstance().getSHA3(pssd, 128);
+	        res = MyCrypto.getInstance().getSHA3(pssd);
 	    }
 	    catch (err)
 	    {
