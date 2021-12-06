@@ -17,7 +17,7 @@ import { clearFocused, moveFocusedDown, moveFocusedLeft,
 		 search, deleteRow, updateData } from 'ka-table/actionCreators';
 import DeleteIcon from "../images/deleteImg.svg";
 import { Reports } from "../cssComponents/Reports";
-import { api, FE_KEY } from "../constants/globals";
+import { api/**, FE_KEY**/ } from "../constants/globals";
 import Swal from 'sweetalert2';
 import { LoadingComponent } from "./LoadingComponent";
 
@@ -53,8 +53,8 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
         });
 
         return api.get("/stockdataGet", {
-            params: {
-                FE_KEY: FE_KEY,
+            params: { /**
+                FE_KEY: FE_KEY, **/
                 key: theKey,
                 coll: `${this.state.reportsId}`
             }
@@ -130,7 +130,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
         api.post("postTableDB", {
             data: {
                 table: tableData,
-                FE_KEY: FE_KEY,
+                /** FE_KEY: FE_KEY, **/
                 key: theKey,
                 coll: `${this.state.reportsId}`
             }

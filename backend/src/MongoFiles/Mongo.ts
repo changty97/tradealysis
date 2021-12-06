@@ -29,7 +29,7 @@ async function removeItem(idVal:number, coll:string):Promise<void>
 		
 }
 
-async function saveTable(dataArray: any, FE_KEY:string, key:string, coll:string): Promise<void>
+async function saveTable(dataArray: any, /**FE_KEY:string,**/key:string, coll:string): Promise<void>
 {
     let client: MongoClient | null = null;
     try
@@ -43,17 +43,19 @@ async function saveTable(dataArray: any, FE_KEY:string, key:string, coll:string)
         for (let i = 0; i < dataArray.length; i++)
         {
             const myCrypt = MyCrypto.getInstance();
-            const theUserKey = myCrypt.decryptMultKeys(key, [FE_KEY, BE_KEY]);
+            /**const theUserKey = myCrypt.decryptMultKeys(key, [FE_KEY, BE_KEY]);**/
             const valsToInsert = {
             };
             for (const [key, value] of Object.entries(dataArray[i]))
             {
                 const theKey = key;
-                let theValue = value;
+                const theValue = value;
+                /**
                 if (theKey !== 'id' && theKey !== '_id')
                 {
                     theValue = myCrypt.encryption(theValue as string, theUserKey);
                 }
+				**/
                 Object.defineProperty(valsToInsert, theKey, {
                     value: theValue,
                     writable: true,
@@ -87,7 +89,7 @@ async function saveTable(dataArray: any, FE_KEY:string, key:string, coll:string)
     return;
 }
 
-async function theSaveData(FE_KEY:string, key:string, coll:string): Promise<any[]>
+async function theSaveData(/**FE_KEY:string,**/key:string, coll:string): Promise<any[]>
 {
     let client: MongoClient | null = null;
 	
@@ -101,6 +103,8 @@ async function theSaveData(FE_KEY:string, key:string, coll:string): Promise<any[
         }
         const x = await client.db(mongoOptions.db).collection(`${uname  }_${  coll}`).find({
         }).toArray();
+		
+        /**
         const myCrypt = MyCrypto.getInstance();
         const theUserKey = myCrypt.decryptMultKeys(key, [FE_KEY, BE_KEY]);
         for (let i = 0; i < x.length; i++)
@@ -116,6 +120,7 @@ async function theSaveData(FE_KEY:string, key:string, coll:string): Promise<any[
                 }
             }
         }
+		**/
         return x;
     }
     catch (err)
