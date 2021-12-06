@@ -59,7 +59,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                 coll: `${this.state.reportsId}`
             }
         })
-            .then(async (response: AxiosResponse<string[]>) =>
+            .then(async(response: AxiosResponse<string[]>) =>
             {
                 const allArrVals = []; const theArr = response.data;
                 if (theArr && theArr.length > 0)
@@ -199,24 +199,19 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                     {
                         for (const [key, value] of obj)
                         {
-                            // return past data using Ticker and DOI value in current row
                             if (`${key}` === 'Ticker' && `${value}` !== '')
                             {
-                                if (row.DOI !== undefined && this.isValidDate(row.DOI))
+                                // fetch past data only if valid DOI is entered AND historical data has not yet been fetched
+                                if (row.DOI !== undefined && this.isValidDate(row.DOI) && row.PC === undefined)
                                 {
-                                    console.log(row.Ticker);
-                                    console.log(row.DOI);
-                                    console.log("...");
                                     const pastData = await this.getPastData(row.Ticker, row.DOI);
                                     this.setCells(pastData, cell);
                                     //const todayData = this.getTodayData(row.Ticker);
                                     //this.setCells(todayData, cell);
                                 }
-                                else
-                                {
-                                    const todayData = await this.getTodayData(row.Ticker);
-                                    this.setCells(todayData, cell);
-                                }
+                                // fetch live data regardless of DOI
+                                const todayData = await this.getTodayData(row.Ticker);
+                                this.setCells(todayData, cell);
                             }
                         }
                     }
@@ -233,6 +228,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
         return api.get(`/stockapi/${ticker}`)
             .then((response) =>
             {
+                console.log(`Success: Got current data for ${ticker}`);
                 return response.data;
             }).catch(function(error)
             {
@@ -245,6 +241,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
         return api.get(`/stockapi/${ticker}/${date}`)
             .then((response) =>
             {
+                console.log(`Success: Got data for ${ticker} on ${date}`);
                 return response.data;
             })
             .catch((error)=>
@@ -296,6 +293,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                                 {
                                     switch (key)
                                     {
+                                    case "LongName": i["Name"] = val; break;
                                     case "Price": i["Price"] = val; break;
                                     case "W52H": i["52-WH"] = val; break;
                                     case "W52L": i["52-WL"] = val; break;
@@ -343,21 +341,23 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                                 i["FloatC"] = "HIGH";
                             }
                             // MarketCap = price * outstanding
-                            i["MC-Current"] = i["Price"] * i["Outstanding"];
-                            // MarketCap Category
-                            if ( i["MC-Current"] <= 50000000)
+                            // to display value in millions:
+                            // ((Math.round(x/100000)*100000) /1000000)
+                            i["MC-Current"] = (Math.round((i["Price"] * i["Outstanding"])/100000)*100000) /1000000;
+                            // MarketCap Category (in millions)
+                            if ( i["MC-Current"] <= 50)
                             {
                                 i["MC-Cat"] = "NANO";
                             }
-                            else if ( i["MC-Current"] > 50000000 && i["MC-Current"] <= 300000000)
+                            else if ( i["MC-Current"] > 50 && i["MC-Current"] <= 300)
                             {
                                 i["MC-Cat"] = "MICRO";
                             }
-                            else if ( i["MC-Current"] > 300000000 && i["MC-Current"] <= 20000000000)
+                            else if ( i["MC-Current"] > 300 && i["MC-Current"] <= 20000)
                             {
                                 i["MC-Cat"] = "SMALL";
                             }
-                            else if ( i["MC-Current"] > 20000000000 && i["MC-Current"] <= 100000000000)
+                            else if ( i["MC-Current"] > 20000 && i["MC-Current"] <= 100000)
                             {
                                 i["MC-Cat"] = "MID";
                             }

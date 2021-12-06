@@ -11,9 +11,7 @@
       "experimentalDecorators": true,
       "inlineSourceMap": true,
       "inlineSources": true,
-      "lib": [
-          "esNext"
-      ],
+      
       "module": "commonjs",
       "noFallthroughCasesInSwitch": true,
       "noImplicitAny": true,
@@ -35,7 +33,7 @@
   },
   "include": [
       "src/"
-  ],
+, "controllerTests.ts"  ],
   "exclude": [
       "node_modules",
       "src/tests/",
