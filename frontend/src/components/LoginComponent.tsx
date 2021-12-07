@@ -84,7 +84,7 @@ class LoginComponent extends Component<any, any>
 	            <Login.SECTION>
 	                <Login.LOGIN_BOX>
 	                    <Login.LOGIN_LABEL_DIV>
-	                        <Login.WELCOME_LABEL>Welcome 1</Login.WELCOME_LABEL>
+	                        <Login.WELCOME_LABEL>Welcome</Login.WELCOME_LABEL>
 	                    </Login.LOGIN_LABEL_DIV>
 	                        <Login.USERNAME_AND_PASSWORD_TXT_BOXES>
 	                            <Login.USERNAME_AND_PASSWORD_TXT_BOXE_LABELS>Username</Login.USERNAME_AND_PASSWORD_TXT_BOXE_LABELS>
