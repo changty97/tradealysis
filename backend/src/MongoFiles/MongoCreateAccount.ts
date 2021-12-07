@@ -32,7 +32,7 @@ async function createAccount(FE_KEY:string, username: string, password: string, 
             if (!res)
             {
                 const myCrypt:MyCrypto = MyCrypto.getInstance();
-                const pssdHash:string = myCrypt.getSHA3(password, 128);
+                const pssdHash:string = myCrypt.getSHA3(password);
                 const theKey = myCrypt.generateKey(pssdHash);
 				
                 return theCollectionUserTable.insertOne({

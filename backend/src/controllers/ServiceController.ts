@@ -285,7 +285,7 @@ export class ServiceController
 	    let res = "";
 	    try
 	    {
-	        res = MyCrypto.getInstance().getSHA3(pssd, 128);
+	        res = MyCrypto.getInstance().getSHA3(pssd);
 	    }
 	    catch (err)
 	    {
