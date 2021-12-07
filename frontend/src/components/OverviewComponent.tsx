@@ -77,19 +77,21 @@ class OverviewComponent extends Component<any, IOverviewComponentState>
         // Sort every trade by date in ascending order.
         rawData.sort((firstEl: any, secondEl: any) =>
         {
-            let first: number;
-
-            if (firstEl.DOI)
-            {
-                first = Date.parse(firstEl.DOI);
-                dates.push(first);
-            }
-            else
+            if (!firstEl.DOI)
             {
                 return false;
             }
 
             return firstEl.DOI - secondEl.DOI;
+        });
+
+        // Keep track of the dates.
+        rawData.forEach((el: any) =>
+        {
+            if (el.DOI)
+            {
+                dates.push(Date.parse(el.DOI));
+            }
         });
 
         let minDate: Date | null = null;
