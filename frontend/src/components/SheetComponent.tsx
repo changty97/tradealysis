@@ -343,7 +343,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                             // MarketCap = price * outstanding
                             // to display value in millions:
                             // ((Math.round(x/100000)*100000) /1000000)
-                            i["MC-Current"] = (Math.round((i["Price"] * i["Outstanding"])/100000)*100000) /1000000;
+                            i["MC-Current"] = (Math.round((i["Price"] * i["Outstanding"]) / 100000) * 100000) / 1000000;
                             // MarketCap Category (in millions)
                             if ( i["MC-Current"] <= 50)
                             {
@@ -361,7 +361,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                             {
                                 i["MC-Cat"] = "MID";
                             }
-                            else if ( i["MC-Current"] > 100000000000)
+                            else if ( i["MC-Current"] > 100000)
                             {
                                 i["MC-Cat"] = "LARGE";
                             }
