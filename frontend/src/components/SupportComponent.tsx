@@ -66,57 +66,57 @@ class SupportComponent extends Component
             <Fragment>
                 <Support.SECTION>
                     <>
-                        <h1 className="p-heading1">Get in Touch</h1>
-                        <Support.FORM onSubmit={this.handleSubmit.bind(this)}>
-                            <FormGroup controlId="formBasicEmail">
-                                <Support.LABEL className="text-muted">Email address</Support.LABEL>
-                                <Support.INPUT
-                                    type="email"
-                                    name="email"
-                                    value={this.state.email}
-                                    className="text-primary"
-                                    onChange={this.handleChange.bind(this, 'email')}
-                                    placeholder="Enter email"
-                                />
-                            </FormGroup>
-                            <FormGroup controlId="formBasicName">
-                                <Support.LABEL className="text-muted">Name</Support.LABEL>
-                                <Support.INPUT
-                                    type="text"
-                                    name="name"
-                                    value={this.state.name}
-                                    className="text-primary"
-                                    onChange={this.handleChange.bind(this, 'name')}
-                                    placeholder="Name"
-                                />
-                            </FormGroup>
-                            <FormGroup controlId="formBasicSubject">
-                                <Support.LABEL className="text-muted">Subject</Support.LABEL>
-                                <Support.INPUT
-                                    type="text"
-                                    name="subject"
-                                    className="text-primary"
-                                    value={this.state.subject}
-                                    onChange={this.handleChange.bind(this, 'subject')}
-                                    placeholder="Subject"
-                                />
-                            </FormGroup>
-                            <FormGroup controlId="formBasicMessage">
-                                <Support.LABEL className="text-muted">Message</Support.LABEL>
-                                <Support.INPUT_TWO
-                                    type="textarea"
-                                    name="message"
-                                    className="text-primary"
-                                    value={this.state.message}
-                                    onChange={this.handleChange.bind(this, 'message')}
-                                />
-                            </FormGroup>
-                            <Button variant="primary" type="submit">
+                    <h1 className="p-heading1">Get in Touch</h1>
+                    <Support.FORM onSubmit={this.handleSubmit.bind(this)}>
+                        <FormGroup controlId="formBasicEmail">
+                            <Support.LABEL className="text-muted">Email address</Support.LABEL>
+                            <Support.INPUT
+                                type="email"
+                                name="email"
+                                value={this.state.email}
+                                className="text-primary"
+                                onChange={this.handleChange.bind(this, 'email')}
+                                placeholder="Enter email"
+                            />
+                        </FormGroup>
+                        <FormGroup controlId="formBasicName">
+                            <Support.LABEL className="text-muted">Name</Support.LABEL>
+                            <Support.INPUT
+                                type="text"
+                                name="name"
+                                value={this.state.name}
+                                className="text-primary"
+                                onChange={this.handleChange.bind(this, 'name')}
+                                placeholder="Name"
+                            />
+                        </FormGroup>
+                        <FormGroup controlId="formBasicSubject">
+                            <Support.LABEL className="text-muted">Subject</Support.LABEL>
+                            <Support.INPUT
+                                type="text"
+                                name="subject"
+                                className="text-primary"
+                                value={this.state.subject}
+                                onChange={this.handleChange.bind(this, 'subject')}
+                                placeholder="Subject"
+                            />
+                        </FormGroup>
+                        <FormGroup controlId="formBasicMessage">
+                            <Support.LABEL className="text-muted">Message</Support.LABEL>
+                            <Support.INPUT_TWO
+                                type="textarea"
+                                name="message"
+                                className="text-primary"
+                                value={this.state.message}
+                                onChange={this.handleChange.bind(this, 'message')}
+                            />
+                        </FormGroup>
+                        <Button variant="primary" type="submit">
               Submit
-                            </Button>
-                        </Support.FORM>
+                        </Button>
+                    </Support.FORM>
                     </>
-                </Support.SECTION>
+                    </Support.SECTION>
             </Fragment>
         );
     }

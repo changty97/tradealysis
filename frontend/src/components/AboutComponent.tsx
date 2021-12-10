@@ -9,7 +9,7 @@ class AboutComponent extends Component
             <Fragment>
                 <About.SECTION>
                     <About.ABOUT_RIGHT_HOME>
-                        <h1>About Tradealysis</h1>
+                    <h1>About Tradealysis</h1>
                         <p>Whether you're a new or experienced trader, significant time is spent analyzing your trades. Gathering data from your brokerage account, finding relevant data on financial websites, and defining custom calculations based on said data: Tradealysis conveniently automates this process and organizes your data on a spreadsheet.</p>
                         <ul>
                             <li>CSV files imported from brokerages such as TDAmeritrade will be parsed and placed in a spreadsheet.</li>
