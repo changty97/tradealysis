@@ -201,23 +201,14 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                         {
                             if (`${key}` === 'Ticker' && `${value}` !== '')
                             {
-								console.log("NEW DATA UPDATED");
-								
-
-								
-					
-
                                 const todayData = await this.getTodayData(row.Ticker);
 								console.log(todayData);
-								//delete todayData.Open;
-								
                                 this.setCells(todayData, cell, false);
                                 // fetch past data only if valid DOI is entered AND historical data has not yet been fetched
                                 if (row.DOI !== undefined && this.isValidDate(row.DOI) && row.PC === undefined)
                                 {
                                     const pastData = await this.getPastData(row.Ticker, row.DOI);
                                     this.setCells(pastData, cell, false);
-                                    
                                 }
                             }
                         }
@@ -227,7 +218,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
             }
 			
 			/**
-			TODO-------------------------------
+			TODO DONT TOUCH-------------------------------
 			useEffect(() => {
 									
 				setInterval(async () => {
