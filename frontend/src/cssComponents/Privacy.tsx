@@ -10,10 +10,13 @@ class Privacy extends Component
 		flex-direction: column;
 		justify-content: flex-start; 
 		align-items: left;
-		height: 35vw;
-		width: 100%;
+		height: 255vw;
+		width: auto;
 		border-radius: 10px;
-		font-size: 20px;
+		font-size: 15px;
+		padding-right: 80px;
+        padding-left: 80px;
+        padding-bottom: 80px;
 	`;
 	
 	public static readonly LEFTHOME = sty.section `
@@ -25,7 +28,7 @@ class Privacy extends Component
 		text-decoration: none;
 		color: Black;
 		margin: 2%; 
-		height: 75vh;
+		height: 6vh;
 		width: 95%;
 		border-radius: 10px;
 	`;
