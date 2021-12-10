@@ -192,7 +192,6 @@ class OverviewComponent extends Component<any, IOverviewComponentState>
                 <Overview.SECTION>
                     <Link to="/report"><Reports.BUTTON>Trade Report</Reports.BUTTON></Link>
                     <Link to="/overview"><Reports.BUTTON>Overview</Reports.BUTTON></Link>
-                    <Link to="/strategies"><Reports.BUTTON>Strategies</Reports.BUTTON></Link>
                     <Overview.ROW>
                         <div style={{
                             margin: "auto",

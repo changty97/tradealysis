@@ -48,9 +48,10 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
     {
         const theKey = localStorage.getItem("Key");
 
-        this.setState({
+        // Probably don't want this loading the entire time tbh
+        /*this.setState({
             loading: true
-        });
+        });*/
 
         return api.get("/stockdataGet", {
             params: {
@@ -58,7 +59,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                 coll: `${this.state.reportsId}`
             }
         })
-            .then((response: AxiosResponse<string[]>) =>
+            .then(async(response: AxiosResponse<string[]>) =>
             {
                 const allArrVals = []; const theArr = response.data;
                 if (theArr && theArr.length > 0)
@@ -95,6 +96,47 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                         allArrVals.push(valsToInsert);
                     }
                     this.dispatch(updateData(allArrVals)); this.dispatch(hideLoading());
+
+                    // fetch data for each loaded row
+
+                    console.log("bEFORE IF LOOP");
+                    console.log(this.state.tableProps.data);
+                    if (this.state.tableProps.data)
+                    {
+                        const dataLen = this.state.tableProps.data.length;
+                        if (dataLen > 0)
+                        {
+                        //let i = this.state.tableProps.data[0].rowKeyValue;
+                            console.log(this.state.tableProps.data[1]);
+
+                            const lastItemsID = Object.getOwnPropertyDescriptor(this.state.tableProps.data[dataLen - 1], 'id')!.value;
+                            console.log("right before for loop");
+
+                            const theVal = Object.getOwnPropertyDescriptor(this.state.tableProps.data[0], 'id')!.value;
+                            console.log(theVal);
+                            for (let i = theVal; i < lastItemsID!;)
+                            {
+                                console.log("fetching...");
+                                const cell = {
+                                    columnKey: this.state.tableProps.data[i]["Ticker"],
+                                    rowKeyValue: i
+                                };
+                                await this.getTicker(cell);
+
+                                i = Object.getOwnPropertyDescriptor(this.state.tableProps.data[i + 1], 'id')!.value;
+                            }
+                        }
+
+                        /*
+                        for (var i=0; i < this.state.tableProps.data.length; i++) {
+                            const cell = {
+                                columnKey: this.state.tableProps.data[i]["Ticker"],
+                                rowKeyValue: i
+                            };
+                            this.getTicker(cell);
+                        }
+                        */
+                    }
                 }
                 else
                 {
@@ -105,11 +147,11 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
             }).catch((error) =>
             {
                 Promise.reject(error);
-            }).finally(() =>
+            /*}).finally(() =>
             {
                 this.setState({
                     loading: false
-                });
+                });*/
             });
     }
 
@@ -138,7 +180,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
         });
     }
 	
-    getTicker(cell: any): void
+    async getTicker(cell: any): Promise<void>
     {
         if (this.state.tableProps.data)
         {
@@ -157,20 +199,19 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                     {
                         for (const [key, value] of obj)
                         {
-                            // return past data using Ticker and DOI value in current row
                             if (`${key}` === 'Ticker' && `${value}` !== '')
                             {
-                                if (row.DOI !== undefined && this.isValidDate(row.DOI))
+                                // fetch past data only if valid DOI is entered AND historical data has not yet been fetched
+                                if (row.DOI !== undefined && this.isValidDate(row.DOI) && row.PC === undefined)
                                 {
-                                    const pastData = this.getPastData(row.Ticker, row.DOI);
+                                    const pastData = await this.getPastData(row.Ticker, row.DOI);
                                     this.setCells(pastData, cell);
+                                    //const todayData = this.getTodayData(row.Ticker);
+                                    //this.setCells(todayData, cell);
                                 }
-                                else
-                                {
-                                    console.log("no doi");
-                                    const todayData = this.getTodayData(row.Ticker);
-                                    this.setCells(todayData, cell);
-                                }
+                                // fetch live data regardless of DOI
+                                const todayData = await this.getTodayData(row.Ticker);
+                                this.setCells(todayData, cell);
                             }
                         }
                     }
@@ -184,29 +225,23 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
 	
     getTodayData(ticker: string): any
     {
-        return api.get(`/stockapi/${ticker}`, {
-            params: {
-                ID: ticker
-            }
-        }).then((response) =>
-        {
-            return response.data;
-        }).catch(function(error)
-        {
-            console.log('Error', error);
-        });
+        return api.get(`/stockapi/${ticker}`)
+            .then((response) =>
+            {
+                console.log(`Success: Got current data for ${ticker}`);
+                return response.data;
+            }).catch(function(error)
+            {
+                console.log('Error', error);
+            });
     }
     
     getPastData(ticker: string, date: string): any
     {
-        return api.get(`/stockapi/:ID${ticker}/${date}`, {
-            params: {
-                ID: ticker,
-                date: date
-            }
-        })
+        return api.get(`/stockapi/${ticker}/${date}`)
             .then((response) =>
             {
+                console.log(`Success: Got data for ${ticker} on ${date}`);
                 return response.data;
             })
             .catch((error)=>
@@ -258,6 +293,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                                 {
                                     switch (key)
                                     {
+                                    case "LongName": i["Name"] = val; break;
                                     case "Price": i["Price"] = val; break;
                                     case "W52H": i["52-WH"] = val; break;
                                     case "W52L": i["52-WL"] = val; break;
@@ -305,25 +341,27 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                                 i["FloatC"] = "HIGH";
                             }
                             // MarketCap = price * outstanding
-                            i["MC-Current"] = i["Price"] * i["Outstanding"];
-                            // MarketCap Category
-                            if ( i["MC-Current"] <= 50000000)
+                            // to display value in millions:
+                            // ((Math.round(x/100000)*100000) /1000000)
+                            i["MC-Current"] = (Math.round((i["Price"] * i["Outstanding"]) / 100000) * 100000) / 1000000;
+                            // MarketCap Category (in millions)
+                            if ( i["MC-Current"] <= 50)
                             {
                                 i["MC-Cat"] = "NANO";
                             }
-                            else if ( i["MC-Current"] > 50000000 && i["MC-Current"] <= 300000000)
+                            else if ( i["MC-Current"] > 50 && i["MC-Current"] <= 300)
                             {
                                 i["MC-Cat"] = "MICRO";
                             }
-                            else if ( i["MC-Current"] > 300000000 && i["MC-Current"] <= 20000000000)
+                            else if ( i["MC-Current"] > 300 && i["MC-Current"] <= 20000)
                             {
                                 i["MC-Cat"] = "SMALL";
                             }
-                            else if ( i["MC-Current"] > 20000000000 && i["MC-Current"] <= 100000000000)
+                            else if ( i["MC-Current"] > 20000 && i["MC-Current"] <= 100000)
                             {
                                 i["MC-Cat"] = "MID";
                             }
-                            else if ( i["MC-Current"] > 100000000000)
+                            else if ( i["MC-Current"] > 100000)
                             {
                                 i["MC-Cat"] = "LARGE";
                             }

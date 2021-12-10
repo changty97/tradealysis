@@ -57,21 +57,15 @@ export class ServiceController
 	@GET
     public async getStockNow(@PathParam("ID") ticker: string): Promise<any>
     {
-        const date: Date = new Date();
-        return await this.getStockThen(ticker, date.toISOString().split('T')[0]);
+        return await await retrieveYahooData(ticker);
     }
+	
 
 	@Path("/stockapi/:ID/:date")
 	@GET
 	public async getStockThen(@PathParam("ID") ticker: string, @PathParam("date") date: string): Promise<IStockData>
 	{
-	    const alphaFinData: IStockData = await getStockData(`${date}-${ticker}`);
-	    const yahooData: IStockData = await retrieveYahooData(ticker);
-	    
-	    return {
-	        ...yahooData,
-	        ...alphaFinData
-	    };
+	    return await getStockData(`${date}-${ticker}`);
 	}
 
 	/**

@@ -33,7 +33,6 @@ class ReportsComponent extends Component<IReportsProps, IReportsState>
                 <Reports.SECTION>
                     <Link to="/report"><Reports.BUTTON>Trade Report</Reports.BUTTON></Link>
                     <Link to="/overview"><Reports.BUTTON>Overview</Reports.BUTTON></Link>
-                    <Link to="/strategies"><Reports.BUTTON>Strategies</Reports.BUTTON></Link>
                     <SheetComponent />
                 </Reports.SECTION>
             </Fragment>
