@@ -184,7 +184,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
     {
         if (this.state.tableProps.data)
         {
-            let idx = -1; 
+            let idx = -1;
             //console.log("cell rowkey value " + cell.rowKeyValue);
             //console.log("data array " + this.state.tableProps.data);
             for (let i = this.state.tableProps.data.length - 1; i >= 0; i--)
@@ -202,13 +202,13 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                             if (`${key}` === 'Ticker' && `${value}` !== '')
                             {
                                 const todayData = await this.getTodayData(row.Ticker);
-								console.log(todayData);
-                                this.setCells(todayData, cell, false);
+                                delete todayData.Open; delete todayData.HOD; delete todayData.VolDOI;
+                                this.setCells(todayData, cell);
                                 // fetch past data only if valid DOI is entered AND historical data has not yet been fetched
                                 if (row.DOI !== undefined && this.isValidDate(row.DOI) && row.PC === undefined)
                                 {
                                     const pastData = await this.getPastData(row.Ticker, row.DOI);
-                                    this.setCells(pastData, cell, false);
+                                    this.setCells(pastData, cell);
                                 }
                             }
                         }
@@ -217,7 +217,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                 }
             }
 			
-			/**
+            /**
 			TODO DONT TOUCH-------------------------------
 			useEffect(() => {
 									
@@ -278,7 +278,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
         return d.toISOString().slice(0, 10) === doi;
     }
 
-    setCells(data: any, cell: any, overwrite:boolean): void
+    setCells(data: any, cell: any): void
     {
         Promise.resolve(data).then((_value) =>
         {
@@ -314,7 +314,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                                     case "Industry": i.Industry = val; break;
                                     case "PC": i.PC = val; break;
                                     case "PremHigh": i["PreM High"] = val; break;
-                                    case "Open": if(overwrite === true){ console.log("OVERWRITE @@@"); break;} else{ i["Open"] = val; }break;
+                                    case "Open":  i["Open"] = val; break;
                                     case "HOD": i["HOD"] = val; break;
                                     case "HODTime": i["HOD-Time"] = val; break;
                                     case "LOD": i["LOD"] = val;  break;
@@ -632,7 +632,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                 tableProps: kaReducer(prevState.tableProps, action)
             }
         }));
-        if (action.type === "UpdateCellValue")
+        if (action.type === "UpdateCellValue" && this.state.tableProps.data)
         {
             const cell = {
                 columnKey: action.columnKey,
@@ -640,27 +640,28 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                 value: action.value
             };
 
-            if(action.columnKey === "Ticker") {
-                // Check if DOI exists
-                if(this.state.tableProps.data) {
-                    if (this.state.tableProps.data[action.rowKeyValue]["DOI"]) {
-                        this.getTicker(cell);
-                    } else {
-                        // User just entered Ticker Symbol without DOI
-                        this.getTicker(cell);
-                    }
+            switch (action.columnKey)
+            {
+					
+            case "Ticker":
+                this.getTicker(cell);
+                break;
+            case "DOI":
+                if (this.state.tableProps.data[action.rowKeyValue]["Ticker"])
+                {
+                    this.getTicker(cell);
                 }
+                break;
+            case "P/L":
+                // const PLPerc: number = PL / (stocksInfo[symbol].sell.totalStocks * avgEntryPrice);
+                //(100 * PLPerc).toFixed(2),
+                //const numShares:number = parseFloat(this.state.tableProps.data[action.rowKeyValue]["# Shares"]);
+                //const numAvgEntry:number = parseFloat(this.state.tableProps.data[action.rowKeyValue]["Avg"][" Entry"]);
+                break;
+						
+            default:
+                break;
             }
-			else if(action.columnKey === "DOI") {
-				if(this.state.tableProps.data) {
-                    if (this.state.tableProps.data[action.rowKeyValue]["Ticker"]) {
-                        this.getTicker(cell);
-                    } else {
-                        // User just entered Ticker Symbol without DOI
-                        this.getTicker(cell);
-                    }
-                }
-			}
         }
     }
 }
