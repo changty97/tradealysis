@@ -201,18 +201,15 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                         {
                             if (`${key}` === 'Ticker' && `${value}` !== '')
                             {
+								const todayData = await this.getTodayData(row.Ticker);
+								this.setCells(todayData, cell);
                                 // fetch past data only if valid DOI is entered AND historical data has not yet been fetched
                                 if (row.DOI !== undefined && this.isValidDate(row.DOI) && row.PC === undefined)
                                 {
+									console.log("---today DATA ---"); console.log(todayData); console.log("---today DATA ---");
                                     const pastData = await this.getPastData(row.Ticker, row.DOI);
                                     this.setCells(pastData, cell);
-                                    //const todayData = this.getTodayData(row.Ticker);
-                                    //this.setCells(todayData, cell);
                                 }
-                                // fetch live data regardless of DOI
-                                const todayData = await this.getTodayData(row.Ticker);
-                                this.setCells(todayData, cell);
-                            }
                         }
                     }
                     break;

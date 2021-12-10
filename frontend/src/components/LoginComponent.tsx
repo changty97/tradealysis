@@ -9,7 +9,7 @@ class LoginComponent extends Component<any, any>
 	    super(props);
         this.loginKey = this.loginKey.bind(this);
         this.signupKey = this.signupKey.bind(this);
-		this.forgotPssd = this.forgotPssd.bind(this);
+        this.forgotPssd = this.forgotPssd.bind(this);
     }
 
     private setLocalStorageStateKey(theKey:string) : void
@@ -78,10 +78,10 @@ class LoginComponent extends Component<any, any>
         window.location.href = "/createaccount";
     }
 	
-	private forgotPssd():void 
-	{
-		window.location.href="/support";
-	}
+    private forgotPssd():void
+    {
+        window.location.href = "/support";
+    }
 	
     render(): JSX.Element
     {
