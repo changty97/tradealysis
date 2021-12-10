@@ -9,6 +9,7 @@ class LoginComponent extends Component<any, any>
 	    super(props);
         this.loginKey = this.loginKey.bind(this);
         this.signupKey = this.signupKey.bind(this);
+		this.forgotPssd = this.forgotPssd.bind(this);
     }
 
     private setLocalStorageStateKey(theKey:string) : void
@@ -77,6 +78,11 @@ class LoginComponent extends Component<any, any>
         window.location.href = "/createaccount";
     }
 	
+	private forgotPssd():void 
+	{
+		window.location.href="/support";
+	}
+	
     render(): JSX.Element
     {
 	    return (
@@ -94,7 +100,7 @@ class LoginComponent extends Component<any, any>
 	                        </Login.USERNAME_AND_PASSWORD_TXT_BOXES>
 						   <Login.LOGIN_BUTTON>
 	                        <Login.FORGOT_PSSD_BUTTON type="submit" onClick={this.loginKey}>Login</Login.FORGOT_PSSD_BUTTON>
-	                            <Login.FORGOT_PSSD_BUTTON>Forgot Password?</Login.FORGOT_PSSD_BUTTON>
+	                            <Login.FORGOT_PSSD_BUTTON type="submit" onClick={this.forgotPssd}>Forgot Password?</Login.FORGOT_PSSD_BUTTON>
 	                            <Login.FORGOT_PSSD_BUTTON type="submit" onClick={this.signupKey}>Sign Up</Login.FORGOT_PSSD_BUTTON>
                         </Login.LOGIN_BUTTON>
                         <Login.INVALID_LOGIN_MSSG id='Invalid_Login_Mssg'>Please Login</Login.INVALID_LOGIN_MSSG>
