@@ -10,9 +10,10 @@ class Support extends Component
 		flex-direction: column;
 		justify-content: flex-start; 
 		align-items: center;
-		height: 400px;
+		height: 800px;
 		width: 100%;
 		font-size: 20px;
+
 	`;
 	
 	public static readonly SECTION_DIV = sty.div `
@@ -35,17 +36,36 @@ class Support extends Component
 	`;
 	
 	public static readonly FORM = sty.form `
+		padding: 1em;
+		margin-top: 2rem;
+		margin-right: auto;
+		margin-left: auto;
 		font-size: 20px;
 		font-family: Arial, sans-serif;
 		max-width: 80%;
 		min-width: 30vh;
-		margin: 10px;
 	`;
 	
-	public static readonly TEXTAREA = sty.textarea `
-		width: 50vw;
-		height: 200px;
+	public static readonly INPUT_TWO = sty.input `
+		width: 100%;
+		height: 100px;
+		padding: 0.7em;
+		margin-bottom: 0.5rem;
 		font-size: 20px;
+	`;
+	
+	public static readonly INPUT = sty.input `
+		width: 100%;
+		height: 15px;
+		padding: 0.7em;
+		margin-bottom: 0.5rem;
+		font-size: 20px;
+	`;
+
+	public static readonly LABEL = sty.label `
+		text-align: left;
+		display: block;
+		padding: 0.5em 1.5em 0.5em 0;
 	`;
 
 	public static readonly INPUT_SUMBIT = sty.input `
@@ -66,5 +86,10 @@ class Support extends Component
 			background-image: linear-gradient(rgba(0, 0, 0, 0.4) 0 0);
 		}
 	`;
+
+
+
+	
 }
+
 export { Support };
