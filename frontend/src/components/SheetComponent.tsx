@@ -8,7 +8,6 @@ import { InsertRowPosition } from 'ka-table/enums';
 import { ISheetComponentProps } from "../models/ISheetComponentProps";
 import { ISheetComponentState } from "../models/ISheetComponentState";
 import { tableProps } from "../constants/tableProps";
-//import { tableProps, initialReportItems } from "../constants/tableProps";
 import { ChildComponents } from "ka-table/models";
 import { clearFocused, moveFocusedDown, moveFocusedLeft,
     moveFocusedRight, moveFocusedUp, openEditor,
@@ -47,11 +46,6 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
     private async loadSheet(): Promise<void>
     {
         const theKey = localStorage.getItem("Key");
-
-        // Probably don't want this loading the entire time tbh
-        /*this.setState({
-            loading: true
-        });*/
 
         return api.get("/stockdataGet", {
             params: {
@@ -95,10 +89,10 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                         }
                         allArrVals.push(valsToInsert);
                     }
-                    this.dispatch(updateData(allArrVals)); this.dispatch(hideLoading());
+                    this.dispatch(updateData(allArrVals));
+                    this.dispatch(hideLoading());
 
                     // fetch data for each loaded row
-
                     console.log("bEFORE IF LOOP");
                     console.log(this.state.tableProps.data);
                     if (this.state.tableProps.data)
@@ -106,14 +100,8 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                         const dataLen = this.state.tableProps.data.length;
                         if (dataLen > 0)
                         {
-                        //let i = this.state.tableProps.data[0].rowKeyValue;
-                            console.log(this.state.tableProps.data[1]);
-
                             const lastItemsID = Object.getOwnPropertyDescriptor(this.state.tableProps.data[dataLen - 1], 'id')!.value;
-                            console.log("right before for loop");
-
                             const theVal = Object.getOwnPropertyDescriptor(this.state.tableProps.data[0], 'id')!.value;
-                            console.log(theVal);
                             for (let i = theVal; i < lastItemsID!;)
                             {
                                 console.log("fetching...");
@@ -126,16 +114,6 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                                 i = Object.getOwnPropertyDescriptor(this.state.tableProps.data[i + 1], 'id')!.value;
                             }
                         }
-
-                        /*
-                        for (var i=0; i < this.state.tableProps.data.length; i++) {
-                            const cell = {
-                                columnKey: this.state.tableProps.data[i]["Ticker"],
-                                rowKeyValue: i
-                            };
-                            this.getTicker(cell);
-                        }
-                        */
                     }
                 }
                 else
@@ -146,12 +124,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                 }
             }).catch((error) =>
             {
-                Promise.reject(error);
-            /*}).finally(() =>
-            {
-                this.setState({
-                    loading: false
-                });*/
+                console.error(error);
             });
     }
 
@@ -185,8 +158,6 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
         if (this.state.tableProps.data)
         {
             let idx = -1;
-            //console.log("cell rowkey value " + cell.rowKeyValue);
-            //console.log("data array " + this.state.tableProps.data);
             for (let i = this.state.tableProps.data.length - 1; i >= 0; i--)
             {
                 const descriptor1 = Object.getOwnPropertyDescriptor(this.state.tableProps.data[i], 'id');
@@ -202,7 +173,9 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                             if (`${key}` === 'Ticker' && `${value}` !== '')
                             {
                                 const todayData = await this.getTodayData(row.Ticker);
-                                delete todayData.Open; delete todayData.HOD; delete todayData.VolDOI;
+                                delete todayData.Open;
+                                delete todayData.HOD;
+                                delete todayData.VolDOI;
                                 this.setCells(todayData, cell);
                                 // fetch past data only if valid DOI is entered AND historical data has not yet been fetched
                                 if (row.DOI !== undefined && this.isValidDate(row.DOI) && row.PC === undefined)
@@ -216,7 +189,6 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                     break;
                 }
             }
-			
             /**
 			TODO DONT TOUCH-------------------------------
 			useEffect(() => {
@@ -240,10 +212,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
             {
                 console.log(`Success: Got current data for ${ticker}`);
                 return response.data;
-            }).catch(function(error)
-            {
-                console.log('Error', error);
-            });
+            }).catch((error) => console.error('Error', error));
     }
     
     getPastData(ticker: string, date: string): any
@@ -254,10 +223,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                 console.log(`Success: Got data for ${ticker} on ${date}`);
                 return response.data;
             })
-            .catch((error)=>
-            {
-                console.log('Error', error);
-            });
+            .catch((error)=> console.log('Error', error));
     }
 
     // check YYYY-MM-DD format
@@ -652,13 +618,14 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                     this.getTicker(cell);
                 }
                 break;
+/**
             case "P/L":
                 // const PLPerc: number = PL / (stocksInfo[symbol].sell.totalStocks * avgEntryPrice);
                 //(100 * PLPerc).toFixed(2),
                 //const numShares:number = parseFloat(this.state.tableProps.data[action.rowKeyValue]["# Shares"]);
                 //const numAvgEntry:number = parseFloat(this.state.tableProps.data[action.rowKeyValue]["Avg"][" Entry"]);
                 break;
-						
+**/
             default:
                 break;
             }
