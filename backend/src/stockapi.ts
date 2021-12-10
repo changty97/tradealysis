@@ -306,9 +306,11 @@ function retrieveYahooData(ticker: string): Promise<IStockData>
                 case "regularMarketVolume":
                     stockData.VolDOI = parseInt(value);
                     break;
+			
                 case "regularMarketOpen":
                     stockData.Open = parseFloat(value);
                     break;
+				
                 case "regularMarketDayHigh":
                     stockData.HOD = parseFloat(value);
                     break;
