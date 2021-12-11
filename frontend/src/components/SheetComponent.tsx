@@ -35,6 +35,8 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
         this.generateNewId = this.generateNewId.bind(this);
         this.saveTable = this.saveTable.bind(this);
         this.deleteItemFromDB = this.deleteItemFromDB.bind(this);
+        this.updatePL = this.updatePL.bind(this);
+        this.updatePLPerc = this.updatePLPerc.bind(this);
         this.updateSheetItems = this.updateSheetItems.bind(this);
     }
 	
@@ -298,7 +300,9 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                                     switch (key)
                                     {
                                     case "LongName": i["Name"] = val; break;
-                                    case "Price": i["Price"] = val; break;
+                                    case "Price": i["Price"] = val; break;                               
+                                    case "P/L %": i["P/L %"] = val; break;
+                                    case "P/L": i["P/L"] = val; break;
                                     case "W52H": i["52-WH"] = val; break;
                                     case "W52L": i["52-WL"] = val; break;
                                     case "VolAvg": i["VolAvg"] = val; break;
@@ -566,6 +570,38 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                 console.log(err);
             });
     }
+
+    updatePL(cell: any) {
+        const numShares: number = parseInt(this.state.tableProps.data![cell.rowKeyValue]["# Shares"]);
+        const avgEntry: number = parseFloat(this.state.tableProps.data![cell.rowKeyValue]["Avg Entry"]);
+        const avgExit: number = parseFloat(this.state.tableProps.data![cell.rowKeyValue]["Avg Exit"]);
+        const PL: number = numShares * (avgExit - avgEntry);
+
+        console.log(numShares, avgEntry, avgExit)
+
+        if (numShares && avgEntry && avgExit) {
+            console.log("hello")
+            this.setCells({
+                "P/L": PL
+            }, cell);
+        }
+
+        this.updatePLPerc(cell, PL);
+    }
+
+    updatePLPerc(cell: any, PL?: number)
+    {
+        const numShares: number = parseInt(this.state.tableProps.data![cell.rowKeyValue]["# Shares"]);
+        const avgEntry: number = parseFloat(this.state.tableProps.data![cell.rowKeyValue]["Avg Entry"]);
+        PL = PL || parseFloat(this.state.tableProps.data![cell.rowKeyValue]["P/L"]);
+
+        if (PL && numShares && avgEntry)
+        {
+            this.setCells({
+                "P/L %": PL / (numShares * avgEntry)
+            }, cell);
+        }
+    }
 	
     public render() : JSX.Element
     {
@@ -640,24 +676,33 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
 
             switch (action.columnKey)
             {
-					
-            case "Ticker":
-                this.getTicker(cell, false);
-                break;
             case "DOI":
                 if (this.state.tableProps.data[action.rowKeyValue]["Ticker"])
                 {
                     this.getTicker(cell, false);
                 }
+
                 break;
-                /**
+            case "Ticker":
+                this.getTicker(cell);
+
+                break;
             case "P/L":
-                // const PLPerc: number = PL / (stocksInfo[symbol].sell.totalStocks * avgEntryPrice);
-                //(100 * PLPerc).toFixed(2),
-                //const numShares:number = parseFloat(this.state.tableProps.data[action.rowKeyValue]["# Shares"]);
-                //const numAvgEntry:number = parseFloat(this.state.tableProps.data[action.rowKeyValue]["Avg"][" Entry"]);
+                this.updatePLPerc(cell);
+
                 break;
-**/
+            case "Avg Entry":
+                this.updatePL(cell);
+
+                break;
+            case "Avg Exit":
+                this.updatePL(cell);
+
+                break;
+            case "# Shares":
+                this.updatePL(cell);
+
+                break;
             default:
                 break;
             }
