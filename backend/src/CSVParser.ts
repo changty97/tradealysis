@@ -175,8 +175,8 @@ class CSVParser
                 Ticker: symbol,
                 Position: stocksInfo[symbol].position,
                 "# Shares": stocksInfo[symbol].quantity.toString(),
-                "Avg. Entry": avgEntryPrice.toFixed(2),
-                "Avg. Exit": avgExitPrice.toFixed(2)
+                "Avg Entry": avgEntryPrice.toFixed(2),
+                "Avg Exit": avgExitPrice.toFixed(2)
             };
         });
     }
