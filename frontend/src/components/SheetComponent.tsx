@@ -35,6 +35,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
         this.generateNewId = this.generateNewId.bind(this);
         this.saveTable = this.saveTable.bind(this);
         this.deleteItemFromDB = this.deleteItemFromDB.bind(this);
+		this.updateSheetItems = this.updateSheetItems.bind(this);
     }
 	
     componentDidMount():void
@@ -92,29 +93,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                     this.dispatch(updateData(allArrVals));
                     this.dispatch(hideLoading());
 
-                    // fetch data for each loaded row
-                    console.log("bEFORE IF LOOP");
-                    console.log(this.state.tableProps.data);
-                    if (this.state.tableProps.data)
-                    {
-                        const dataLen = this.state.tableProps.data.length;
-                        if (dataLen > 0)
-                        {
-                            const lastItemsID = Object.getOwnPropertyDescriptor(this.state.tableProps.data[dataLen - 1], 'id')!.value;
-                            const theVal = Object.getOwnPropertyDescriptor(this.state.tableProps.data[0], 'id')!.value;
-                            for (let i = theVal; i < lastItemsID!;)
-                            {
-                                console.log("fetching...");
-                                const cell = {
-                                    columnKey: this.state.tableProps.data[i]["Ticker"],
-                                    rowKeyValue: i
-                                };
-                                await this.getTicker(cell);
-
-                                i = Object.getOwnPropertyDescriptor(this.state.tableProps.data[i + 1], 'id')!.value;
-                            }
-                        }
-                    }
+                    this.updateSheetItems();
                 }
                 else
                 {
@@ -122,12 +101,41 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                         lastRowId: -1
                     });
                 }
-            }).catch((error) =>
-            {
-                console.error(error);
-            });
+            }).catch((error) => console.error(error));
     }
 
+    private async updateSheetItems():Promise<void>
+    {
+        // fetch data for each loaded row
+        console.log("bEFORE IF LOOP");
+        console.log(this.state.tableProps.data);
+        if (this.state.tableProps.data)
+        {
+            const dataLen = this.state.tableProps.data.length;
+            if (dataLen > 0)
+            {
+                const lastItemsID = Object.getOwnPropertyDescriptor(this.state.tableProps.data[dataLen - 1], 'id')!.value;
+                for (let i = Object.getOwnPropertyDescriptor(this.state.tableProps.data[0], 'id')!.value, j = 0;
+							     i <= lastItemsID! && j < dataLen;
+								 j++)
+                {
+                    console.log("fetching...");
+                    const cell = {
+                        columnKey: this.state.tableProps.data[i]["Ticker"],
+                        rowKeyValue: i
+                    };
+                    await this.getTicker(cell);
+                    console.log(cell);
+								
+                    if (j + 1 < dataLen) // data[j+1] must be valie 
+                    {
+                        i = Object.getOwnPropertyDescriptor(this.state.tableProps.data[j + 1], 'id')!.value;
+                    }
+                }
+            }
+        }
+    }
+	
     private generateNewId(): number
     {
         const newRowId: number = this.state.lastRowId + 1;
@@ -147,10 +155,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                 key: theKey,
                 coll: `${this.state.reportsId}`
             }
-        }).catch((error)=>
-        {
-            console.log('Error', error);
-        });
+        }).catch((error)=> console.log('Error', error) );
     }
 	
     async getTicker(cell: any): Promise<void>
@@ -574,6 +579,11 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                     }} >
                     New Row
                 </Reports.BUTTON>
+				
+				
+				<Reports.BUTTON onClick={this.updateSheetItems}> RealTime Update </Reports.BUTTON>
+				
+				
                 <Reports.BUTTON onClick= {this.saveTable} style={{
                     backgroundColor: "#008CBA"
                 }}>Save Table </Reports.BUTTON>
@@ -618,7 +628,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                     this.getTicker(cell);
                 }
                 break;
-/**
+                /**
             case "P/L":
                 // const PLPerc: number = PL / (stocksInfo[symbol].sell.totalStocks * avgEntryPrice);
                 //(100 * PLPerc).toFixed(2),
