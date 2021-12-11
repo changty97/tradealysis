@@ -93,7 +93,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                     this.dispatch(updateData(allArrVals));
                     this.dispatch(hideLoading());
 
-                    this.updateSheetItems();
+                    this.updateSheetItems(false);
                 }
                 else
                 {
@@ -104,7 +104,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
             }).catch((error) => console.error(error));
     }
 
-    private async updateSheetItems():Promise<void>
+    private async updateSheetItems(getPastData:boolean):Promise<void>
     {
         // fetch data for each loaded row
         console.log("bEFORE IF LOOP");
@@ -124,7 +124,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                         columnKey: this.state.tableProps.data[i]["Ticker"],
                         rowKeyValue: i
                     };
-                    await this.getTicker(cell);
+                    await this.getTicker(cell, getPastData);
                     console.log(cell);
 								
                     if (j + 1 < dataLen) // data[j+1] must be valie 
@@ -158,7 +158,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
         }).catch((error)=> console.log('Error', error) );
     }
 	
-    async getTicker(cell: any): Promise<void>
+    async getTicker(cell: any, alwaysGetPastData: boolean): Promise<void>
     {
         if (this.state.tableProps.data)
         {
@@ -183,7 +183,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                                 delete todayData.VolDOI;
                                 this.setCells(todayData, cell);
                                 // fetch past data only if valid DOI is entered AND historical data has not yet been fetched
-                                if (row.DOI !== undefined && this.isValidDate(row.DOI) && row.PC === undefined)
+                                if ((row.DOI !== undefined && this.isValidDate(row.DOI) && row.PC === undefined) || alwaysGetPastData)
                                 {
                                     const pastData = await this.getPastData(row.Ticker, row.DOI);
                                     this.setCells(pastData, cell);
@@ -581,8 +581,8 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                 </Reports.BUTTON>
 				
 				
-				<Reports.BUTTON onClick={this.updateSheetItems}> RealTime Update </Reports.BUTTON>
-				
+				<Reports.BUTTON onClick={ () => this.updateSheetItems(false) }> RealTime</Reports.BUTTON>
+				<Reports.BUTTON onClick={ () => this.updateSheetItems(true) }> Historical</Reports.BUTTON>
 				
                 <Reports.BUTTON onClick= {this.saveTable} style={{
                     backgroundColor: "#008CBA"
@@ -620,12 +620,12 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
             {
 					
             case "Ticker":
-                this.getTicker(cell);
+                this.getTicker(cell, false);
                 break;
             case "DOI":
                 if (this.state.tableProps.data[action.rowKeyValue]["Ticker"])
                 {
-                    this.getTicker(cell);
+                    this.getTicker(cell, false);
                 }
                 break;
                 /**
