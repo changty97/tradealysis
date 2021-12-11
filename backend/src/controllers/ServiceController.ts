@@ -57,7 +57,7 @@ export class ServiceController
 	@GET
     public async getStockNow(@PathParam("ID") ticker: string): Promise<any>
     {
-        return await await retrieveYahooData(ticker);
+        return await retrieveYahooData(ticker);
     }
 	
 

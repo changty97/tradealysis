@@ -84,13 +84,19 @@ async function getStockData(dateAndTicker: string): Promise<any>
     
     //Fetch current price from Finnhub API data
     const urlcurrent = `https://finnhub.io/api/v1/quote?symbol=${StockSymbol}&token=${finnhub_api_key}`;
-    await axios(urlcurrent)
-        .then(AxiosResponse =>
-        {
-            const query = AxiosResponse.data;
-            Price = query['c'];         //Current price
-        })
-        .catch(console.error);
+    try
+    {
+        await axios(urlcurrent)
+            .then(AxiosResponse =>
+            {
+                const query = AxiosResponse.data;
+                Price = query['c'];         //Current price
+            });
+    }
+    catch (err)
+    {
+        console.error(err);
+    }
   
     //convert premarket time 1:00 and 6:29 of specified date to Unix timestamp
     //In order to fetch Premarket volume and Pre-market high price from Finnhub premarket data
@@ -100,32 +106,38 @@ async function getStockData(dateAndTicker: string): Promise<any>
   
     //Fetch Premarket volume and Pre-market high price from Finnhub premarket data
     const urlpremarket = `https://finnhub.io/api/v1/stock/candle?symbol=${StockSymbol}&resolution=${Interval}&from=${FromTimestamp}&to=${ToTimestamp}&token=${finnhub_api_key}`;
-    await axios(urlpremarket)
-        .then(AxiosResponse =>
-        {
-            const query = AxiosResponse.data;
-            if (query.s == 'ok')
+    try
+    {
+        await axios(urlpremarket)
+            .then(AxiosResponse =>
             {
-                VolPreM = volumsum();
-                PremHigh = Math.max(...query.h);
-            }
-            else
-            {
-                console.log(`Failed to fetch VolPrem and PremHigh because there is no data on ${yy}-${mm}-${dd}`);
-            }
-  
-            function volumsum()
-            {
-                let sum = 0;
-                for (let i = 0; i < ((query.v).length); i++)
+                const query = AxiosResponse.data;
+                if (query.s == 'ok')
                 {
-                    sum += query.v[i];
+                    VolPreM = volumsum();
+                    PremHigh = Math.max(...query.h);
                 }
-                return sum;
-            }
-  
-        })
-        .catch(console.error);
+                else
+                {
+                    console.log(`Failed to fetch VolPrem and PremHigh because there is no data on ${yy}-${mm}-${dd}`);
+                }
+	  
+                function volumsum()
+                {
+                    let sum = 0;
+                    for (let i = 0; i < ((query.v).length); i++)
+                    {
+                        sum += query.v[i];
+                    }
+                    return sum;
+                }
+	  
+            });
+    }
+    catch (err)
+    {
+        console.error(err);
+    }
     
 
     //convert specified date to Unix timestamp
@@ -136,24 +148,31 @@ async function getStockData(dateAndTicker: string): Promise<any>
 
     //Fetch VolDOI, open price, close price, and previous close price from Finnhub
     const urlvolDOI = `https://finnhub.io/api/v1/stock/candle?symbol=${StockSymbol}&resolution=${Interval}&from=${FromTimestamp}&to=${ToTimestamp}&token=${finnhub_api_key}`;
-    await axios(urlvolDOI)
-        .then(AxiosResponse =>
-        {
-            const query = AxiosResponse.data;
-            if (query.s == 'ok')
+    
+    try
+    {
+        await axios(urlvolDOI)
+            .then(AxiosResponse =>
             {
-                const length = query.t.length;
-                VolDOI = Number(query.v[length - 1]);
-                Open = query.o[length - 1];
-                Close = query.c[length - 1];
-                PC = query.c[length - 2];
-            }
-            else
-            {
-                console.log(`Failed to fetch VolDOI, Open, Close, and PC because there is no data on ${yy}-${mm}-${dd}`);
-            }
-        })
-        .catch(console.error);
+                const query = AxiosResponse.data;
+                if (query.s == 'ok')
+                {
+                    const length = query.t.length;
+                    VolDOI = Number(query.v[length - 1]);
+                    Open = query.o[length - 1];
+                    Close = query.c[length - 1];
+                    PC = query.c[length - 2];
+                }
+                else
+                {
+                    console.log(`Failed to fetch VolDOI, Open, Close, and PC because there is no data on ${yy}-${mm}-${dd}`);
+                }
+            });
+    }
+    catch (err)
+    {
+        console.error(err);
+    }
     
     //convert regular market time 6:30 and 13:00 of specified date to Unix timestamp
     //In order to fetch Open, HOD, LOD, HOD time, and LOD time from Finnhub intraday data on the specified date
@@ -163,64 +182,71 @@ async function getStockData(dateAndTicker: string): Promise<any>
 
     //Fetch Open, HOD, LOD, HOD time, and LOD time from Finnhub intraday data on the specified date
     const urlintraday = `https://finnhub.io/api/v1/stock/candle?symbol=${StockSymbol}&resolution=${Interval}&from=${FromTimestamp}&to=${ToTimestamp}&token=${finnhub_api_key}`;
-    await axios(urlintraday)
-        .then(AxiosResponse =>
-        {
-            const query = AxiosResponse.data;
-            if (query.s == 'ok')
+    
+    try
+    {
+        await axios(urlintraday)
+            .then(AxiosResponse =>
             {
-                HOD = Math.max(...query.h);
-                LOD = Math.min(...query.l);
-                HODTime = findhightime();
-                LODTime = findlowtime();
-            }
-            else
-            {
-                console.log(`Failed to fetch HOD, LOD, HODTime, and LODTime because there is no data on ${yy}-${mm}-${dd}`);
-            }
-            //find the time of highest price
-            function findhightime()
-            {
-                const max = Math.max(...query.h);
-                let hightime;
-                for (let i = 0; i < (query.h.length); i++)
+                const query = AxiosResponse.data;
+                if (query.s == 'ok')
                 {
-                    if (query.h[i] == max)
-                    {
-                        hightime = query.t[i];
-                    }
+                    HOD = Math.max(...query.h);
+                    LOD = Math.min(...query.l);
+                    HODTime = findhightime();
+                    LODTime = findlowtime();
                 }
-                hightime = converttime(hightime);
-                return hightime;
-            }
-  
-            //find the time of lowest price
-            function findlowtime()
-            {
-                let lowtime;
-                const min = Math.min(...query.l);
-                for (let i = 0; i < (query.l.length); i++)
+                else
                 {
-                    if (query.l[i] == min)
-                    {
-                        lowtime = query.t[i];
-                    }
+                    console.log(`Failed to fetch HOD, LOD, HODTime, and LODTime because there is no data on ${yy}-${mm}-${dd}`);
                 }
-                lowtime = converttime(lowtime);
-                return lowtime;
-            }
+                //find the time of highest price
+                function findhightime()
+                {
+                    const max = Math.max(...query.h);
+                    let hightime;
+                    for (let i = 0; i < (query.h.length); i++)
+                    {
+                        if (query.h[i] == max)
+                        {
+                            hightime = query.t[i];
+                        }
+                    }
+                    hightime = converttime(hightime);
+                    return hightime;
+                }
+	  
+                //find the time of lowest price
+                function findlowtime()
+                {
+                    let lowtime;
+                    const min = Math.min(...query.l);
+                    for (let i = 0; i < (query.l.length); i++)
+                    {
+                        if (query.l[i] == min)
+                        {
+                            lowtime = query.t[i];
+                        }
+                    }
+                    lowtime = converttime(lowtime);
+                    return lowtime;
+                }
 
-            //convert Unix timestamp to regular time
-            function converttime(time: number)
-            {
-                const date = new Date(time * 1000);
-                const hours = date.getHours();
-                const minutes = `0${  date.getMinutes()}`;
-                const displayTime = `${hours  }:${  minutes.substr(-2)}`;
-                return displayTime;
-            }
-        })
-        .catch(console.error);
+                //convert Unix timestamp to regular time
+                function converttime(time: number)
+                {
+                    const date = new Date(time * 1000);
+                    const hours = date.getHours();
+                    const minutes = `0${  date.getMinutes()}`;
+                    const displayTime = `${hours  }:${  minutes.substr(-2)}`;
+                    return displayTime;
+                }
+            });
+    }
+    catch (err)
+    {
+        console.error(err);
+    }
 
     //convert after hour time on specified date to Unix timestamp
     //In order to fetch after hour price from Finnhub
@@ -230,20 +256,27 @@ async function getStockData(dateAndTicker: string): Promise<any>
    
     //Fetch after hour price from Finnhub
     const urlafterhour = `https://finnhub.io/api/v1/stock/candle?symbol=${StockSymbol}&resolution=${Interval}&from=${FromTimestamp}&to=${ToTimestamp}&token=${finnhub_api_key}`;
-    await axios(urlafterhour)
-        .then(AxiosResponse =>
-        {
-            const query = AxiosResponse.data;
-            if (query.s == 'ok')
+    
+    try
+    {
+        await axios(urlafterhour)
+            .then(AxiosResponse =>
             {
-                AH = query.c[(query.c.length - 1)];
-            }
-            else
-            {
-                console.log(`Failed to fetch AH because there is no data on ${yy}-${mm}-${dd}`);
-            }
-        })
-        .catch(console.error);
+                const query = AxiosResponse.data;
+                if (query.s == 'ok')
+                {
+                    AH = query.c[(query.c.length - 1)];
+                }
+                else
+                {
+                    console.log(`Failed to fetch AH because there is no data on ${yy}-${mm}-${dd}`);
+                }
+            });
+    }
+    catch (err)
+    {
+        console.error(err);
+    }
    
     printFetch(StockSymbol, yy, mm, dd);
     
@@ -274,85 +307,94 @@ async function getStockData(dateAndTicker: string): Promise<any>
 
 function retrieveYahooData(ticker: string): Promise<IStockData>
 {
-    const stockData: IStockData = {
-    };
+    try
+    {
+        const stockData: IStockData = {
+        };
 
-    return axios.get(`https://query1.finance.yahoo.com/v7/finance/quote?lang=en-US&region=US&corsDomain=finance.yahoo.com&symbols=${ticker}`)
-        .then((response) =>
-        {
-            const data = response.data.quoteResponse.result[0];
-            Object.entries(data).map(([key, value]: [string, string]) =>
+        return axios.get(`https://query1.finance.yahoo.com/v7/finance/quote?lang=en-US&region=US&corsDomain=finance.yahoo.com&symbols=${ticker}`)
+            .then((response) =>
             {
-                switch (`${key}`)
+                const data = response.data.quoteResponse.result[0];
+                if (data)
                 {
-                case "longName":
-                    stockData.LongName = `${value}`;
-                    break;
-                case "regularMarketPrice":
-                    stockData.Price = parseFloat(value);
-                    break;
-                case "fiftyTwoWeekHigh":
-                    stockData.W52H = parseFloat(value);
-                    break;
-                case "fiftyTwoWeekLow":
-                    stockData.W52L = parseFloat(value);
-                    break;
-                case "averageDailyVolume3Month":
-                    stockData.VolAvg = parseInt(value);
-                    break;
-                case "sharesOutstanding":
-                    stockData.Outstanding = parseInt(value);
-                    break;
-                case "regularMarketVolume":
-                    stockData.VolDOI = parseInt(value);
-                    break;
-			
-                case "regularMarketOpen":
-                    stockData.Open = parseFloat(value);
-                    break;
-				
-                case "regularMarketDayHigh":
-                    stockData.HOD = parseFloat(value);
-                    break;
-                default: break;
+                    Object.entries(data).map(([key, value]: [string, string]) =>
+                    {
+                        switch (`${key}`)
+                        {
+                        case "longName":
+                            stockData.LongName = `${value}`;
+                            break;
+                        case "regularMarketPrice":
+                            stockData.Price = parseFloat(value);
+                            break;
+                        case "fiftyTwoWeekHigh":
+                            stockData.W52H = parseFloat(value);
+                            break;
+                        case "fiftyTwoWeekLow":
+                            stockData.W52L = parseFloat(value);
+                            break;
+                        case "averageDailyVolume3Month":
+                            stockData.VolAvg = parseInt(value);
+                            break;
+                        case "sharesOutstanding":
+                            stockData.Outstanding = parseInt(value);
+                            break;
+                        case "regularMarketVolume":
+                            stockData.VolDOI = parseInt(value);
+                            break;
+					
+                        case "regularMarketOpen":
+                            stockData.Open = parseFloat(value);
+                            break;
+						
+                        case "regularMarketDayHigh":
+                            stockData.HOD = parseFloat(value);
+                            break;
+                        default: break;
+                        }
+                    });
                 }
+
+                return retrieveFloatYahooData(ticker);
+            })
+            .then((response: number) =>
+            {
+                stockData.Float = response;
+
+                return stockData;
             });
-
-            return retrieveFloatYahooData(ticker);
-        })
-        .then((response: number) =>
-        {
-            stockData.Float = response;
-
-            return stockData;
-        })
-        .catch(function(error: any)
-        {
-            return Promise.reject(error);
-        });
+    }
+    catch (err)
+    {
+        return Promise.reject(err);
+    }
 }
 
 function retrieveFloatYahooData(ticker: string): Promise<number>
 {
-    return axios.get(`https://query1.finance.yahoo.com/v10/finance/quoteSummary/${ticker}?modules=defaultKeyStatistics`)
-        .then((response) =>
-        {
-            const data = response.data.quoteSummary.result[0].defaultKeyStatistics.floatShares;
-            let floatShares: number;
-            Object.entries(data).map(([key, value]: [string, string]) =>
+    try
+    {
+        return axios.get(`https://query1.finance.yahoo.com/v10/finance/quoteSummary/${ticker}?modules=defaultKeyStatistics`)
+            .then((response) =>
             {
-                if (`${key}` === "raw") // I'm choosing "raw" instead of "fmt" because Harry's API requests give the raw number.
+                const data = response.data.quoteSummary.result[0].defaultKeyStatistics.floatShares;
+                let floatShares: number;
+                Object.entries(data).map(([key, value]: [string, string]) =>
                 {
-                    floatShares = parseInt(value);
-                }
-            });
+                    if (`${key}` === "raw") // I'm choosing "raw" instead of "fmt" because Harry's API requests give the raw number.
+                    {
+                        floatShares = parseInt(value);
+                    }
+                });
 
-            return floatShares;
-        })
-        .catch(function(error: any)
-        {
-            return Promise.reject(error);
-        });
+                return floatShares;
+            });
+    }
+    catch (err)
+    {
+        return Promise.reject(err);
+    }
 }
 
 export { getStockData, retrieveYahooData };

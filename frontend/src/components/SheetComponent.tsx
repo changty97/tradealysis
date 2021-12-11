@@ -179,34 +179,36 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                             {
                                 const todayData = await this.getTodayData(row.Ticker);
 
-								const todaysDate = new Date(Date.now());
+                                const todaysDate = new Date(Date.now());
 
-								const rowDate = (row['DOI'])? new Date((row['DOI']).replace(/-/g, '/')): undefined;
-								let rowDateIsTodaysDate = false;
-								if(todaysDate && rowDate) {
-									rowDateIsTodaysDate = (
-									(todaysDate.getMonth() === rowDate.getMonth()) &&
+                                const rowDate = (row['DOI']) ? new Date((row['DOI']).replace(/-/g, '/')) : undefined;
+                                let rowDateIsTodaysDate = false;
+                                if (todaysDate && rowDate)
+                                {
+                                    rowDateIsTodaysDate = (
+                                        (todaysDate.getMonth() === rowDate.getMonth()) &&
 									  (todaysDate.getDate() === rowDate.getDate()) &&
 									  (todaysDate.getFullYear() === rowDate.getFullYear()));
-								}
+                                }
 								
                                 if (todayData)
                                 {
-									if(!rowDateIsTodaysDate) {
-										Object.prototype.hasOwnProperty.call(todayData, 'Open');
-										if (Object.prototype.hasOwnProperty.call(todayData, 'Open'))
-										{
-											delete todayData.Open;
-										}
-										if (Object.prototype.hasOwnProperty.call(todayData, 'HOD'))
-										{
-											delete todayData.HOD;
-										}
-										if (Object.prototype.hasOwnProperty.call(todayData, 'VolDOI'))
-										{
-											delete todayData.VolDOI;
-										}
-									}
+                                    if (!rowDateIsTodaysDate)
+                                    {
+                                        Object.prototype.hasOwnProperty.call(todayData, 'Open');
+                                        if (Object.prototype.hasOwnProperty.call(todayData, 'Open'))
+                                        {
+                                            delete todayData.Open;
+                                        }
+                                        if (Object.prototype.hasOwnProperty.call(todayData, 'HOD'))
+                                        {
+                                            delete todayData.HOD;
+                                        }
+                                        if (Object.prototype.hasOwnProperty.call(todayData, 'VolDOI'))
+                                        {
+                                            delete todayData.VolDOI;
+                                        }
+                                    }
                                     this.setCells(todayData, cell);
                                 }
 
@@ -215,11 +217,12 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
 								    (alwaysGetPastData && row.DOI && this.isValidDate(row.DOI)))
                                 {
                                     const pastData = await this.getPastData(row.Ticker, row.DOI);
-									if(pastData) {
-										this.setCells(pastData, cell);
-									}
+                                    if (pastData)
+                                    {
+                                        this.setCells(pastData, cell);
+                                    }
                                 }
-								this.saveTable();
+                                this.saveTable();
                             }
                         }
                     }
