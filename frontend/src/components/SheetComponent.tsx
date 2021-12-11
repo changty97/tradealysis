@@ -44,7 +44,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
     }
 
     /** Loads items onto reports page **/
-    private async loadSheet(): Promise<void>
+    private loadSheet(): Promise<void>
     {
         const theKey = localStorage.getItem("Key");
 
@@ -54,7 +54,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                 coll: `${this.state.reportsId}`
             }
         })
-            .then(async(response: AxiosResponse<string[]>) =>
+            .then((response: AxiosResponse<string[]>) =>
             {
                 const allArrVals = []; const theArr = response.data;
                 if (theArr && theArr.length > 0)
