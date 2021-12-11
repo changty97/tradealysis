@@ -209,17 +209,6 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                     break;
                 }
             }
-            /**
-			TODO DONT TOUCH-------------------------------
-			useEffect(() => {
-									
-				setInterval(async () => {
-				console.log("Hello");
-				this.setCells(await this.getTodayData(row.Ticker), cell, true);
-				}, 2000);
-			}, []);
-			----------------------------------------
-			**/
         }
         // save table each time new data is fetched
         this.saveTable();
@@ -596,8 +585,8 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                 </Reports.BUTTON>
 				
 				
-                <Reports.BUTTON onClick={ () => this.updateSheetItems(false) }> RealTime</Reports.BUTTON>
-                <Reports.BUTTON onClick={ () => this.updateSheetItems(true) }> Historical</Reports.BUTTON>
+                <Reports.BUTTON onClick={ () => this.updateSheetItems(false) }> Refresh RealTime</Reports.BUTTON>
+                <Reports.BUTTON onClick={ () => this.updateSheetItems(true) }> Refresh Historical</Reports.BUTTON>
 				
                 <Reports.BUTTON onClick= {this.saveTable} style={{
                     backgroundColor: "#008CBA"
