@@ -43,7 +43,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
     }
 
     /** Loads items onto reports page **/
-    private async loadSheet(): Promise<void>
+    private loadSheet(): Promise<void>
     {
         const theKey = localStorage.getItem("Key");
 
@@ -53,7 +53,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                 coll: `${this.state.reportsId}`
             }
         })
-            .then(async(response: AxiosResponse<string[]>) =>
+            .then((response: AxiosResponse<string[]>) =>
             {
                 const allArrVals = []; const theArr = response.data;
                 if (theArr && theArr.length > 0)
@@ -109,7 +109,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                                     columnKey: this.state.tableProps.data[i]["Ticker"],
                                     rowKeyValue: i
                                 };
-                                await this.getTicker(cell);
+                                this.getTicker(cell);
 
                                 i = Object.getOwnPropertyDescriptor(this.state.tableProps.data[i + 1], 'id')!.value;
                             }
@@ -153,7 +153,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
         });
     }
 	
-    async getTicker(cell: any): Promise<void>
+    getTicker(cell: any): void
     {
         if (this.state.tableProps.data)
         {
@@ -172,7 +172,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                         {
                             if (`${key}` === 'Ticker' && `${value}` !== '')
                             {
-                                const todayData = await this.getTodayData(row.Ticker);
+                                const todayData = this.getTodayData(row.Ticker);
                                 delete todayData.Open;
                                 delete todayData.HOD;
                                 delete todayData.VolDOI;
@@ -180,7 +180,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                                 // fetch past data only if valid DOI is entered AND historical data has not yet been fetched
                                 if (row.DOI !== undefined && this.isValidDate(row.DOI) && row.PC === undefined)
                                 {
-                                    const pastData = await this.getPastData(row.Ticker, row.DOI);
+                                    const pastData = this.getPastData(row.Ticker, row.DOI);
                                     this.setCells(pastData, cell);
                                 }
                             }
