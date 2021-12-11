@@ -179,25 +179,26 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                             {
                                 const todayData = await this.getTodayData(row.Ticker);
                                 
-								if(todayData) {
-									if (todayData.hasOwnProperty('Open'))
-									{
-										delete todayData.Open;
-									}
-									if (todayData.hasOwnProperty('HOD'))
-									{
-										delete todayData.HOD;
-									}
-									if (todayData.hasOwnProperty('VolDOI'))
-									{
-										delete todayData.VolDOI;
-									}
-									
-									
-									this.setCells(todayData, cell);
-								}
+                                if (todayData)
+                                {
+                                    Object.prototype.hasOwnProperty.call(todayData, 'Open');
+                                    if (Object.prototype.hasOwnProperty.call(todayData, 'Open'))
+                                    {
+                                        delete todayData.Open;
+                                    }
+                                    if (Object.prototype.hasOwnProperty.call(todayData, 'HOD'))
+                                    {
+                                        delete todayData.HOD;
+                                    }
+                                    if (Object.prototype.hasOwnProperty.call(todayData, 'VolDOI'))
+                                    {
+                                        delete todayData.VolDOI;
+                                    }
+                                    this.setCells(todayData, cell);
+                                }
                                 // fetch past data only if valid DOI is entered AND historical data has not yet been fetched
-                                if ((row.DOI !== undefined && this.isValidDate(row.DOI) && row.PC === undefined) || alwaysGetPastData)
+                                if ((row.DOI !== undefined && this.isValidDate(row.DOI) && row.PC === undefined) ||
+								    (alwaysGetPastData && row.DOI && this.isValidDate(row.DOI)))
                                 {
                                     const pastData = await this.getPastData(row.Ticker, row.DOI);
                                     this.setCells(pastData, cell);
