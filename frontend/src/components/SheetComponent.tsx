@@ -35,7 +35,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
         this.generateNewId = this.generateNewId.bind(this);
         this.saveTable = this.saveTable.bind(this);
         this.deleteItemFromDB = this.deleteItemFromDB.bind(this);
-		this.updateSheetItems = this.updateSheetItems.bind(this);
+        this.updateSheetItems = this.updateSheetItems.bind(this);
     }
 	
     componentDidMount():void
@@ -127,7 +127,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                     await this.getTicker(cell, getPastData);
                     console.log(cell);
 								
-                    if (j + 1 < dataLen) // data[j+1] must be valie 
+                    if (j + 1 < dataLen) // data[j+1] must be valie
                     {
                         i = Object.getOwnPropertyDescriptor(this.state.tableProps.data[j + 1], 'id')!.value;
                     }
@@ -178,10 +178,24 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                             if (`${key}` === 'Ticker' && `${value}` !== '')
                             {
                                 const todayData = await this.getTodayData(row.Ticker);
-                                delete todayData.Open;
-                                delete todayData.HOD;
-                                delete todayData.VolDOI;
-                                this.setCells(todayData, cell);
+                                
+								if(todayData) {
+									if (todayData.hasOwnProperty('Open'))
+									{
+										delete todayData.Open;
+									}
+									if (todayData.hasOwnProperty('HOD'))
+									{
+										delete todayData.HOD;
+									}
+									if (todayData.hasOwnProperty('VolDOI'))
+									{
+										delete todayData.VolDOI;
+									}
+									
+									
+									this.setCells(todayData, cell);
+								}
                                 // fetch past data only if valid DOI is entered AND historical data has not yet been fetched
                                 if ((row.DOI !== undefined && this.isValidDate(row.DOI) && row.PC === undefined) || alwaysGetPastData)
                                 {
@@ -581,8 +595,8 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                 </Reports.BUTTON>
 				
 				
-				<Reports.BUTTON onClick={ () => this.updateSheetItems(false) }> RealTime</Reports.BUTTON>
-				<Reports.BUTTON onClick={ () => this.updateSheetItems(true) }> Historical</Reports.BUTTON>
+                <Reports.BUTTON onClick={ () => this.updateSheetItems(false) }> RealTime</Reports.BUTTON>
+                <Reports.BUTTON onClick={ () => this.updateSheetItems(true) }> Historical</Reports.BUTTON>
 				
                 <Reports.BUTTON onClick= {this.saveTable} style={{
                     backgroundColor: "#008CBA"
