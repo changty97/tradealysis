@@ -247,23 +247,56 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
 	
     async getTodayData(ticker: string): Promise<any>
     {
-        return await api.get(`/stockapi/${ticker}`)
-            .then((response) =>
-            {
-                console.log(`Success: Got current data for ${ticker}`);
-                return response.data;
-            }).catch((error) => console.error('Error', error));
+        try
+        {
+            return await api.get(`/stockapi/${ticker}`)
+                .then((response:AxiosResponse<any>) =>
+                {
+                    switch (response.status)
+                    {
+                    case 200:
+                        console.log(`Success: Got current data for ${ticker}`);
+                        return response.data;
+                    case 429:
+                        throw new Error("HTTPS 429: Max api requests for fetching historical data");
+                    case 404:
+                        throw new Error("HTTPS 404: Max api requests for fetching historical data");
+                    default:
+                        throw new Error(`HTTPS ${  response.status  } Error`);
+                    }
+                });
+        }
+        catch (err)
+        {
+            console.log(`Error Message:${  err}`);
+        }
     }
     
     async getPastData(ticker: string, date: string): Promise<any>
     {
-        return await api.get(`/stockapi/${ticker}/${date}`)
-            .then((response) =>
-            {
-                console.log(`Success: Got data for ${ticker} on ${date}`);
-                return response.data;
-            })
-            .catch((error)=> console.log('Error', error));
+        try
+        {
+            return await api.get(`/stockapi/${ticker}/${date}`)
+                .then((response:AxiosResponse<any>) =>
+                {
+                    switch (response.status)
+                    {
+                    case 200:
+                        console.log(`Success: Got data for ${ticker} on ${date}`);
+                        return response.data;
+                    case 429:
+                        throw new Error("HTTPS 429: Max api requests for fetching historical data");
+                    case 404:
+                        throw new Error("HTTPS 404: Max api requests for fetching historical data");
+                    default:
+                        throw new Error(`HTTPS ${  response.status  } Error`);
+                    }
+                });
+        }
+        catch (err)
+        {
+            console.log(`Error Message:${  err}`);
+        }
     }
 
     // check YYYY-MM-DD format
@@ -381,6 +414,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                 data: newTablePropsData
             }
         }));
+        this.saveTable();
     }
 
     childComponents: ChildComponents = {
@@ -579,6 +613,12 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
         const avgExit: number = parseFloat(this.state.tableProps.data![id]["Avg Exit"]);
         const PL: number = numShares * (avgExit - avgEntry);
 
+        console.log(`id ${  id}`);
+        console.log(`numShares ${  numShares}`);
+        console.log(`avgEntry ${  avgEntry}`);
+        console.log(`avgExit ${  avgExit}`);
+        console.log(`PL ${  PL}`);
+		
         if (numShares && avgEntry && avgExit)
         {
             this.setCells([{
@@ -604,8 +644,10 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
         const avgEntry: number = parseFloat(this.state.tableProps.data![id]["Avg Entry"]);
         PL = PL || parseFloat(this.state.tableProps.data![id]["P/L"]);
 
+        //console.log(PL + " " + parseFloat(this.state.tableProps.data![id]["P/L"]) + " " +  numShares + " " +  avgEntry + " " + id);
         if (PL && numShares && avgEntry)
         {
+            console.log(`Changed pl${  cell.rowKeyValue}`);
             this.setCells([{
                 change: {
                     "P/L %": PL / (numShares * avgEntry)
