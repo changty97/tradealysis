@@ -59,7 +59,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                 coll: `${this.state.reportsId}`
             }
         })
-            .then(async (response: AxiosResponse<string[]>) =>
+            .then(async(response: AxiosResponse<string[]>) =>
             {
                 const allArrVals = []; const theArr = response.data;
                 if (theArr && theArr.length > 0)
@@ -107,7 +107,10 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                     });
                 }
             }).catch((error) => console.error(error))
-            .finally(() => { this.setLoading(false); });
+            .finally(() =>
+            {
+                this.setLoading(false);
+            });
     }
 
     private async updateSheetItems(getPastData:boolean):Promise<void>
@@ -119,14 +122,15 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
 
             this.setLoading(true, "Updating stock data");
 
-            this.state.tableProps.data.forEach((row: any) => {
+            this.state.tableProps.data.forEach((row: any) =>
+            {
                 console.log("fetching...");
                 const cell = {
                     columnKey: row["Ticker"],
                     rowKeyValue: row["id"]
                 };
 
-                promises.push(this.getTicker(cell, getPastData))
+                promises.push(this.getTicker(cell, getPastData));
             });
 
             const changes = await Promise.all(promises);
@@ -164,7 +168,8 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
         if (this.state.tableProps.data)
         {
             const changes: any = {
-                change: {},
+                change: {
+                },
                 rowId: cell.rowKeyValue
             };
 
@@ -279,23 +284,45 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
         return d.toISOString().slice(0, 10) === doi;
     }
 
-    setCells(changes: any): void {
-        if (!this.state.tableProps.data || !changes?.length) {
+    setCells(changes: any): void
+    {
+        if (!this.state.tableProps.data || !changes?.length)
+        {
             return;
         }
 
         const newTablePropsData = [...this.state.tableProps.data];
         
-        console.log("Setting cells...")
+        console.log("Setting cells...");
 
-        changes.forEach((change: any) => {
+        changes.forEach((change: any) =>
+        {
             const id = newTablePropsData.findIndex((el: any) => el.id === change.rowId);
+            const translatedChange: any = {
+            };
 
-            if (!change.change || !~id) {
+            if (!change.change || !~id)
+            {
                 return;
             }
 
-            Object.assign(newTablePropsData[id], change.change);
+            Object.entries(change.change).forEach(([columnName, val]: [string, any]) =>
+            {
+                switch (columnName)
+                {
+                case "LongName": translatedChange["Name"] = val; break;
+                case "W52H": translatedChange["52-WH"] = val; break;
+                case "W52L": translatedChange["52-WL"] = val; break;
+                case "PremHigh": translatedChange["PreM High"] = val; break;
+                case "HODTime": translatedChange["HOD-Time"] = val; break;
+                case "LODTime": translatedChange["LOD-Time"] = val; break;
+                case "VolDOI": translatedChange["Vol-DOI"] = val; break;
+                case "VolPreM": translatedChange["Vol-PreM"] = val;  break;
+                default: translatedChange[columnName] = val; break;
+                }
+            });
+            
+            Object.assign(newTablePropsData[id], translatedChange);
 
             // populate calculated data
             // Float Rotation = Volume-DOI / Float
@@ -541,7 +568,8 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
 
     updatePL(cell: any)
     {
-        if (!this.state.tableProps.data) {
+        if (!this.state.tableProps.data)
+        {
             return;
         }
 
@@ -553,7 +581,12 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
 
         if (numShares && avgEntry && avgExit)
         {
-            this.setCells([{change: {"P/L": PL}, rowId: cell.rowKeyValue}]);
+            this.setCells([{
+                change: {
+                    "P/L": PL
+                },
+                rowId: cell.rowKeyValue
+            }]);
         }
 
         this.updatePLPerc(cell, PL);
@@ -561,7 +594,8 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
 
     updatePLPerc(cell: any, PL?: number)
     {
-        if (!this.state.tableProps.data) {
+        if (!this.state.tableProps.data)
+        {
             return;
         }
 
@@ -572,11 +606,17 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
 
         if (PL && numShares && avgEntry)
         {
-            this.setCells([{change: {"P/L %": PL / (numShares * avgEntry)}, rowId: cell.rowKeyValue}]);
+            this.setCells([{
+                change: {
+                    "P/L %": PL / (numShares * avgEntry)
+                },
+                rowId: cell.rowKeyValue
+            }]);
         }
     }
 
-    setLoading(isLoading: boolean, text?: string): void {
+    setLoading(isLoading: boolean, text?: string): void
+    {
         this.setState(prevState => ({
             tableProps: {
                 ...prevState.tableProps,
