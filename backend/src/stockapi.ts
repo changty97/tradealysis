@@ -75,6 +75,10 @@ async function getStockData(dateAndTicker: string): Promise<any>
     await axios(overviewurl)
         .then(AxiosResponse =>
         {
+            if (AxiosResponse.status !== 200)
+            {
+                throw new Error(`HTTPS ${  AxiosResponse.status}`);
+            }
             const query = AxiosResponse.data;
             Industry = query['Industry'];                  //Industry
             Exchange = query['Exchange'];                  //Exchange
@@ -89,6 +93,11 @@ async function getStockData(dateAndTicker: string): Promise<any>
         await axios(urlcurrent)
             .then(AxiosResponse =>
             {
+                if (AxiosResponse.status !== 200)
+                {
+                    throw new Error(`HTTPS ${  AxiosResponse.status}`);
+                }
+			
                 const query = AxiosResponse.data;
                 Price = query['c'];         //Current price
             });
@@ -111,6 +120,11 @@ async function getStockData(dateAndTicker: string): Promise<any>
         await axios(urlpremarket)
             .then(AxiosResponse =>
             {
+                if (AxiosResponse.status !== 200)
+                {
+                    throw new Error(`HTTPS ${  AxiosResponse.status}`);
+                }
+			
                 const query = AxiosResponse.data;
                 if (query.s == 'ok')
                 {
@@ -154,6 +168,10 @@ async function getStockData(dateAndTicker: string): Promise<any>
         await axios(urlvolDOI)
             .then(AxiosResponse =>
             {
+                if (AxiosResponse.status !== 200)
+                {
+                    throw new Error(`HTTPS ${  AxiosResponse.status}`);
+                }
                 const query = AxiosResponse.data;
                 if (query.s == 'ok')
                 {
@@ -188,6 +206,10 @@ async function getStockData(dateAndTicker: string): Promise<any>
         await axios(urlintraday)
             .then(AxiosResponse =>
             {
+                if (AxiosResponse.status !== 200)
+                {
+                    throw new Error(`HTTPS ${  AxiosResponse.status}`);
+                }
                 const query = AxiosResponse.data;
                 if (query.s == 'ok')
                 {
@@ -262,6 +284,10 @@ async function getStockData(dateAndTicker: string): Promise<any>
         await axios(urlafterhour)
             .then(AxiosResponse =>
             {
+                if (AxiosResponse.status !== 200)
+                {
+                    throw new Error(`HTTPS ${  AxiosResponse.status}`);
+                }
                 const query = AxiosResponse.data;
                 if (query.s == 'ok')
                 {
@@ -315,6 +341,10 @@ function retrieveYahooData(ticker: string): Promise<IStockData>
         return axios.get(`https://query1.finance.yahoo.com/v7/finance/quote?lang=en-US&region=US&corsDomain=finance.yahoo.com&symbols=${ticker}`)
             .then((response) =>
             {
+                if (response.status !== 200)
+                {
+                    throw new Error(`HTTPS ${  response.status}`);
+                }
                 const data = response.data.quoteResponse.result[0];
                 if (data)
                 {
@@ -378,6 +408,11 @@ function retrieveFloatYahooData(ticker: string): Promise<number>
         return axios.get(`https://query1.finance.yahoo.com/v10/finance/quoteSummary/${ticker}?modules=defaultKeyStatistics`)
             .then((response) =>
             {
+                if (response.status !== 200)
+                {
+                    throw new Error(`HTTPS ${  response.status}`);
+                }
+				
                 const data = response.data.quoteSummary.result[0].defaultKeyStatistics.floatShares;
                 let floatShares: number;
                 Object.entries(data).map(([key, value]: [string, string]) =>
