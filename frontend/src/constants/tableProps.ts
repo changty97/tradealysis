@@ -10,7 +10,7 @@ const columnTitles = ['DOI', 'P/L', 'P/L %', 'Broker', 'Position',
                       '52-WH', '52-WL', 'VolAvg', 'Outstanding', 
                       'Float', 'FloatR', 'FloatC', 'MC-Cat', 
                       'MC-Current', 'Vol-DOI', 'Vol-PreM', 'PC', 
-                      'PreM High', 'Open', 'HOD', 'LOD', '# Shares', 'Avg. Entry', 'Avg. Exit', 'Comments', ':delete'];
+                      'PreM High', 'Open', 'HOD', 'LOD', '# Shares', 'Avg Entry', 'Avg Exit', 'Comments', ':delete'];
 
 const columns: Column[] = Array(columnTitles.length).fill(undefined).map(
   (_, index) => ({
