@@ -47,7 +47,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
     }
 
     /** Loads items onto reports page **/
-    private async loadSheet(): Promise<void>
+    private loadSheet(): Promise<void>
     {
         const theKey = localStorage.getItem("Key");
 
