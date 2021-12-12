@@ -121,7 +121,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                 {
                     console.log("fetching...");
                     const cell = {
-                        columnKey: this.state.tableProps.data[i]["Ticker"],
+                        columnKey: this.state.tableProps.data[j]["Ticker"],
                         rowKeyValue: i
                     };
                     await this.getTicker(cell, getPastData);
