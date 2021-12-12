@@ -292,11 +292,8 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
             const id = newTablePropsData.findIndex((el: any) => el.id === change.rowId);
 
             if (!change.change || !~id) {
-                console.log("returned", change.change, id, change.rowId);
                 return;
             }
-
-            console.log(id, change.change)
 
             Object.assign(newTablePropsData[id], change.change);
 
@@ -556,7 +553,6 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
 
         if (numShares && avgEntry && avgExit)
         {
-            console.log("entered")
             this.setCells([{change: {"P/L": PL}, rowId: cell.rowKeyValue}]);
         }
 
