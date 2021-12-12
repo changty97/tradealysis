@@ -106,7 +106,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
             }).catch((error) => console.error(error));
     }
 
-    private async updateSheetItems(getPastData:boolean):Promise<void>
+    private updateSheetItems(getPastData:boolean):void
     {
         // fetch data for each loaded row
         console.log("bEFORE IF LOOP");
@@ -126,7 +126,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                         columnKey: this.state.tableProps.data[i]["Ticker"],
                         rowKeyValue: i
                     };
-                    await this.getTicker(cell, getPastData);
+                    this.getTicker(cell, getPastData);
                     console.log(cell);
 								
                     if (j + 1 < dataLen) // data[j+1] must be valie
@@ -160,7 +160,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
         }).catch((error)=> console.log('Error', error) );
     }
 	
-    async getTicker(cell: any, alwaysGetPastData: boolean): Promise<void>
+    getTicker(cell: any, alwaysGetPastData: boolean): void
     {
         if (this.state.tableProps.data)
         {
@@ -179,7 +179,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                         {
                             if (`${key}` === 'Ticker' && `${value}` !== '')
                             {
-                                const todayData = await this.getTodayData(row.Ticker);
+                                const todayData = this.getTodayData(row.Ticker);
 
                                 const todaysDate = new Date(Date.now());
 
@@ -218,7 +218,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                                 if ((row.DOI !== undefined && this.isValidDate(row.DOI) && row.PC === undefined) ||
 								    (alwaysGetPastData && row.DOI && this.isValidDate(row.DOI)))
                                 {
-                                    const pastData = await this.getPastData(row.Ticker, row.DOI);
+                                    const pastData = this.getPastData(row.Ticker, row.DOI);
                                     if (pastData)
                                     {
                                         this.setCells(pastData, cell);
@@ -300,7 +300,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                                     switch (key)
                                     {
                                     case "LongName": i["Name"] = val; break;
-                                    case "Price": i["Price"] = val; break;                               
+                                    case "Price": i["Price"] = val; break;
                                     case "P/L %": i["P/L %"] = val; break;
                                     case "P/L": i["P/L"] = val; break;
                                     case "W52H": i["52-WH"] = val; break;
@@ -571,16 +571,18 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
             });
     }
 
-    updatePL(cell: any) {
+    updatePL(cell: any)
+    {
         const numShares: number = parseInt(this.state.tableProps.data![cell.rowKeyValue]["# Shares"]);
         const avgEntry: number = parseFloat(this.state.tableProps.data![cell.rowKeyValue]["Avg Entry"]);
         const avgExit: number = parseFloat(this.state.tableProps.data![cell.rowKeyValue]["Avg Exit"]);
         const PL: number = numShares * (avgExit - avgEntry);
 
-        console.log(numShares, avgEntry, avgExit)
+        console.log(numShares, avgEntry, avgExit);
 
-        if (numShares && avgEntry && avgExit) {
-            console.log("hello")
+        if (numShares && avgEntry && avgExit)
+        {
+            console.log("hello");
             this.setCells({
                 "P/L": PL
             }, cell);
@@ -684,7 +686,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
 
                 break;
             case "Ticker":
-                this.getTicker(cell);
+                this.getTicker(cell, false);
 
                 break;
             case "P/L":
