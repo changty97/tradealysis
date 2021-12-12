@@ -35,6 +35,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
         this.generateNewId = this.generateNewId.bind(this);
         this.saveTable = this.saveTable.bind(this);
         this.deleteItemFromDB = this.deleteItemFromDB.bind(this);
+        this.updateSheetItems = this.updateSheetItems.bind(this);
     }
 	
     componentDidMount():void
@@ -92,29 +93,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                     this.dispatch(updateData(allArrVals));
                     this.dispatch(hideLoading());
 
-                    // fetch data for each loaded row
-                    console.log("bEFORE IF LOOP");
-                    console.log(this.state.tableProps.data);
-                    if (this.state.tableProps.data)
-                    {
-                        const dataLen = this.state.tableProps.data.length;
-                        if (dataLen > 0)
-                        {
-                            const lastItemsID = Object.getOwnPropertyDescriptor(this.state.tableProps.data[dataLen - 1], 'id')!.value;
-                            const theVal = Object.getOwnPropertyDescriptor(this.state.tableProps.data[0], 'id')!.value;
-                            for (let i = theVal; i < lastItemsID!;)
-                            {
-                                console.log("fetching...");
-                                const cell = {
-                                    columnKey: this.state.tableProps.data[i]["Ticker"],
-                                    rowKeyValue: i
-                                };
-                                await this.getTicker(cell);
-
-                                i = Object.getOwnPropertyDescriptor(this.state.tableProps.data[i + 1], 'id')!.value;
-                            }
-                        }
-                    }
+                    this.updateSheetItems(false);
                 }
                 else
                 {
@@ -122,12 +101,41 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                         lastRowId: -1
                     });
                 }
-            }).catch((error) =>
-            {
-                console.error(error);
-            });
+            }).catch((error) => console.error(error));
     }
 
+    private async updateSheetItems(getPastData:boolean):Promise<void>
+    {
+        // fetch data for each loaded row
+        console.log("bEFORE IF LOOP");
+        console.log(this.state.tableProps.data);
+        if (this.state.tableProps.data)
+        {
+            const dataLen = this.state.tableProps.data.length;
+            if (dataLen > 0)
+            {
+                const lastItemsID = Object.getOwnPropertyDescriptor(this.state.tableProps.data[dataLen - 1], 'id')!.value;
+                for (let i = Object.getOwnPropertyDescriptor(this.state.tableProps.data[0], 'id')!.value, j = 0;
+							     i <= lastItemsID! && j < dataLen;
+								 j++)
+                {
+                    console.log("fetching...");
+                    const cell = {
+                        columnKey: this.state.tableProps.data[i]["Ticker"],
+                        rowKeyValue: i
+                    };
+                    await this.getTicker(cell, getPastData);
+                    console.log(cell);
+								
+                    if (j + 1 < dataLen) // data[j+1] must be valie
+                    {
+                        i = Object.getOwnPropertyDescriptor(this.state.tableProps.data[j + 1], 'id')!.value;
+                    }
+                }
+            }
+        }
+    }
+	
     private generateNewId(): number
     {
         const newRowId: number = this.state.lastRowId + 1;
@@ -147,13 +155,10 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                 key: theKey,
                 coll: `${this.state.reportsId}`
             }
-        }).catch((error)=>
-        {
-            console.log('Error', error);
-        });
+        }).catch((error)=> console.log('Error', error) );
     }
 	
-    async getTicker(cell: any): Promise<void>
+    async getTicker(cell: any, alwaysGetPastData: boolean): Promise<void>
     {
         if (this.state.tableProps.data)
         {
@@ -173,36 +178,58 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                             if (`${key}` === 'Ticker' && `${value}` !== '')
                             {
                                 const todayData = await this.getTodayData(row.Ticker);
-                                delete todayData.Open;
-                                delete todayData.HOD;
-                                delete todayData.VolDOI;
-                                this.setCells(todayData, cell);
+
+                                const todaysDate = new Date(Date.now());
+
+                                const rowDate = (row['DOI']) ? new Date((row['DOI']).replace(/-/g, '/')) : undefined;
+                                let rowDateIsTodaysDate = false;
+                                if (todaysDate && rowDate)
+                                {
+                                    rowDateIsTodaysDate = (
+                                        (todaysDate.getMonth() === rowDate.getMonth()) &&
+									  (todaysDate.getDate() === rowDate.getDate()) &&
+									  (todaysDate.getFullYear() === rowDate.getFullYear()));
+                                }
+								
+                                if (todayData)
+                                {
+                                    if (!rowDateIsTodaysDate)
+                                    {
+                                        Object.prototype.hasOwnProperty.call(todayData, 'Open');
+                                        if (Object.prototype.hasOwnProperty.call(todayData, 'Open'))
+                                        {
+                                            delete todayData.Open;
+                                        }
+                                        if (Object.prototype.hasOwnProperty.call(todayData, 'HOD'))
+                                        {
+                                            delete todayData.HOD;
+                                        }
+                                        if (Object.prototype.hasOwnProperty.call(todayData, 'VolDOI'))
+                                        {
+                                            delete todayData.VolDOI;
+                                        }
+                                    }
+                                    this.setCells(todayData, cell);
+                                }
+
                                 // fetch past data only if valid DOI is entered AND historical data has not yet been fetched
-                                if (row.DOI !== undefined && this.isValidDate(row.DOI) && row.PC === undefined)
+                                if ((row.DOI !== undefined && this.isValidDate(row.DOI) && row.PC === undefined) ||
+								    (alwaysGetPastData && row.DOI && this.isValidDate(row.DOI)))
                                 {
                                     const pastData = await this.getPastData(row.Ticker, row.DOI);
-                                    this.setCells(pastData, cell);
+                                    if (pastData)
+                                    {
+                                        this.setCells(pastData, cell);
+                                    }
                                 }
+                                this.saveTable();
                             }
                         }
                     }
                     break;
                 }
             }
-            /**
-			TODO DONT TOUCH-------------------------------
-			useEffect(() => {
-									
-				setInterval(async () => {
-				console.log("Hello");
-				this.setCells(await this.getTodayData(row.Ticker), cell, true);
-				}, 2000);
-			}, []);
-			----------------------------------------
-			**/
         }
-        // save table each time new data is fetched
-        this.saveTable();
     }
 	
     getTodayData(ticker: string): any
@@ -574,6 +601,11 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                     }} >
                     New Row
                 </Reports.BUTTON>
+				
+				
+                <Reports.BUTTON onClick={ () => this.updateSheetItems(false) }> Refresh RealTime</Reports.BUTTON>
+                <Reports.BUTTON onClick={ () => this.updateSheetItems(true) }> Refresh Historical</Reports.BUTTON>
+				
                 <Reports.BUTTON onClick= {this.saveTable} style={{
                     backgroundColor: "#008CBA"
                 }}>Save Table </Reports.BUTTON>
@@ -610,15 +642,15 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
             {
 					
             case "Ticker":
-                this.getTicker(cell);
+                this.getTicker(cell, false);
                 break;
             case "DOI":
                 if (this.state.tableProps.data[action.rowKeyValue]["Ticker"])
                 {
-                    this.getTicker(cell);
+                    this.getTicker(cell, false);
                 }
                 break;
-/**
+                /**
             case "P/L":
                 // const PLPerc: number = PL / (stocksInfo[symbol].sell.totalStocks * avgEntryPrice);
                 //(100 * PLPerc).toFixed(2),
