@@ -38,6 +38,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
         this.updatePL = this.updatePL.bind(this);
         this.updatePLPerc = this.updatePLPerc.bind(this);
         this.updateSheetItems = this.updateSheetItems.bind(this);
+        this.setLoading = this.setLoading.bind(this);
     }
 	
     componentDidMount():void
@@ -49,6 +50,8 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
     private async loadSheet(): Promise<void>
     {
         const theKey = localStorage.getItem("Key");
+
+        this.setLoading(true, "Loading data");
 
         return api.get("/stockdataGet", {
             params: {
@@ -103,7 +106,8 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                         lastRowId: -1
                     });
                 }
-            }).catch((error) => console.error(error));
+            }).catch((error) => console.error(error))
+            .finally(() => { this.setLoading(false); });
     }
 
     private async updateSheetItems(getPastData:boolean):Promise<void>
@@ -112,6 +116,8 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
         if (this.state.tableProps.data)
         {
             const promises: any = [];
+
+            this.setLoading(true, "Updating stock data");
 
             this.state.tableProps.data.forEach((row: any) => {
                 console.log("fetching...");
@@ -123,7 +129,9 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                 promises.push(this.getTicker(cell, getPastData))
             });
 
-            const changes = await Promise.all(promises)
+            const changes = await Promise.all(promises);
+
+            this.setLoading(false);
 
             this.setCells(changes);
         }
@@ -208,7 +216,6 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                                         }
                                     }
                                     Object.assign(changes.change, todayData);
-                                    //this.setCells(todayData, cell);
                                 }
 
                                 // fetch past data only if valid DOI is entered AND historical data has not yet been fetched
@@ -219,7 +226,6 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                                     if (pastData)
                                     {
                                         Object.assign(changes.change, pastData);
-                                        //this.setCells(pastData, cell);
                                     }
                                 }
                                 //this.saveTable();
@@ -538,9 +544,14 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
 
     updatePL(cell: any)
     {
-        const numShares: number = parseInt(this.state.tableProps.data![cell.rowKeyValue]["# Shares"]);
-        const avgEntry: number = parseFloat(this.state.tableProps.data![cell.rowKeyValue]["Avg Entry"]);
-        const avgExit: number = parseFloat(this.state.tableProps.data![cell.rowKeyValue]["Avg Exit"]);
+        if (!this.state.tableProps.data) {
+            return;
+        }
+
+        const id = this.state.tableProps.data.findIndex((el: any) => el.id === cell.rowKeyValue);
+        const numShares: number = parseInt(this.state.tableProps.data![id]["# Shares"]);
+        const avgEntry: number = parseFloat(this.state.tableProps.data![id]["Avg Entry"]);
+        const avgExit: number = parseFloat(this.state.tableProps.data![id]["Avg Exit"]);
         const PL: number = numShares * (avgExit - avgEntry);
 
         if (numShares && avgEntry && avgExit)
@@ -554,14 +565,31 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
 
     updatePLPerc(cell: any, PL?: number)
     {
-        const numShares: number = parseInt(this.state.tableProps.data![cell.rowKeyValue]["# Shares"]);
-        const avgEntry: number = parseFloat(this.state.tableProps.data![cell.rowKeyValue]["Avg Entry"]);
-        PL = PL || parseFloat(this.state.tableProps.data![cell.rowKeyValue]["P/L"]);
+        if (!this.state.tableProps.data) {
+            return;
+        }
+
+        const id = this.state.tableProps.data.findIndex((el: any) => el.id === cell.rowKeyValue);
+        const numShares: number = parseInt(this.state.tableProps.data![id]["# Shares"]);
+        const avgEntry: number = parseFloat(this.state.tableProps.data![id]["Avg Entry"]);
+        PL = PL || parseFloat(this.state.tableProps.data![id]["P/L"]);
 
         if (PL && numShares && avgEntry)
         {
             this.setCells([{change: {"P/L %": PL / (numShares * avgEntry)}, rowId: cell.rowKeyValue}]);
         }
+    }
+
+    setLoading(isLoading: boolean, text?: string): void {
+        this.setState(prevState => ({
+            tableProps: {
+                ...prevState.tableProps,
+                loading: {
+                    enabled: isLoading,
+                    text
+                }
+            }
+        }));
     }
 	
     public render() : JSX.Element
@@ -619,7 +647,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
         );
     }
 
-    private dispatch(action: any)
+    private async dispatch(action: any)
     {
         this.setState((prevState) => ({
             ...prevState,
@@ -640,12 +668,12 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
             case "DOI":
                 if (this.state.tableProps.data[action.rowKeyValue]["Ticker"])
                 {
-                    this.getTicker(cell, false);
+                    this.setCells([await this.getTicker(cell, false)]);
                 }
 
                 break;
             case "Ticker":
-                this.getTicker(cell, false);
+                this.setCells([await this.getTicker(cell, false)]);
 
                 break;
             case "P/L":
