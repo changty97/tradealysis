@@ -46,7 +46,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
     }
 
     /** Loads items onto reports page **/
-    private loadSheet(): Promise<void>
+    private async loadSheet(): Promise<void>
     {
         const theKey = localStorage.getItem("Key");
 
@@ -56,7 +56,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                 coll: `${this.state.reportsId}`
             }
         })
-            .then((response: AxiosResponse<string[]>) =>
+            .then(async (response: AxiosResponse<string[]>) =>
             {
                 const allArrVals = []; const theArr = response.data;
                 if (theArr && theArr.length > 0)
@@ -95,7 +95,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                     this.dispatch(updateData(allArrVals));
                     this.dispatch(hideLoading());
 
-                    this.updateSheetItems(false);
+                    await this.updateSheetItems(false);
                 }
                 else
                 {
@@ -106,35 +106,26 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
             }).catch((error) => console.error(error));
     }
 
-    private updateSheetItems(getPastData:boolean):void
+    private async updateSheetItems(getPastData:boolean):Promise<void>
     {
         // fetch data for each loaded row
-        console.log("bEFORE IF LOOP");
-        console.log(this.state.tableProps.data);
         if (this.state.tableProps.data)
         {
-            const dataLen = this.state.tableProps.data.length;
-            if (dataLen > 0)
-            {
-                const lastItemsID = Object.getOwnPropertyDescriptor(this.state.tableProps.data[dataLen - 1], 'id')!.value;
-                for (let i = Object.getOwnPropertyDescriptor(this.state.tableProps.data[0], 'id')!.value, j = 0;
-							     i <= lastItemsID! && j < dataLen;
-								 j++)
-                {
-                    console.log("fetching...");
-                    const cell = {
-                        columnKey: this.state.tableProps.data[i]["Ticker"],
-                        rowKeyValue: i
-                    };
-                    this.getTicker(cell, getPastData);
-                    console.log(cell);
-								
-                    if (j + 1 < dataLen) // data[j+1] must be valie
-                    {
-                        i = Object.getOwnPropertyDescriptor(this.state.tableProps.data[j + 1], 'id')!.value;
-                    }
-                }
-            }
+            const promises: any = [];
+
+            this.state.tableProps.data.forEach((row: any) => {
+                console.log("fetching...");
+                const cell = {
+                    columnKey: row["Ticker"],
+                    rowKeyValue: row["id"]
+                };
+
+                promises.push(this.getTicker(cell, getPastData))
+            });
+
+            const changes = await Promise.all(promises)
+
+            this.setCells(changes);
         }
     }
 	
@@ -160,10 +151,15 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
         }).catch((error)=> console.log('Error', error) );
     }
 	
-    getTicker(cell: any, alwaysGetPastData: boolean): void
+    async getTicker(cell: any, alwaysGetPastData: boolean): Promise<any>
     {
         if (this.state.tableProps.data)
         {
+            const changes: any = {
+                change: {},
+                rowId: cell.rowKeyValue
+            };
+
             let idx = -1;
             for (let i = this.state.tableProps.data.length - 1; i >= 0; i--)
             {
@@ -179,7 +175,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                         {
                             if (`${key}` === 'Ticker' && `${value}` !== '')
                             {
-                                const todayData = this.getTodayData(row.Ticker);
+                                const todayData = await this.getTodayData(row.Ticker);
 
                                 const todaysDate = new Date(Date.now());
 
@@ -211,32 +207,36 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                                             delete todayData.VolDOI;
                                         }
                                     }
-                                    this.setCells(todayData, cell);
+                                    Object.assign(changes.change, todayData);
+                                    //this.setCells(todayData, cell);
                                 }
 
                                 // fetch past data only if valid DOI is entered AND historical data has not yet been fetched
                                 if ((row.DOI !== undefined && this.isValidDate(row.DOI) && row.PC === undefined) ||
 								    (alwaysGetPastData && row.DOI && this.isValidDate(row.DOI)))
                                 {
-                                    const pastData = this.getPastData(row.Ticker, row.DOI);
+                                    const pastData = await this.getPastData(row.Ticker, row.DOI);
                                     if (pastData)
                                     {
-                                        this.setCells(pastData, cell);
+                                        Object.assign(changes.change, pastData);
+                                        //this.setCells(pastData, cell);
                                     }
                                 }
-                                this.saveTable();
+                                //this.saveTable();
                             }
                         }
                     }
                     break;
                 }
             }
+
+            return changes;
         }
     }
 	
-    getTodayData(ticker: string): any
+    async getTodayData(ticker: string): Promise<any>
     {
-        return api.get(`/stockapi/${ticker}`)
+        return await api.get(`/stockapi/${ticker}`)
             .then((response) =>
             {
                 console.log(`Success: Got current data for ${ticker}`);
@@ -244,9 +244,9 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
             }).catch((error) => console.error('Error', error));
     }
     
-    getPastData(ticker: string, date: string): any
+    async getPastData(ticker: string, date: string): Promise<any>
     {
-        return api.get(`/stockapi/${ticker}/${date}`)
+        return await api.get(`/stockapi/${ticker}/${date}`)
             .then((response) =>
             {
                 console.log(`Success: Got data for ${ticker} on ${date}`);
@@ -273,119 +273,84 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
         return d.toISOString().slice(0, 10) === doi;
     }
 
-    setCells(data: any, cell: any): void
-    {
-        Promise.resolve(data).then((_value) =>
-        {
-            if (this.state.tableProps.data && _value)
-            {
-				
-                let idx = -1;
-                for (let crkv = this.state.tableProps.data.length - 1; crkv >= 0; crkv--)
-                {
-                    const descriptor1 = Object.getOwnPropertyDescriptor(this.state.tableProps.data[crkv], 'id');
-                    if (descriptor1 && descriptor1.value === cell.rowKeyValue)
-                    {
-                        idx = Number(crkv);
-						
-                        const theObj = this.state.tableProps.data[idx];
-                        for (const [k, v] of Object.entries(theObj))
-                        {
-                            const i = theObj;
-                            if (`${k}` === 'Ticker' && `${v}` !== '')
-                            {
-                                for (const [key, val] of Object.entries(_value)) // check each alpha vantage object property
-                                {
-									
-                                    switch (key)
-                                    {
-                                    case "LongName": i["Name"] = val; break;
-                                    case "Price": i["Price"] = val; break;
-                                    case "P/L %": i["P/L %"] = val; break;
-                                    case "P/L": i["P/L"] = val; break;
-                                    case "W52H": i["52-WH"] = val; break;
-                                    case "W52L": i["52-WL"] = val; break;
-                                    case "VolAvg": i["VolAvg"] = val; break;
-                                    case "Outstanding": i.Outstanding = val; break;
-                                    case "Float": i.Float = val; break;
-                                    case "Industry": i.Industry = val; break;
-                                    case "PC": i.PC = val; break;
-                                    case "PremHigh": i["PreM High"] = val; break;
-                                    case "Open":  i["Open"] = val; break;
-                                    case "HOD": i["HOD"] = val; break;
-                                    case "HODTime": i["HOD-Time"] = val; break;
-                                    case "LOD": i["LOD"] = val;  break;
-                                    case "LODTime": i["LOD-Time"] = val; break;
-                                    case "Close": i["Close"] = val;  break;
-                                    case "AH": i["AH"] = val; break;
-                                    case "VolDOI": i["Vol-DOI"] = val; break;
-                                    case "VolPreM": i["Vol-PreM"] = val;  break;
-                                    default: break;
-                                    }
-                                }
-                            }
-                            // populate calculated data
-                            // Float Rotation = Volume-DOI / Float
-                            i["FloatR"] = parseFloat((i["Vol-DOI"] / i["Float"]).toFixed(4));
-                            // Float Category is defined by size of float
-                            if ( i.Float > 0 && i.Float <= 1000000)
-                            {
-                                i["FloatC"] = "NANO";
-                            }
-                            else if ( i.Float > 1000000 && i.Float <= 2000000)
-                            {
-                                i["FloatC"] = "MICRO";
-                            }
-                            else if ( i.Float > 2000000 && i.Float <= 10000000)
-                            {
-                                i["FloatC"] = "LOW";
-                            }
-                            else if ( i.Float > 10000000 && i.Float <= 20000000)
-                            {
-                                i["FloatC"] = "MEDIUM";
-                            }
-                            else if ( i.Float > 20000000)
-                            {
-                                i["FloatC"] = "HIGH";
-                            }
-                            // MarketCap = price * outstanding
-                            // to display value in millions:
-                            // ((Math.round(x/100000)*100000) /1000000)
-                            i["MC-Current"] = (Math.round((i["Price"] * i["Outstanding"]) / 100000) * 100000) / 1000000;
-                            // MarketCap Category (in millions)
-                            if ( i["MC-Current"] <= 50)
-                            {
-                                i["MC-Cat"] = "NANO";
-                            }
-                            else if ( i["MC-Current"] > 50 && i["MC-Current"] <= 300)
-                            {
-                                i["MC-Cat"] = "MICRO";
-                            }
-                            else if ( i["MC-Current"] > 300 && i["MC-Current"] <= 20000)
-                            {
-                                i["MC-Cat"] = "SMALL";
-                            }
-                            else if ( i["MC-Current"] > 20000 && i["MC-Current"] <= 100000)
-                            {
-                                i["MC-Cat"] = "MID";
-                            }
-                            else if ( i["MC-Current"] > 100000)
-                            {
-                                i["MC-Cat"] = "LARGE";
-                            }
+    setCells(changes: any): void {
+        if (!this.state.tableProps.data || !changes?.length) {
+            return;
+        }
 
-                            this.setState((prevState) => ({
-                                tableProps: {
-                                    ...prevState.tableProps,
-                                    data: this.state.tableProps.data
-                                }
-                            }));
-                        }
-                        break;
-                    }
-                }
+        const newTablePropsData = [...this.state.tableProps.data];
+        
+        console.log("Setting cells...")
+
+        changes.forEach((change: any) => {
+            const id = newTablePropsData.findIndex((el: any) => el.id === change.rowId);
+
+            if (!change.change || !~id) {
+                console.log("returned", change.change, id, change.rowId);
+                return;
+            }
+
+            console.log(id, change.change)
+
+            Object.assign(newTablePropsData[id], change.change);
+
+            // populate calculated data
+            // Float Rotation = Volume-DOI / Float
+            newTablePropsData[id]["FloatR"] = parseFloat((newTablePropsData[id]["Vol-DOI"] / newTablePropsData[id]["Float"]).toFixed(4));
+            // Float Category is defined by size of float
+            if ( newTablePropsData[id].Float > 0 && newTablePropsData[id].Float <= 1000000)
+            {
+                newTablePropsData[id]["FloatC"] = "NANO";
+            }
+            else if ( newTablePropsData[id].Float > 1000000 && newTablePropsData[id].Float <= 2000000)
+            {
+                newTablePropsData[id]["FloatC"] = "MICRO";
+            }
+            else if ( newTablePropsData[id].Float > 2000000 && newTablePropsData[id].Float <= 10000000)
+            {
+                newTablePropsData[id]["FloatC"] = "LOW";
+            }
+            else if ( newTablePropsData[id].Float > 10000000 && newTablePropsData[id].Float <= 20000000)
+            {
+                newTablePropsData[id]["FloatC"] = "MEDIUM";
+            }
+            else if ( newTablePropsData[id].Float > 20000000)
+            {
+                newTablePropsData[id]["FloatC"] = "HIGH";
+            }
+            // MarketCap = price * outstanding
+            // to display value in millions:
+            // ((Math.round(x/100000)*100000) /1000000)
+            newTablePropsData[id]["MC-Current"] = (Math.round((newTablePropsData[id]["Price"] * newTablePropsData[id]["Outstanding"]) / 100000) * 100000) / 1000000;
+            // MarketCap Category (in millions)
+            if ( newTablePropsData[id]["MC-Current"] <= 50)
+            {
+                newTablePropsData[id]["MC-Cat"] = "NANO";
+            }
+            else if ( newTablePropsData[id]["MC-Current"] > 50 && newTablePropsData[id]["MC-Current"] <= 300)
+            {
+                newTablePropsData[id]["MC-Cat"] = "MICRO";
+            }
+            else if ( newTablePropsData[id]["MC-Current"] > 300 && newTablePropsData[id]["MC-Current"] <= 20000)
+            {
+                newTablePropsData[id]["MC-Cat"] = "SMALL";
+            }
+            else if ( newTablePropsData[id]["MC-Current"] > 20000 && newTablePropsData[id]["MC-Current"] <= 100000)
+            {
+                newTablePropsData[id]["MC-Cat"] = "MID";
+            }
+            else if ( newTablePropsData[id]["MC-Current"] > 100000)
+            {
+                newTablePropsData[id]["MC-Cat"] = "LARGE";
             }
         });
+
+        this.setState(prevState => ({
+            tableProps: {
+                ...prevState.tableProps,
+                data: newTablePropsData
+            }
+        }));
     }
 
     childComponents: ChildComponents = {
@@ -578,14 +543,10 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
         const avgExit: number = parseFloat(this.state.tableProps.data![cell.rowKeyValue]["Avg Exit"]);
         const PL: number = numShares * (avgExit - avgEntry);
 
-        console.log(numShares, avgEntry, avgExit);
-
         if (numShares && avgEntry && avgExit)
         {
-            console.log("hello");
-            this.setCells({
-                "P/L": PL
-            }, cell);
+            console.log("entered")
+            this.setCells([{change: {"P/L": PL}, rowId: cell.rowKeyValue}]);
         }
 
         this.updatePLPerc(cell, PL);
@@ -599,9 +560,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
 
         if (PL && numShares && avgEntry)
         {
-            this.setCells({
-                "P/L %": PL / (numShares * avgEntry)
-            }, cell);
+            this.setCells([{change: {"P/L %": PL / (numShares * avgEntry)}, rowId: cell.rowKeyValue}]);
         }
     }
 	
