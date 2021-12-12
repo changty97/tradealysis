@@ -12,6 +12,12 @@ class Reports extends Component
 		border-color: #c1c1c1;
 		border-style: solid;
 		border-width: thin;
+
+		& .ka-cell-text{
+			white-space: nowrap;
+    		overflow: hidden;
+    		text-overflow: ellipsis;
+		}
 	`;
 	public static readonly BUTTON = sty.button `
 		text-decoration: none;
