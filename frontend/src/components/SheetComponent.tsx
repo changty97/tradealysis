@@ -645,7 +645,9 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                 this.getTicker(cell, false);
                 break;
             case "DOI":
-                if (this.state.tableProps.data[action.rowKeyValue]["Ticker"])
+                console.log("DOI VAL");
+                //console.log(this.state.tableProps.data[action.rowKeyValue]);
+                if (this.state.tableProps.data[action.rowKeyValue] && this.state.tableProps.data[action.rowKeyValue]["Ticker"])
                 {
                     this.getTicker(cell, false);
                 }
