@@ -171,20 +171,20 @@
 						}
 					}
 				},
-				"description": "",
+				"description": "Used to Parse a CSV File",
 				"consumes": [
 					"multipart/form-data"
 				],
 				"parameters": [
 					{
-						"description": "",
+						"description": ": filename to parse into a reports session",
 						"in": "formData",
 						"name": "sourceName",
 						"required": true,
 						"type": "string"
 					},
 					{
-						"description": "",
+						"description": ": File Object",
 						"in": "formData",
 						"name": "file",
 						"required": true,
@@ -213,7 +213,7 @@
 						}
 					}
 				},
-				"description": "",
+				"description": "Retrieve Stock Data Now",
 				"parameters": [
 					{
 						"description": "",
@@ -245,7 +245,7 @@
 						}
 					}
 				},
-				"description": "",
+				"description": "Retrieve Stock Data Historical Data",
 				"parameters": [
 					{
 						"description": "",
@@ -255,7 +255,7 @@
 						"type": "string"
 					},
 					{
-						"description": "",
+						"description": ": Current Date in format YYYY-MM-DD",
 						"in": "path",
 						"name": "date",
 						"required": true,
@@ -284,13 +284,13 @@
 						}
 					}
 				},
-				"description": "",
+				"description": "Used in Program to Determine if someone is logged in by returning ObjectId toString value of user",
 				"consumes": [
 					"application/json"
 				],
 				"parameters": [
 					{
-						"description": "",
+						"description": "containing attribute theData. the data contains attributes",
 						"in": "body",
 						"name": "body",
 						"required": true,
@@ -321,10 +321,10 @@
 						}
 					}
 				},
-				"description": "Get a username from a key in browser local storage\r\n   If the key does not match with a user, nothing is returned\r\n   else the user's username is returned",
+				"description": "Get username from a key stored in browser local storage\r\n   If the key does not match with a user, nothing is returned\r\n   else the user's username is returned",
 				"parameters": [
 					{
-						"description": "",
+						"description": ": encrypted key stored in browser local storage",
 						"in": "query",
 						"name": "key",
 						"required": true,
@@ -359,7 +359,7 @@
 				],
 				"parameters": [
 					{
-						"description": "",
+						"description": ": js object containing FE_KEY, username, password, fName, lName, email, phohe, bdate",
 						"in": "body",
 						"name": "body",
 						"required": true,
@@ -390,17 +390,17 @@
 						}
 					}
 				},
-				"description": "",
+				"description": "Get All Encrypted Personal Account Information Stored in Account Settings",
 				"parameters": [
 					{
-						"description": "",
+						"description": ": AES Key For Front End",
 						"in": "query",
 						"name": "FE_KEY",
 						"required": true,
 						"type": "string"
 					},
 					{
-						"description": "",
+						"description": ": encrypted key for user using application",
 						"in": "query",
 						"name": "key",
 						"required": true,
@@ -429,17 +429,17 @@
 						}
 					}
 				},
-				"description": "For Account Settings. Sees if @param account is the same name as uname associated with @param key *",
+				"description": "",
 				"parameters": [
 					{
-						"description": "",
+						"description": ": user key",
 						"in": "query",
 						"name": "key",
 						"required": true,
 						"type": "string"
 					},
 					{
-						"description": "",
+						"description": ": user Account Name",
 						"in": "query",
 						"name": "account",
 						"required": true,
@@ -468,10 +468,10 @@
 						}
 					}
 				},
-				"description": "",
+				"description": "See if an account with @param newAccountName already exists",
 				"parameters": [
 					{
-						"description": "",
+						"description": ": Possible new Account",
 						"in": "query",
 						"name": "newAccountName",
 						"required": true,
@@ -497,17 +497,17 @@
 						}
 					}
 				},
-				"description": "",
+				"description": "Change an account name",
 				"parameters": [
 					{
-						"description": "",
+						"description": ": key stored in browser local storage",
 						"in": "query",
 						"name": "key",
 						"required": true,
 						"type": "string"
 					},
 					{
-						"description": "",
+						"description": "\" new userName",
 						"in": "query",
 						"name": "newAccountName",
 						"required": true,
@@ -536,24 +536,24 @@
 						}
 					}
 				},
-				"description": "",
+				"description": "Change a Users Password",
 				"parameters": [
 					{
-						"description": "",
+						"description": ": key stored in browser local storage which identifies user",
 						"in": "query",
 						"name": "key",
 						"required": true,
 						"type": "string"
 					},
 					{
-						"description": "",
+						"description": ": old password",
 						"in": "query",
 						"name": "oldP",
 						"required": true,
 						"type": "string"
 					},
 					{
-						"description": "",
+						"description": ": new password",
 						"in": "query",
 						"name": "newP",
 						"required": true,
@@ -582,52 +582,52 @@
 						}
 					}
 				},
-				"description": "",
+				"description": "Change User Data",
 				"parameters": [
 					{
-						"description": "",
+						"description": ":    Secret AES Key held by Front End of Application",
 						"in": "query",
 						"name": "FE_KEY",
 						"required": true,
 						"type": "string"
 					},
 					{
-						"description": "",
+						"description": ":       Users Encrypted Key Which is in Local Storage of Browser",
 						"in": "query",
 						"name": "key",
 						"required": true,
 						"type": "string"
 					},
 					{
-						"description": "",
+						"description": ": First Name to Change to",
 						"in": "query",
 						"name": "firstName",
 						"required": true,
 						"type": "string"
 					},
 					{
-						"description": "",
+						"description": "Last Name to Change to",
 						"in": "query",
 						"name": "lastName",
 						"required": true,
 						"type": "string"
 					},
 					{
-						"description": "",
+						"description": ":     Email Name to Change to",
 						"in": "query",
 						"name": "email",
 						"required": true,
 						"type": "string"
 					},
 					{
-						"description": "",
+						"description": ":     Phone Number to Change to",
 						"in": "query",
 						"name": "phone",
 						"required": true,
 						"type": "string"
 					},
 					{
-						"description": "",
+						"description": ":     BDate to Change to",
 						"in": "query",
 						"name": "bdate",
 						"required": true,
@@ -653,13 +653,13 @@
 						}
 					}
 				},
-				"description": "Remove data item based on id *",
+				"description": "Remove item from collection",
 				"consumes": [
 					"application/json"
 				],
 				"parameters": [
 					{
-						"description": "",
+						"description": ": body obj containing:",
 						"in": "body",
 						"name": "body",
 						"required": true,
@@ -693,7 +693,7 @@
 				],
 				"parameters": [
 					{
-						"description": "",
+						"description": ": contains \r\n{any[]} table: data Array \r\n  {string} key: user Key \r\n{string} coll: collectionName to Store Reports Data for particular session",
 						"in": "body",
 						"name": "body",
 						"required": true,
@@ -727,17 +727,17 @@
 						}
 					}
 				},
-				"description": "Get data from default stock table *",
+				"description": "Userd to retrieve data from the stock collection database.\r\nAll stock files in Mongo are named with userName + \"_\" + sessionID\r\nuserName is retrieved from the key. Nothing is returned if invalid key",
 				"parameters": [
 					{
-						"description": "",
+						"description": ": key in local storage (Front End)",
 						"in": "query",
 						"name": "key",
 						"required": true,
 						"type": "string"
 					},
 					{
-						"description": "",
+						"description": ": collection/sessio name",
 						"in": "query",
 						"name": "coll",
 						"required": true,
@@ -769,10 +769,10 @@
 						}
 					}
 				},
-				"description": "Get all user Sessions *",
+				"description": "Get All user Sessions",
 				"parameters": [
 					{
-						"description": "",
+						"description": ": key associated with user",
 						"in": "query",
 						"name": "key",
 						"required": true,
@@ -801,10 +801,10 @@
 						}
 					}
 				},
-				"description": "Create a new session for a user. This adds a session for a user *",
+				"description": "Create a new session for a user. This adds a session for a user",
 				"parameters": [
 					{
-						"description": "",
+						"description": ": userKey",
 						"in": "query",
 						"name": "key",
 						"required": true,
@@ -840,17 +840,17 @@
 						}
 					}
 				},
-				"description": "Remove Session  *",
+				"description": "Remove Session For User (Report)",
 				"parameters": [
 					{
-						"description": "",
+						"description": ": userKey",
 						"in": "query",
 						"name": "key",
 						"required": true,
 						"type": "string"
 					},
 					{
-						"description": "",
+						"description": ": user session to be removed",
 						"in": "query",
 						"name": "session",
 						"required": true,
@@ -879,17 +879,17 @@
 						}
 					}
 				},
-				"description": "",
+				"description": "Change a Session/Report File name",
 				"parameters": [
 					{
-						"description": "",
+						"description": ": userKey",
 						"in": "query",
 						"name": "key",
 						"required": true,
 						"type": "string"
 					},
 					{
-						"description": "",
+						"description": ": current SessionName\n: new SessionName",
 						"in": "query",
 						"name": "sid",
 						"required": true,
@@ -899,116 +899,6 @@
 						"description": "",
 						"in": "query",
 						"name": "newSid",
-						"required": true,
-						"type": "string"
-					}
-				]
-			}
-		},
-		"/tempGetHashPassword": {
-			"get": {
-				"operationId": "ServiceTempGetHashPassword",
-				"produces": [
-					"application/json"
-				],
-				"responses": {
-					"200": {
-						"description": "Ok",
-						"schema": {
-							"type": "string"
-						}
-					},
-					"400": {
-						"description": "Bad Request",
-						"schema": {
-							"$ref": "#/definitions/BadRequestError"
-						}
-					}
-				},
-				"description": "DEV METHOD (TO BE REMOVED)\r\n\r\nIF YOUR PASSWORD IN USERTABLE COLLECTION IS PLAINTEXT, DO THE FOLLOWING:\r\n\tPASS CLEARTEXT PSSD INTO THIS Method\r\n\tWHATEVER IS RETURNED SHOULD BE INSERTED WHERE YOUR CLEARTEXT PASSWORD IS\r\n\tIN THE USER TABLE",
-				"parameters": [
-					{
-						"description": "",
-						"in": "query",
-						"name": "pssd",
-						"required": true,
-						"type": "string"
-					}
-				]
-			}
-		},
-		"/testencryptKEY": {
-			"get": {
-				"operationId": "ServiceTestencryptKEY",
-				"produces": [
-					"application/json"
-				],
-				"responses": {
-					"200": {
-						"description": "Ok",
-						"schema": {
-							"type": "string"
-						}
-					},
-					"400": {
-						"description": "Bad Request",
-						"schema": {
-							"$ref": "#/definitions/BadRequestError"
-						}
-					}
-				},
-				"description": "DEV METHOD (TO BE REMOVED) *",
-				"parameters": [
-					{
-						"description": "",
-						"in": "query",
-						"name": "FE_KEY",
-						"required": true,
-						"type": "string"
-					},
-					{
-						"description": "",
-						"in": "query",
-						"name": "mssg",
-						"required": true,
-						"type": "string"
-					}
-				]
-			}
-		},
-		"/testdecryptKEY": {
-			"get": {
-				"operationId": "ServiceTestdecryptKEY",
-				"produces": [
-					"application/json"
-				],
-				"responses": {
-					"200": {
-						"description": "Ok",
-						"schema": {
-							"type": "string"
-						}
-					},
-					"400": {
-						"description": "Bad Request",
-						"schema": {
-							"$ref": "#/definitions/BadRequestError"
-						}
-					}
-				},
-				"description": "DEV METHOD (TO BE REMOVED) *",
-				"parameters": [
-					{
-						"description": "",
-						"in": "query",
-						"name": "FE_KEY",
-						"required": true,
-						"type": "string"
-					},
-					{
-						"description": "",
-						"in": "query",
-						"name": "mssg",
 						"required": true,
 						"type": "string"
 					}
