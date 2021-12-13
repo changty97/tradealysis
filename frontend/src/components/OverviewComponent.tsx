@@ -15,6 +15,9 @@ const formatter: Intl.NumberFormat = new Intl.NumberFormat('en-US', {
     currency: 'USD'
 });
 
+/**
+	Overview Component
+**/
 class OverviewComponent extends Component<any, IOverviewComponentState>
 {
     constructor(props: any)

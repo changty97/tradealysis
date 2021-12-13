@@ -1,9 +1,11 @@
 import { Component } from "react";
 import sty from "styled-components";
 
+/**
+	Import Page CSS
+**/
 class Import extends Component
 {
-	
 	public static readonly FORM = sty.form `
 		background-color:wheat; 
 		border-style: solid;
@@ -99,6 +101,5 @@ class Import extends Component
 			background-image: linear-gradient(rgba(0, 0, 0, 0.4) 0 0);
 		}
 	`;
-	
 }
 export { Import };

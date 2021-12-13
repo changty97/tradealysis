@@ -3,10 +3,11 @@ import { Support } from "../cssComponents/Support";
 import * as emailjs from 'emailjs-com';
 import { init } from 'emailjs-com';
 import { Button, FormGroup } from 'reactstrap';
-//import { ISupportProps } from "../models/ISupportProps";
-//import { ISupportState } from "../models/ISupportState";
 init("user_EXb9DCu4js07untJgFSES");
 
+/**
+	Support Component
+**/
 class SupportComponent extends Component
 {
     state = {
@@ -15,8 +16,6 @@ class SupportComponent extends Component
         subject: '',
         message: '',
     }
-    //this.handleChange = this.handleChange.bind(this);
-    //this.handleSubmit = this.handleSubmit.bind(this);
 
     handleSubmit(e: any)
     {
@@ -111,9 +110,7 @@ class SupportComponent extends Component
                                     onChange={this.handleChange.bind(this, 'message')}
                                 />
                             </FormGroup>
-                            <Button variant="primary" type="submit">
-              Submit
-                            </Button>
+                            <Button variant="primary" type="submit">Submit</Button>
                         </Support.FORM>
                     </>
                 </Support.SECTION>

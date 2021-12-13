@@ -1,6 +1,7 @@
 import { Component, Fragment } from "react";
 import { About } from "../cssComponents/About";
 
+/** About Component **/
 class AboutComponent extends Component
 {
     render(): JSX.Element

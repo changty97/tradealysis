@@ -2,6 +2,9 @@ import { Component, Fragment } from "react";
 import { Link } from "react-router-dom";
 import { Reports } from "../cssComponents/Reports";
 
+/**
+	Strategies Component
+**/
 class StrategiesComponent extends Component
 {
     render(): JSX.Element

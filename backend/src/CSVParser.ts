@@ -5,6 +5,9 @@ import csv from "csvtojson/v2";
 import { ITableData } from "./models/ITableData";
 import { ITradeInfo } from "./models/ITradeInfo";
 
+/**
+	Class Used to Parse TDA File or Tradalysis File
+**/
 class CSVParser
 {
     private source: string = null;
@@ -21,6 +24,7 @@ class CSVParser
         this.source = source;
     }
 
+    /** Parse TDA OR TRADALYSIS FILE **/
     public async parse(file: Express.Multer.File): Promise<void>
     {
         switch (this.source)
@@ -34,6 +38,7 @@ class CSVParser
         }
     }
 
+    /** Filter through TDA OR TRADALYSIS FILE **/
     public filter(): ITableData[]
     {
         let filtered: ITableData[] = [];
@@ -51,6 +56,7 @@ class CSVParser
         return filtered;
     }
 
+    /** Parse a Tradalysis File **/
     private async parseTradealysis(file: Express.Multer.File): Promise<void>
     {
         this.parsedData["main"] = await csv({
@@ -60,6 +66,7 @@ class CSVParser
             .fromString(file.buffer.toString());
     }
 
+    /** Parse TDA File **/
     private async parseTDAmeritrade(file: Express.Multer.File): Promise<void>
     {
         const sectionedData: ISectionedContent = {
@@ -109,6 +116,7 @@ class CSVParser
         await Promise.all(promises);
     }
 
+    /** Filter TDA DATA **/
     private filterTDAmeritrade(): ITableData[]
     {
         const stocksInfo: ITradeInfo = {

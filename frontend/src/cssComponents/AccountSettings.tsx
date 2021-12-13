@@ -1,6 +1,9 @@
 import { Component } from "react";
 import sty from "styled-components";
 
+/**
+	Account Settings CSS
+**/
 class AccountSettings extends Component
 {
 	public static readonly AS_LABEL = sty.label `

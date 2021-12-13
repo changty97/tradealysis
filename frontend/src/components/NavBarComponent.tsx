@@ -7,6 +7,9 @@ import Logo from "../images/tradealysis_logo.png";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserCircle } from '@fortawesome/free-solid-svg-icons';
 
+/**
+	Nav Bar Component 
+**/
 class NavBarComponent extends Component<NavBarComponentProps, NavBarComponentState>
 {
     constructor(props: NavBarComponentProps)
@@ -15,6 +18,7 @@ class NavBarComponent extends Component<NavBarComponentProps, NavBarComponentSta
         this.logout = this.logout.bind(this);
     }
 	
+	/** Logouts If Method Called **/
     private logout() : void
     {
 	    localStorage.clear();
@@ -23,7 +27,7 @@ class NavBarComponent extends Component<NavBarComponentProps, NavBarComponentSta
 
     render(): JSX.Element
     {
-        const theUser = (this.props.user) ? this.props.user : "User";
+        const theUser = (this.props.user) ? this.props.user : "";
 	    return (
 	        <Fragment>
 	            <header id="allHeader">

@@ -1,6 +1,9 @@
 import { Component } from "react";
 import sty from "styled-components";
 
+/**
+	Privacy CSS
+**/
 class Privacy extends Component
 {
 	public static readonly SECTION = sty.section `
@@ -10,7 +13,7 @@ class Privacy extends Component
 		flex-direction: column;
 		justify-content: flex-start; 
 		align-items: left;
-		height: 255vw;
+		height: auto;
 		width: auto;
 		border-radius: 10px;
 		font-size: 15px;
@@ -27,13 +30,12 @@ class Privacy extends Component
 		font-size: 1em; 
 		text-decoration: none;
 		color: Black;
-		margin: 2%; 
+		margin: 4%; 
+		padding: 1%;
 		height: 6vh;
 		width: 95%;
 		border-radius: 10px;
 	`;
-	
-	
 }
 export { Privacy };
  

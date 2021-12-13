@@ -1,6 +1,9 @@
 import sty from "styled-components";
 import { Component } from "react";
 
+/**
+	Support CSS
+**/
 class Support extends Component
 {
 	public static readonly SECTION = sty.section `
@@ -86,10 +89,6 @@ class Support extends Component
 			background-image: linear-gradient(rgba(0, 0, 0, 0.4) 0 0);
 		}
 	`;
-
-
-
-	
 }
 
 export { Support };

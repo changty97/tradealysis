@@ -1,6 +1,9 @@
 import { Component } from "react";
 import sty from "styled-components";
 
+/**
+	Loading CSS
+**/
 class Loading extends Component
 {
     public static readonly ANIMATION = sty.object `		

@@ -95,7 +95,7 @@ async function userFromKey(key: string):Promise<string>
 
 /**
  * Method returns true if a user currently exists in the backend db. If the user
- * does not exists, return 0
+ * does not exists, return false
  * @return {boolean} false if user does not exist, true if the user exists
  */
 async function userExists(username: string): Promise<boolean>

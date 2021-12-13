@@ -1,6 +1,9 @@
 import { Component } from "react";
 import sty from "styled-components";
 
+/**
+	HomeComponent CSS
+**/
 class Home extends Component
 {
 	public static readonly SECTION = sty.section `

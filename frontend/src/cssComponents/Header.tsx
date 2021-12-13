@@ -2,6 +2,9 @@ import { Component } from "react";
 import { Link } from "react-router-dom";
 import sty from "styled-components";
 
+/**
+	Header CSS
+**/
 class Header extends Component
 {
 	public static readonly A_LINK = sty.a `
