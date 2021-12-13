@@ -51,7 +51,7 @@ async function correctLoginKey(username: string, password: string): Promise<stri
 
 /**
  * Returns username from a key in local storage
- * @returns username:string if key matches with user, else empty str ""
+ * @returns {string} username if key matches with user, else empty str ""
  **/
 async function userFromKey(key: string):Promise<string>
 {
@@ -94,9 +94,9 @@ async function userFromKey(key: string):Promise<string>
 }
 
 /**
- * Method returns 1 if a user currently exists in the backend db. If the user
+ * Method returns true if a user currently exists in the backend db. If the user
  * does not exists, return 0
- * @return 0 if user does not exist, 1 if the user exists
+ * @return {boolean} false if user does not exist, true if the user exists
  */
 async function userExists(username: string): Promise<boolean>
 {

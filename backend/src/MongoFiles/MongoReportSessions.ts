@@ -2,6 +2,11 @@ import { MongoClient, Db, Collection } from "mongodb";
 import { userMongoOptions, mongoOptions } from "../constants/globals";
 import { userFromKey } from "./MongoLogin";
 
+/**
+	Returns all user Sessions to be displayed on homepage when logged in 
+	@param {string} key: userKey
+	@return {string[]} array of strings corresponding to a user 
+**/
 async function allUserSessions(key: string):Promise<string[]>
 {
     let client: MongoClient | null = null;
@@ -78,6 +83,14 @@ function newSessionName(val:string, arr:string[]):string
     return newVal;
 }
 
+/**
+	Create a new session/report. Happens If soneone imports TDA file or if someone hits add new report
+	On Homepage
+	
+	@param {string} key: userKey
+	@param {string} newCollectionName: new collection name to name this 
+	@returns {string} whatever new collectionName is renamed. If that name exists, this method finds an alternate name 
+**/
 async function createNewSession(key:string, newCollectionName:string):Promise<string>
 {
     let userName:string | null = null;
@@ -134,7 +147,12 @@ async function createNewSession(key:string, newCollectionName:string):Promise<st
     return theNewCollectionName;
 }
 
-
+/**
+	Remove report/session
+	@param {string} key: userKey
+	@param {string} session 
+	@return {string|| null} session removed or null if key does not corresp to user or session DNE
+**/
 async function removeSession(key:string, session:string):Promise<string>
 {
     let client: MongoClient | null = null;
@@ -198,7 +216,13 @@ async function removeSession(key:string, session:string):Promise<string>
     return sessionName;
 }
 
-
+/**
+	Change a reports page 
+	@param {string} key: userKey
+	@param {string} oldName: oldSessionName
+	@param {string} newName: newSessionName 
+	@return {boolean} true/false regarding if session renamed. If session already exist with @param newName, @parm oldName session does not get renamed
+**/
 async function changeTheSessionName(key:string, oldName:string, newName:string):Promise<boolean>
 {
     let client: MongoClient | null = null;
