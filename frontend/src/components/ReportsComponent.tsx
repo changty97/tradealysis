@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { Reports } from "../cssComponents/Reports";
 
 /**
-	Reports Component 
+	Reports Component
 **/
 class ReportsComponent extends Component<IReportsProps, IReportsState>
 {
