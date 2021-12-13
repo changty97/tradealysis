@@ -12,7 +12,7 @@ import { BE_KEY } from "../constants/globals";
  * 5. add item to sessiontable with empty array (which will contain str values which map sessionids to users by _id <- user_obj_id from userTable collection
  * 6. add 1 item to sessionid array being created. the sessionid will be "username" + "_#" where # is # of sessions a user has. It is preinitialized to 1
  *    automatically
- *   @return true/false if account is created and all db collections populated
+ *   @return {boolean} true/false if account is created and all db collections populated
 **/
 async function createAccount(FE_KEY:string, username: string, password: string, fName: string, lName: string, email: string, phone: string, bdate: string): Promise<boolean>
 {
