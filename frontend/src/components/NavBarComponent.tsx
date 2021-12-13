@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserCircle } from '@fortawesome/free-solid-svg-icons';
 
 /**
-	Nav Bar Component 
+	Nav Bar Component
 **/
 class NavBarComponent extends Component<NavBarComponentProps, NavBarComponentState>
 {
@@ -18,7 +18,7 @@ class NavBarComponent extends Component<NavBarComponentProps, NavBarComponentSta
         this.logout = this.logout.bind(this);
     }
 	
-	/** Logouts If Method Called **/
+    /** Logouts If Method Called **/
     private logout() : void
     {
 	    localStorage.clear();

@@ -114,9 +114,9 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
             });
     }
 
-	/** 
+    /**
 		Update Sheet Component
-		@param {boolean} getPastData : Whether to reload all historical data 
+		@param {boolean} getPastData : Whether to reload all historical data
 	**/
     private async updateSheetItems(getPastData:boolean):Promise<void>
     {
@@ -174,7 +174,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
         }).catch((error)=> console.log('Error', error) );
     }
 	
-	/** Get Ticker **/
+    /** Get Ticker **/
     async getTicker(cell: any, alwaysGetPastData: boolean): Promise<any>
     {
         if (this.state.tableProps.data)
@@ -186,7 +186,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
             };
 
             let idx = -1;
-			/** Find data index that corresponds to cell.rowKeyValue **/
+            /** Find data index that corresponds to cell.rowKeyValue **/
             for (let i = this.state.tableProps.data.length - 1; i >= 0; i--)
             {
                 const descriptor1 = Object.getOwnPropertyDescriptor(this.state.tableProps.data[i], 'id');
@@ -217,7 +217,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
 								
                                 if (todayData)
                                 {
-									/** Remove Open, HOD, VOLDOI from todays data if doi is current date because these values can change **/
+                                    /** Remove Open, HOD, VOLDOI from todays data if doi is current date because these values can change **/
                                     if (!rowDateIsTodaysDate)
                                     {
                                         Object.prototype.hasOwnProperty.call(todayData, 'Open');
@@ -238,7 +238,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                                 }
 
                                 // fetch past data only if valid DOI is entered AND historical data has not yet been fetched
-                                if ((row.DOI !== undefined && this.isValidDate(row.DOI) && row.PC === undefined) ||
+                                if ((row.DOI !== undefined && this.isValidDate(row.DOI) && (!row.PC || row.PC === "")) ||
 								    (alwaysGetPastData && row.DOI && this.isValidDate(row.DOI)))
                                 {
                                     const pastData = await this.getPastData(row.Ticker, row.DOI);
@@ -258,7 +258,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
         }
     }
 	
-	/** Get todays data **/
+    /** Get todays data **/
     async getTodayData(ticker: string): Promise<any>
     {
         try
@@ -286,7 +286,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
         }
     }
     
-	/** Get Past Historical Data **/
+    /** Get Past Historical Data **/
     async getPastData(ticker: string, date: string): Promise<any>
     {
         try
@@ -332,7 +332,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
         return d.toISOString().slice(0, 10) === doi;
     }
 
-/** Set KA-TABLE Cells **/
+    /** Set KA-TABLE Cells **/
     setCells(changes: any): void
     {
         if (!this.state.tableProps.data || !changes?.length)
@@ -553,7 +553,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
         },
     };
 
-	/** Delete a item from a reports based upon the id (or cells rowKeyValue) **/
+    /** Delete a item from a reports based upon the id (or cells rowKeyValue) **/
     private deleteItemFromDB(val:number): void
     {
         Swal.fire({
@@ -615,7 +615,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
             });
     }
 
-	/** Update PL Cell **/
+    /** Update PL Cell **/
     updatePL(cell: any)
     {
         if (!this.state.tableProps.data)
@@ -642,7 +642,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
         this.updatePLPerc(cell, PL);
     }
 	
-	/** Update P1% **/
+    /** Update P1% **/
     updatePLPerc(cell: any, PL?: number)
     {
         if (!this.state.tableProps.data)
@@ -666,7 +666,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
         }
     }
 
-	/** Loading **/
+    /** Loading **/
     setLoading(isLoading: boolean, text?: string): void
     {
         this.setState(prevState => ({
@@ -734,7 +734,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
         );
     }
 
-	/** KA-TABLE DISPATCH FUNCTION TO EXECUTE ACTIONS **/
+    /** KA-TABLE DISPATCH FUNCTION TO EXECUTE ACTIONS **/
     private async dispatch(action: any)
     {
         this.setState((prevState) => ({
@@ -755,7 +755,8 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
             switch (action.columnKey)
             {
             case "DOI":
-                if (this.state.tableProps.data[action.rowKeyValue] && this.state.tableProps.data[action.rowKeyValue]["Ticker"]) {
+                if (this.state.tableProps.data[action.rowKeyValue] && this.state.tableProps.data[action.rowKeyValue]["Ticker"])
+                {
                     this.setCells([await this.getTicker(cell, false)]);
                 }
                 break;
