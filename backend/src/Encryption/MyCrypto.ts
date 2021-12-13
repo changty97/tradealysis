@@ -1,69 +1,5 @@
 import * as crypto from "crypto-js";
 
-/**
-    private encryptTest(): void
-    {
-	    const mssg = `Hello How are you doing today?`;
-        const pssd = "pass1";
-        const hashPssd = crypto.SHA3(pssd, {outputLength: 128}).toString();
-		
-		const aes:MyCrypto = MyCrypto.getInstance();
-        const sKey = aes.generateKey(hashPssd);  // we will store this in our db. First 32 chars is salt val, followed by 64 key vals
-        
-		//Ecrypted version of sKey which is the value stored in our database
-		const hashKeyForKey = crypto.SHA3("QqgVW)3gkrigkri482gdkj@ldsgkjldslkutkdsj)!JF2@vn.tBA/_rd", {outputLength: 128}).toString() // a constant/key for the key. This will be sored in a .env fule or in a method aytomatically
-		console.log("Key For Key Begin");
-		console.log(hashKeyForKey);
-		console.log("End Key For Key");
-		
-		const ecKey = aes.encryption(sKey, hashKeyForKey);
-		console.log("Stored in Database\n\t" + ecKey.toString());
-		
-		// this is how we decrypt it. The decrypted value will be used for encrypting anu user data
-		const dcKey = aes.decryption(ecKey, hashKeyForKey);
-		console.log("Decrypted key is " + dcKey.toString());
-	
-		console.log("sKey:" + sKey.toString());                      // key to encrypt
-		const ec = aes.encryption(mssg, dcKey);                       // cyphertext
-		console.log("This is ec: " + ec.toString());
-		const dcb = aes.decryption(ec, dcKey);                        //plaintext
-        console.log(`CypherText: ${  ec}\nDecrypt: ${  dcb}`);
-
-	}
-**/
-
-/**
- const myCrypt:MyCrypto = MyCrypto.getInstance();
-				
-                const theNewPssdStored:string = myCrypt.getSHA3(password, 128);  // shaw password stored
-                console.log(`SHA PSSD ${  theNewPssdStored}`);
-				
-                const newKey = myCrypt.generateKey(theNewPssdStored);            // decrypted key for each user
-                console.log(`New unencrypted Key ${   newKey}`);
-				
-				
-                const frontEndPssdKey = "c39c07f7ee1a763a9ef57c81ef721f0b1ee3e7b1de26830e1c560e2481e2dac4869a699a8bc7f98e62f223252ba04f2c";
-                console.log(`Front End Shaw Key: ${   frontEndPssdKey}`);
-				
-                const encryptedKey = myCrypt.encryption(newKey, frontEndPssdKey);
-                console.log(`2.0. The Encrypted Key is =>${  encryptedKey}`);
-				
-				
-			    const decryptedKey = myCrypt.decryption(encryptedKey, frontEndPssdKey);
-                console.log(`2.1. The Decryption Key is =>${  encryptedKey}`);
-
-
-				
-                const encryptedUsername = myCrypt.encryption(username, decryptedKey);
-				
-                const theUserNameIs = myCrypt.decryption(encryptedUsername,  myCrypt.decryption(encryptedKey, frontEndPssdKey));
-				
-                console.log(`@@@@@@@@@@@@ => ${  theUserNameIs}`);
-                console.log(`Wrong${  myCrypt.decryption(encryptedUsername,  myCrypt.decryption(encryptedKey, newKey))}`);
-
-
-**/
-
 /** Uses CryptJS JS Library **/
 class MyCrypto
 {
@@ -73,7 +9,7 @@ class MyCrypto
 	
 	/**
 		@constructor:
-		Instantiates keySice, theIttr, 
+		Instantiates keySice, theIttr,
 		(Singleton Instance)
 	**/
 	private constructor()
@@ -82,8 +18,8 @@ class MyCrypto
 	    MyCrypto.theIttr = 1024;
 	}
 	
-	/** 
-		Call to get Singleton Inst 
+	/**
+		Call to get Singleton Inst
 		@return {MyCrypto} MyCrypto.inst;
 	**/
 	public static getInstance():MyCrypto
@@ -98,7 +34,7 @@ class MyCrypto
 	/**
 	 * Get SHA3 256Bit Hash of @param text
 	 * @param {string} text: text to hashKeyForKey
-	 * return {string} hash of @param text 
+	 * return {string} hash of @param text
 	 */
 	public getSHA3(text:string):string
 	{
@@ -108,9 +44,9 @@ class MyCrypto
 	}
 	
 	/**
-	 * @param {string} message: plaintext 
-	 * @param {string} sKey: key to encrypt plaintext with 
-	 * @return {string} cypherText 
+	 * @param {string} message: plaintext
+	 * @param {string} sKey: key to encrypt plaintext with
+	 * @return {string} cypherText
 	**/
 	public encryption(message:string, sKey:string):string
 	{
@@ -131,9 +67,9 @@ class MyCrypto
 	}
 	
 	/**
-	 * @param {string} cypherText: cypherText to decrypt 
-	 * @param {string} sKey: key to decrypt plaintext with 
-	 * @return {string} plainText if Key is correct. Else, either random data or empty str  
+	 * @param {string} cypherText: cypherText to decrypt
+	 * @param {string} sKey: key to decrypt plaintext with
+	 * @return {string} plainText if Key is correct. Else, either random data or empty str
 	**/
 	public decryption(cypherText:string, sKey:string):string
 	{
@@ -154,10 +90,10 @@ class MyCrypto
 	}
 	
 	/**
-	 * Encrypt with 2 keys 
-	 * @param {string} plainText: cypherText to encrypt 
-	 * @param {string[]} sKey: cypherText to encrypt 
-	 * @returns {string} cypherText 
+	 * Encrypt with 2 keys
+	 * @param {string} plainText: cypherText to encrypt
+	 * @param {string[]} sKey: cypherText to encrypt
+	 * @returns {string} cypherText
 	**/
 	public encryptMultKeys(plainText:string, sKey:string[]):string
 	{
@@ -170,10 +106,10 @@ class MyCrypto
 	}
 	
 	/**
-	 * Decrypt with 2 keys 
-	 * @param {string} cypherText: cypherText 
-	 * @param {string[]} sKey: cypherText to decrypt 
-	 * @returns {string} plaintext  
+	 * Decrypt with 2 keys
+	 * @param {string} cypherText: cypherText
+	 * @param {string[]} sKey: cypherText to decrypt
+	 * @returns {string} plaintext
 	**/
 	public decryptMultKeys(cypherText:string, sKey:string[]):string
 	{
@@ -185,9 +121,9 @@ class MyCrypto
 	    return txt;
 	}
 	
-	/** 
+	/**
      * Generate Key based on plaintext
-	 * @param {string} password: plainText used to generate Key with salt 
+	 * @param {string} password: plainText used to generate Key with salt
 	**/
 	public generateKey(password:string)
 	{

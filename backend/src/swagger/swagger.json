@@ -693,7 +693,7 @@
 				],
 				"parameters": [
 					{
-						"description": ": contains \r\n{any[]} table: data Array \r\n  {string} key: user Key \r\n{string} coll: collectionName to Store Reports Data for particular session",
+						"description": ": contains\r\n{any[]} table: data Array\r\n  {string} key: user Key\r\n{string} coll: collectionName to Store Reports Data for particular session",
 						"in": "body",
 						"name": "body",
 						"required": true,
