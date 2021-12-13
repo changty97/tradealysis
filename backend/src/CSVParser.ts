@@ -147,8 +147,7 @@ class CSVParser
                     },
                     DOI: "",
                     // If the first instance of a stock trade is a sale, the user is shorting the stock.
-                    position: action === "SELL" ? "Short" : "Long",
-                    quantity: Math.abs(quantity)
+                    position: action === "SELL" ? "Short" : "Long"
                 };
             }
 
@@ -182,7 +181,7 @@ class CSVParser
                 Broker: "TDAmeritrade",
                 Ticker: symbol,
                 Position: stocksInfo[symbol].position,
-                "# Shares": stocksInfo[symbol].quantity.toString(),
+                "# Shares": stocksInfo[symbol].sell.totalStocks.toString(),
                 "Avg Entry": avgEntryPrice.toFixed(2),
                 "Avg Exit": avgExitPrice.toFixed(2)
             };
