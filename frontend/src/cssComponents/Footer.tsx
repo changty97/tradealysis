@@ -1,6 +1,9 @@
 import { Component } from "react";
 import sty from "styled-components";
 
+/**
+	Footer CSS
+**/
 class Footer extends Component
 {
 	public static readonly FOOTER = sty.footer `

@@ -1,7 +1,9 @@
 import axios from "axios";
 import { IStockData } from "./models/IStockData";
 
-/* Harry's API stuff */
+/**
+	API Used to Get Todays Data and Historical Data
+**/
 
 const finnhub_api_key = process.env.FINNHUB_API_KEY;
 const AlphaVantage_api_key = process.env.AlphaVantage_API_KEY;

@@ -1,6 +1,9 @@
 import { Component } from "react";
 import sty from "styled-components";
 
+/**
+	Landing Page CSS
+**/
 class Landing extends Component
 {
 	public static readonly SECTION = sty.section `
@@ -10,7 +13,7 @@ class Landing extends Component
                 background: #587e7e;
                 color: white;
 	`;
-        public static readonly H1 = sty.h1 `
+    public static readonly H1 = sty.h1 `
                 font-size: 35px;
 	`;
 	public static readonly A = sty.a `

@@ -5,6 +5,9 @@ import { SheetComponent } from "../components/SheetComponent";
 import { Link } from "react-router-dom";
 import { Reports } from "../cssComponents/Reports";
 
+/**
+	Reports Component 
+**/
 class ReportsComponent extends Component<IReportsProps, IReportsState>
 {
     constructor(props: IReportsProps)

@@ -3,6 +3,9 @@ import { Link } from "react-router-dom";
 import { Header } from "../cssComponents/Header";
 import Logo from "../images/tradealysis_logo.png";
 
+/**
+	Navbar login component
+**/
 class NavBarLoginComponent extends Component
 {
     render(): JSX.Element

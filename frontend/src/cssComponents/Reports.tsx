@@ -1,6 +1,9 @@
 import sty from "styled-components";
 import { Component } from "react";
 
+/**
+	Reports Page CSS
+**/
 class Reports extends Component
 {
 	public static readonly SECTION = sty.section ` 

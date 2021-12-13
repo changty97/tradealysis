@@ -21,6 +21,9 @@ import { IAppState } from './models/IAppState';
 import { api } from "./constants/globals";
 import { AxiosResponse } from 'axios';
 
+/**
+	App Inst From Which All other Components Are Called From 
+**/
 class App extends Component<IReportsProps, IAppState>
 {
     constructor(props: IReportsProps)
@@ -32,6 +35,7 @@ class App extends Component<IReportsProps, IAppState>
         this.logout = this.logout.bind(this);
     }
 	
+	/** Fetch uname for NavBar and to figure out if connected to back end **/
     componentDidMount() : void
     {
         const theKey:string|null = localStorage.getItem("Key");
@@ -55,16 +59,21 @@ class App extends Component<IReportsProps, IAppState>
                         });
                     }
                 })
-                .catch((err: Error) =>  console.error(`Error @ App.componentDidMount():${  err}`));
+                .catch((err: Error) =>
+                {
+                    this.logout();
+                });
         }
     }
 	
+	/** Logs user out and clears local storage **/
     private logout() : void
     {
 	    localStorage.clear();
 	    window.location.href = "/login";
     }
 	
+	/** Render Application **/
     render(): JSX.Element
     {
         const theKey = localStorage.getItem("Key");

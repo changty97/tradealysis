@@ -4,13 +4,14 @@ import { IAccountSettingsState } from "../models/IAccountSettingsState";
 import { api, FE_KEY } from "../constants/globals";
 import Swal from 'sweetalert2';
 
+/** Account Settings **/
 class AccountSettingsComponent extends Component<any, IAccountSettingsState>
 {
     constructor(props: any)
     {
 	    super(props);
 	    this.state = {
-            uname: "User",
+            uname: "",
             pssd: "",
             fName: "",
             lName: "",

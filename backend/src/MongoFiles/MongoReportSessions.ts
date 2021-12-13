@@ -3,9 +3,9 @@ import { userMongoOptions, mongoOptions } from "../constants/globals";
 import { userFromKey } from "./MongoLogin";
 
 /**
-	Returns all user Sessions to be displayed on homepage when logged in 
+	Returns all user Sessions to be displayed on homepage when logged in
 	@param {string} key: userKey
-	@return {string[]} array of strings corresponding to a user 
+	@return {string[]} array of strings corresponding to a user
 **/
 async function allUserSessions(key: string):Promise<string[]>
 {
@@ -88,8 +88,8 @@ function newSessionName(val:string, arr:string[]):string
 	On Homepage
 	
 	@param {string} key: userKey
-	@param {string} newCollectionName: new collection name to name this 
-	@returns {string} whatever new collectionName is renamed. If that name exists, this method finds an alternate name 
+	@param {string} newCollectionName: new collection name to name this
+	@returns {string} whatever new collectionName is renamed. If that name exists, this method finds an alternate name
 **/
 async function createNewSession(key:string, newCollectionName:string):Promise<string>
 {
@@ -150,7 +150,7 @@ async function createNewSession(key:string, newCollectionName:string):Promise<st
 /**
 	Remove report/session
 	@param {string} key: userKey
-	@param {string} session 
+	@param {string} session
 	@return {string|| null} session removed or null if key does not corresp to user or session DNE
 **/
 async function removeSession(key:string, session:string):Promise<string>
@@ -217,10 +217,10 @@ async function removeSession(key:string, session:string):Promise<string>
 }
 
 /**
-	Change a reports page 
+	Change a reports page
 	@param {string} key: userKey
 	@param {string} oldName: oldSessionName
-	@param {string} newName: newSessionName 
+	@param {string} newName: newSessionName
 	@return {boolean} true/false regarding if session renamed. If session already exist with @param newName, @parm oldName session does not get renamed
 **/
 async function changeTheSessionName(key:string, oldName:string, newName:string):Promise<boolean>

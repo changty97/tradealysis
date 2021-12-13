@@ -1,6 +1,9 @@
 import { Component } from "react";
 import sty from "styled-components";
 
+/**
+	Overview CSS
+**/
 class Overview extends Component
 {
     public static readonly DATE_RANGE = sty.button `

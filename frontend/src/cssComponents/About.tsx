@@ -1,6 +1,9 @@
 import { Component } from "react";
 import sty from "styled-components";
 
+/**
+	CSS For About Component
+**/
 class About extends Component
 {
 	public static readonly SECTION = sty.section `
@@ -54,8 +57,11 @@ class About extends Component
 		border-radius: 10px;
 		margin: 2% 5%;
 		padding-left: 50px;
+		padding-bottom: 5%;
+		margin-bottom: 5%;
 		font-size:20px;
 		width: 100%;
+		height: auto;
 	`;
 }
 export { About };
