@@ -3,6 +3,8 @@ import { Support } from "../cssComponents/Support";
 import * as emailjs from 'emailjs-com';
 import { init } from 'emailjs-com';
 import { Button, FormGroup } from 'reactstrap';
+import Swal from 'sweetalert2';
+
 init("user_EXb9DCu4js07untJgFSES");
 
 /**
@@ -38,8 +40,14 @@ class SupportComponent extends Component
             templateParams,
             'user_EXb9DCu4js07untJgFSES'
         );
-        
         this.resetForm();
+		
+        Swal.fire({
+            title: 'Message Sent',
+            icon: 'success',
+            timer: 1500,
+            showConfirmButton: false
+        }).then(()=> window.location.href = "/");
     }
 
     resetForm()
