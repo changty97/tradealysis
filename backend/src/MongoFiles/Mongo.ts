@@ -2,6 +2,11 @@ import { MongoClient } from "mongodb";
 import { mongoOptions } from "../constants/globals";
 import { userFromKey } from "./MongoLogin";
 
+/**
+	Remove item From Session Page
+	@param {number} idVal: id
+	@param {string} coll: collection to remove item
+**/
 async function removeItem(idVal:number, coll:string):Promise<void>
 {
     let client: MongoClient | null = null;
@@ -24,9 +29,16 @@ async function removeItem(idVal:number, coll:string):Promise<void>
                 client.close();
             }
         });
-		
 }
 
+/**
+	Save Data to a collection
+	@param {any} dataArray: array from SheetComponent.tsx
+	@param {string} key: userKey
+	@param {string} collection to save data (session name)
+	
+	For user admin for example, data is saved to admin_myData if @param coll = myData
+**/
 async function saveTable(dataArray: any, key:string, coll:string): Promise<void>
 {
     let client: MongoClient | null = null;
@@ -79,6 +91,17 @@ async function saveTable(dataArray: any, key:string, coll:string): Promise<void>
     return;
 }
 
+/**
+	Get Data from a collection
+	@param {string} key: userKey
+	@param {string} coll: session name
+	@throws {Error} if key is invalid or does not correspond to user
+	
+	Actual Collection is derived from username followed by underscore followed by @param coll
+	For admin, it would be: admin_myData if @param coll=myData
+	
+	All items are fetched to be displayed on SheetComponent on Frontend
+**/
 async function theSaveData(key:string, coll:string): Promise<any[]>
 {
     let client: MongoClient | null = null;
