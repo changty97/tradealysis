@@ -141,7 +141,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
         }
     }
 	
-	/**
+    /**
 		Generate new ID which is greater then the lastRowID
 	**/
     private generateNewId(): number
@@ -153,8 +153,8 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
         return newRowId;
     }
    
-   /**
-		Post Data to Mongo Database 
+    /**
+		Post Data to Mongo Database
    **/
     private saveTable(): void
     {
@@ -675,7 +675,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
         }));
     }
 	
-	/** What is Displayed KA-TABLE SHEET **/
+    /** What is Displayed KA-TABLE SHEET **/
     public render() : JSX.Element
     {
         return (
@@ -747,7 +747,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                 value: action.value
             };
 
-			/** Actions to take if Certain Cell Cols Are Updated **/
+            /** Actions to take if Certain Cell Cols Are Updated **/
             switch (action.columnKey)
             {
             case "DOI":

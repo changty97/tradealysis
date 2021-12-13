@@ -4,6 +4,12 @@ import { userFromKey } from "./MongoLogin";
 import { MyCrypto } from "../Encryption/MyCrypto";
 import { BE_KEY } from "../constants/globals";
 
+/**
+	Get user Account info stored in AccountSettings.tsx on front end
+	@param {string} FE_KEY: frount end key
+	@param {string} key: userKey
+	@returns {object || null }: null if key is invalid or no user correspnds to it, otherwise returns personal data
+**/
 async function accountValuesFromKey(FE_KEY:string, key: string):Promise<any>
 {
     let client: MongoClient | null = null;
@@ -44,11 +50,22 @@ async function accountValuesFromKey(FE_KEY:string, key: string):Promise<any>
     }
 }
 
+/**
+	Determine if @param account is the same as current username
+	@param {string} key: userKey
+	@param {string} account: a arbitrary account name to compare with current user name
+	@returns {boolean} (account == current Username)
+**/
 async function sameAccount(key:string, account:string):Promise<boolean>
 {
     return ((await userFromKey(key)) === account);
 }
 
+/**
+	See if an account exists with the following username @param possibleNewAccount
+	@param {string} possibleNewAccount:
+	@return {boolean} possibleNewAccount exists
+**/
 async function doesThisAccountExist(possibleNewAccount: string):Promise<boolean>
 {
     let retVal = false; // assume worst case the account exists if invalid key or invalid account
@@ -77,6 +94,13 @@ async function doesThisAccountExist(possibleNewAccount: string):Promise<boolean>
     return retVal;
 }
 
+/**
+	Modify Account Name If account uname does not already exists
+	@param {string} key: userKey
+	@param {string} possibleNewAccount: possible new account name
+	
+	Account name is changed if account does not exist already
+**/
 async function modifyAccountName(key: string, possibleNewAccount:string):Promise<void>
 {
     if (!(await doesThisAccountExist(possibleNewAccount)))
@@ -141,6 +165,16 @@ async function modifyAccountName(key: string, possibleNewAccount:string):Promise
     }
 }
 
+/**
+	Change Password
+	@param {string} key: userKey
+	@param {string} oldPassword: old Password
+	@param {string} newPassword: new password changing it to
+	
+	If key is invalid (does not correspond to a user), or oldPassword is incorrect,
+	Password will not changePssd
+	@return {boolean} password Changed
+**/
 async function changePssd(key:string, oldPassword:string, newPassword:string):Promise<boolean>
 {
     let retVal = false;
@@ -193,6 +227,17 @@ async function changePssd(key:string, oldPassword:string, newPassword:string):Pr
     return retVal;
 }
 
+/**
+	Change private user account data
+	@param {string} FE_KEY: Front end AES 256 KEY
+	@param {string} key: userKey
+	@param {string} firstName: first name
+	@param {string} lastName: last name
+	@param {string} email: email
+	@param {string} bdate: bdate
+	
+	@returns {boolean} whether personal data changed in the database
+**/
 async function changeUserAccount(FE_KEY:string, key:string, firstName:string, lastName:string, email:string, phone:string, bdate:string):Promise<boolean>
 {
     let retVal = false;
