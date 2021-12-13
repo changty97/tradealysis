@@ -141,6 +141,9 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
         }
     }
 	
+	/**
+		Generate new ID which is greater then the lastRowID
+	**/
     private generateNewId(): number
     {
         const newRowId: number = this.state.lastRowId + 1;
@@ -150,6 +153,9 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
         return newRowId;
     }
    
+   /**
+		Post Data to Mongo Database 
+   **/
     private saveTable(): void
     {
         const tableData = this.state.tableProps.data;
@@ -631,7 +637,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
 
         this.updatePLPerc(cell, PL);
     }
-
+ 
     updatePLPerc(cell: any, PL?: number)
     {
         if (!this.state.tableProps.data)
@@ -644,7 +650,6 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
         const avgEntry: number = parseFloat(this.state.tableProps.data![id]["Avg Entry"]);
         PL = PL || parseFloat(this.state.tableProps.data![id]["P/L"]);
 
-        //console.log(PL + " " + parseFloat(this.state.tableProps.data![id]["P/L"]) + " " +  numShares + " " +  avgEntry + " " + id);
         if (PL && numShares && avgEntry)
         {
             console.log(`Changed pl${  cell.rowKeyValue}`);
@@ -670,6 +675,7 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
         }));
     }
 	
+	/** What is Displayed KA-TABLE SHEET **/
     public render() : JSX.Element
     {
         return (
@@ -741,16 +747,15 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                 value: action.value
             };
 
+			/** Actions to take if Certain Cell Cols Are Updated **/
             switch (action.columnKey)
             {
             case "DOI":
                 console.log("DOI VAL");
-                //console.log(this.state.tableProps.data[action.rowKeyValue]);
                 if (this.state.tableProps.data[action.rowKeyValue] && this.state.tableProps.data[action.rowKeyValue]["Ticker"])
                 {
                     this.setCells([await this.getTicker(cell, false)]);
                 }
-
                 break;
             case "Ticker":
                 this.setCells([await this.getTicker(cell, false)]);
