@@ -102,8 +102,8 @@ class OverviewComponent extends Component<any, IOverviewComponentState>
 
         if (dates.length)
         {
-            minDate = new Date(Math.min(...dates));
-            maxDate = new Date(Math.max(...dates));
+            minDate = new Date(Math.min(...dates) + 86400000);
+            maxDate = new Date(Math.max(...dates) + 86400000);
         }
 
         this.setState({
@@ -144,7 +144,7 @@ class OverviewComponent extends Component<any, IOverviewComponentState>
         // Narrow data to the selected date range.
         data = data.filter((el: any) =>
         {
-            const date: Date = (new Date(Date.parse(el.DOI)));
+            const date: Date = (new Date(Date.parse(el.DOI) + 86400000));
             return el.DOI && date >= this.state.selectedStartDate! && date <= this.state.selectedEndDate!;
         });
 
