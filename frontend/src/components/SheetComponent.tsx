@@ -624,16 +624,23 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
         }
 
         const id = this.state.tableProps.data.findIndex((el: any) => el.id === cell.rowKeyValue);
+        const position: string = this.state.tableProps.data![id]["Position"];
         const numShares: number = parseInt(this.state.tableProps.data![id]["# Shares"]);
         const avgEntry: number = parseFloat(this.state.tableProps.data![id]["Avg Entry"]);
         const avgExit: number = parseFloat(this.state.tableProps.data![id]["Avg Exit"]);
-        const PL: number = numShares * (avgExit - avgEntry);
+        let PL: number;
 
-        if (numShares && avgEntry && avgExit)
+        if (position?.toLocaleLowerCase() === "long") {
+            PL = numShares * (avgExit - avgEntry);
+        } else {
+            PL = numShares * (avgEntry - avgExit);
+        }
+
+        if (numShares !== null && avgEntry !== null && avgExit !== null)
         {
             this.setCells([{
                 change: {
-                    "P/L": PL
+                    "P/L": PL.toFixed(2)
                 },
                 rowId: cell.rowKeyValue
             }]);
@@ -649,17 +656,18 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
         {
             return;
         }
+        
         const id = this.state.tableProps.data.findIndex((el: any) => el.id === cell.rowKeyValue);
         const numShares: number = parseInt(this.state.tableProps.data![id]["# Shares"]);
         const avgEntry: number = parseFloat(this.state.tableProps.data![id]["Avg Entry"]);
         PL = PL || parseFloat(this.state.tableProps.data![id]["P/L"]);
 
-        if (PL && numShares && avgEntry)
+        if (PL !== null && numShares !== null && avgEntry !== null)
         {
             console.log(`Changed pl${  cell.rowKeyValue}`);
             this.setCells([{
                 change: {
-                    "P/L %": PL / (numShares * avgEntry)
+                    "P/L %": (100 * (PL / (numShares * avgEntry)) || 0).toFixed(2)
                 },
                 rowId: cell.rowKeyValue
             }]);
@@ -765,6 +773,9 @@ class SheetComponent extends Component<ISheetComponentProps, ISheetComponentStat
                 break;
             case "P/L":
                 this.updatePLPerc(cell);
+                break;
+            case "Position":
+                this.updatePL(cell);
                 break;
             case "Avg Entry":
                 this.updatePL(cell);
