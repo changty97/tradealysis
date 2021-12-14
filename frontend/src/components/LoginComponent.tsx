@@ -10,6 +10,7 @@ class LoginComponent extends Component<any, any>
         this.loginKey = this.loginKey.bind(this);
         this.signupKey = this.signupKey.bind(this);
         this.forgotPssd = this.forgotPssd.bind(this);
+
     }
 
     private setLocalStorageStateKey(theKey:string) : void
