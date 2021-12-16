@@ -6,7 +6,7 @@ import cors from 'cors';
 /** Setup express application **/
 
 const app: express.Application = express();
-const allowedToMakeRequests = ['https://tradealysis.tk', 'http://localhost:3000', 'http://localhost:3001'];
+const allowedToMakeRequests = ['https://tradealysis.tk', 'http://localhost:3000', 'http://localhost:3001', 'http://52.9.135.75'];
 
 const options: cors.CorsOptions = {
     origin: allowedToMakeRequests
